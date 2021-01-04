@@ -35,6 +35,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Query\Builder|Account withTrashed()
  * @method static \Illuminate\Database\Query\Builder|Account withoutTrashed()
  * @mixin \Eloquent
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @method static \Illuminate\Database\Eloquent\Builder|Account whereDeletedAt($value)
  */
 class Account extends Model
 {
