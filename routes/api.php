@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\AccountController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -18,8 +19,6 @@ use Illuminate\Support\Facades\Route;
 //    return $request->user();
 //});
 
-Route::get('/', function () {
-    return [
-        'message' => 'OK'
-    ];
+Route::prefix('v1')->group(function () {
+    Route::apiResource('accounts', AccountController::class);
 });
