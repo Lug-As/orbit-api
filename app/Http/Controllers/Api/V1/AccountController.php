@@ -16,7 +16,7 @@ class AccountController extends Controller
      */
     public function index()
     {
-        return Account::all();
+        //
     }
 
     /**
@@ -38,7 +38,7 @@ class AccountController extends Controller
      */
     public function show(Account $account)
     {
-        return $account;
+        //
     }
 
     /**
