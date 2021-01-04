@@ -14,6 +14,8 @@ class CreateAdTypeProjectTable extends Migration
     public function up()
     {
         Schema::create('ad_type_project', function (Blueprint $table) {
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_general_ci';
             $table->id();
             $table->foreignId('project_id')->constrained();
             $table->foreignId('ad_type_id')->constrained();

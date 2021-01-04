@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAdTypesTable extends Migration
+class CreateRequestTopicTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,12 @@ class CreateAdTypesTable extends Migration
      */
     public function up()
     {
-        Schema::create('ad_types', function (Blueprint $table) {
+        Schema::create('request_topic', function (Blueprint $table) {
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_general_ci';
             $table->id();
-            $table->string('name');
+            $table->foreignId('request_id')->constrained();
+            $table->foreignId('ad_type_id')->constrained();
             $table->timestamps();
         });
     }
@@ -29,6 +30,6 @@ class CreateAdTypesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('ad_types');
+        Schema::dropIfExists('request_topic');
     }
 }

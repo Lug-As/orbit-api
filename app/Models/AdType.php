@@ -34,6 +34,11 @@ class AdType extends Model
         return $this->belongsToMany(Account::class);
     }
 
+    public function requests()
+    {
+        return $this->belongsToMany(Request::class);
+    }
+
     public function projects()
     {
         return $this->belongsToMany(Project::class);

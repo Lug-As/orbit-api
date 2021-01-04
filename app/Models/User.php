@@ -89,6 +89,11 @@ class User extends Authenticatable
         return $this->hasMany(Account::class);
     }
 
+    public function requests()
+    {
+        return $this->hasMany(Request::class);
+    }
+
     public function projects()
     {
         return $this->hasMany(Project::class);

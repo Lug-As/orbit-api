@@ -31,4 +31,9 @@ class Topic extends Model
     {
         return $this->belongsToMany(Account::class);
     }
+
+    public function requests()
+    {
+        return $this->belongsToMany(Request::class);
+    }
 }

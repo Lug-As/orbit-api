@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
     {
         \App\Models\User::factory()->count(50)->create();
         \App\Models\Account::factory()->count(100)->create();
+        \App\Models\Request::factory()->count(200)->create();
         \App\Models\Project::factory()->count(100)->create();
         \App\Models\Response::factory()->count(100)->create();
         \App\Models\Offer::factory()->count(100)->create();
