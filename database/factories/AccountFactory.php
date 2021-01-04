@@ -24,7 +24,7 @@ class AccountFactory extends Factory
     public function definition()
     {
         return [
-            'name' => Str::random(),
+            'name' => Str::lower(Str::random(10)),
             'user_id' => User::all()->random()->id
         ];
     }
