@@ -23,13 +23,13 @@ class DatabaseSeeder extends Seeder
         \App\Models\Offer::factory()->count(100)->create();
         $topics = ['Бизнес', 'Развлечение', 'Наука', 'Лайфхаки', 'Танцы'];
         foreach ($topics as $topic) {
-            Topic::insert([
+            Topic::create([
                 'name' => $topic,
             ]);
         }
         $ad_types = ['Дуэт', 'Ссылка в шапке профиля', 'Видео', 'Танец'];
         foreach ($ad_types as $ad_type) {
-            AdType::insert([
+            AdType::create([
                 'name' => $ad_type,
             ]);
         }

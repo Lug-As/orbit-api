@@ -31,6 +31,10 @@ class Offer extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'text', 'user_id', 'account_id'
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);

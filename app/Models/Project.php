@@ -36,6 +36,10 @@ class Project extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'name', 'text', 'budget', 'user_id'
+    ];
+
     public function ad_types()
     {
         return $this->belongsToMany(AdType::class);

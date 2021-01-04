@@ -22,10 +22,16 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Topic whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Topic whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Request[] $requests
+ * @property-read int|null $requests_count
  */
 class Topic extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'name'
+    ];
 
     public function accounts()
     {

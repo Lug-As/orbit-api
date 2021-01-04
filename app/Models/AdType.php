@@ -24,10 +24,16 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|AdType whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AdType whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Request[] $requests
+ * @property-read int|null $requests_count
  */
 class AdType extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'name'
+    ];
 
     public function accounts()
     {

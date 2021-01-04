@@ -42,6 +42,10 @@ class Account extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $fillable = [
+        'name', 'image', 'user_id'
+    ];
+
     public function ad_types()
     {
         return $this->belongsToMany(AdType::class);
