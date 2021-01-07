@@ -18,7 +18,7 @@ class CreateRequestTopicTable extends Migration
             $table->collation = 'utf8mb4_general_ci';
             $table->id();
             $table->foreignId('request_id')->constrained();
-            $table->foreignId('ad_type_id')->constrained();
+            $table->foreignId('topic_id')->constrained();
             $table->timestamps();
         });
     }

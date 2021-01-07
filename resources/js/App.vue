@@ -16,16 +16,16 @@ export default {
         ivanComponent: Ivan
     },
     mounted() {
-        // axios.get('/sanctum/csrf-cookie').then(response => {
-        //     axios.post('/login', {
-        //         email: 'skal.04@mail.ru',
-        //         password: '123123123'
-        //     }).then(response => {
-        //         axios.get('/api/usr').then(response => {
-        //             console.log(response.data)
-        //         })
-        //     }).catch(error => console.log(error));
-        // })
+        axios.get('/sanctum/csrf-cookie').then(response => {
+            axios.post('/api/v1/login', {
+                email: 'skal.04@mail.ru',
+                password: '123123123'
+            }).then(response => {
+                axios.get('/api/v1/user').then(response => {
+                    console.log(response.data)
+                })
+            }).catch(error => console.log(error));
+        })
     }
 }
 </script>

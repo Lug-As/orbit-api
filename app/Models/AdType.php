@@ -37,12 +37,14 @@ class AdType extends Model
 
     public function accounts()
     {
-        return $this->belongsToMany(Account::class);
+        return $this->belongsToMany(Account::class)
+            ->withPivot('price');
     }
 
     public function requests()
     {
-        return $this->belongsToMany(Request::class);
+        return $this->belongsToMany(Request::class)
+            ->withPivot('price');
     }
 
     public function projects()

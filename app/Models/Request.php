@@ -42,9 +42,14 @@ class Request extends Model
         'name', 'image', 'user_id'
     ];
 
+    protected $casts = [
+        'checked' => 'bool'
+    ];
+
     public function ad_types()
     {
-        return $this->belongsToMany(AdType::class);
+        return $this->belongsToMany(AdType::class)
+            ->withPivot('price');
     }
 
     public function topics()
@@ -55,5 +60,10 @@ class Request extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function getNameAttribute($data)
+    {
+        return '@' . $data;
     }
 }

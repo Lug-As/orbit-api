@@ -1924,16 +1924,19 @@ __webpack_require__.r(__webpack_exports__);
   components: {
     ivanComponent: _components_Ivan__WEBPACK_IMPORTED_MODULE_0__["default"]
   },
-  mounted: function mounted() {// axios.get('/sanctum/csrf-cookie').then(response => {
-    //     axios.post('/login', {
-    //         email: 'skal.04@mail.ru',
-    //         password: '123123123'
-    //     }).then(response => {
-    //         axios.get('/api/usr').then(response => {
-    //             console.log(response.data)
-    //         })
-    //     }).catch(error => console.log(error));
-    // })
+  mounted: function mounted() {
+    axios.get('/sanctum/csrf-cookie').then(function (response) {
+      axios.post('/api/v1/login', {
+        email: 'skal.04@mail.ru',
+        password: '123123123'
+      }).then(function (response) {
+        axios.get('/api/v1/user').then(function (response) {
+          console.log(response.data);
+        });
+      })["catch"](function (error) {
+        return console.log(error);
+      });
+    });
   }
 });
 

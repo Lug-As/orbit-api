@@ -43,12 +43,13 @@ class Account extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'name', 'image', 'user_id'
+        'name', 'image', 'user_id',
     ];
 
     public function ad_types()
     {
-        return $this->belongsToMany(AdType::class);
+        return $this->belongsToMany(AdType::class)
+            ->withPivot('price');
     }
 
     public function topics()

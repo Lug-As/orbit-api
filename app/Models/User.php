@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasDefaultCreatedAtFormat;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -75,7 +76,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
-        'is_admin'
+        'is_admin',
     ];
 
     /**

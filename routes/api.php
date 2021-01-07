@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Api\V1\AccountController;
+use App\Http\Controllers\Api\V1\Request\RequestController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -22,19 +22,20 @@ use Illuminate\Support\Facades\Route;
 Route::group([
     'prefix' => 'v1',
 ], function () {
-    // Auth::routes() without Blade views
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/user', function (Request $request) {
+            return $request->user();
+        });
+    });
+    Route::apiResource('request', RequestController::class);
+
+    // Auth::routes() // without Blade views
     Route::post('login', [LoginController::class, 'login']);
     Route::post('logout', [LoginController::class, 'logout'])->name('logout');
     Route::post('register', [RegisterController::class, 'register']);
     Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
     Route::post('password/reset', [ResetPasswordController::class, 'reset']);
     Route::post('email/resend', 'Auth\VerificationController@resend')->name('verification.resend');
-
-
-});
-
-Route::middleware('auth:sanctum')->get('/usr', function (Request $request) {
-    return $request->user();
 });
 
 
