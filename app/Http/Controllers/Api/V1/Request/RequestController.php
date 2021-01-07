@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Services\Api\V1\Requests\RequestService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\MessageBag;
 
 class RequestController extends Controller
 {
@@ -31,12 +32,19 @@ class RequestController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param Request $request
-     * @return Response
+     * @param StoreRequestRequest $request
+     * @return Response|mixed
      */
     public function store(StoreRequestRequest $request)
     {
-        return $this->requestService->storeRequest($request->getFormData());
+        $result = $this->requestService->storeRequest($request->getFormData());
+        if ($result instanceof MessageBag) {
+            return response()->json([
+                'message' => 'The given data was invalid.',
+                'errors' => $result->messages()
+            ], 422);
+        }
+        return $result;
     }
 
     /**
@@ -53,7 +61,7 @@ class RequestController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param Request $request
+     * @param UpdateRequestRequest $request
      * @param int $id
      * @return Response
      */
