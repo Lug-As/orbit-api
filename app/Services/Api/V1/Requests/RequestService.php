@@ -49,9 +49,12 @@ class RequestService
         return $this->wrapInData(RequestResource::make($request));
     }
 
-    public function updateRequest(array $data)
+    public function updateRequest(array $data, int $id)
     {
-        return $this->wrapInData(Request::update($data));
+        $request = Request::findOrFail($id);
+        $request->update($data);
+        $request->topics()->sync($data['topics']);
+        return $this->wrapInData(RequestResource::make($request));
     }
 
     public function destroyRequest(int $id)
