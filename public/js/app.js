@@ -1919,23 +1919,32 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'App',
   data: function data() {
-    return {};
+    return {
+      token: ''
+    };
   },
   components: {
     ivanComponent: _components_Ivan__WEBPACK_IMPORTED_MODULE_0__["default"]
   },
   mounted: function mounted() {
-    axios.get('/sanctum/csrf-cookie').then(function (response) {
-      axios.post('/api/v1/login', {
-        email: 'skal.04@mail.ru',
-        password: '123123123'
+    var _this = this;
+
+    axios.post('/api/v1/login', {
+      email: 'skal.04@mail.ru',
+      password: '123123123'
+    }).then(function (response) {
+      _this.token = response.data.token;
+      axios({
+        method: 'get',
+        url: '/api/v1/user',
+        headers: {
+          Authorization: "Bearer ".concat(_this.token)
+        }
       }).then(function (response) {
-        axios.get('/api/v1/user').then(function (response) {
-          console.log(response.data);
-        });
-      })["catch"](function (error) {
-        return console.log(error);
+        console.log(response.data);
       });
+    })["catch"](function (error) {
+      return console.log(error);
     });
   }
 });
