@@ -17,8 +17,12 @@ class CreateAccountTopicTable extends Migration
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_general_ci';
             $table->id();
-            $table->foreignId('account_id')->constrained();
-            $table->foreignId('topic_id')->constrained();
+            $table->foreignId('account_id')->constrained()
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
+            $table->foreignId('topic_id')->constrained()
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
             $table->timestamps();
         });
     }

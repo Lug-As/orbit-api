@@ -6,9 +6,7 @@ use App\Http\Controllers\Api\V1\Request\FormRequests\StoreRequestRequest;
 use App\Http\Controllers\Api\V1\Request\FormRequests\UpdateRequestRequest;
 use App\Http\Controllers\Controller;
 use App\Services\Api\V1\Requests\RequestService;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\MessageBag;
 
 class RequestController extends Controller
 {
@@ -38,13 +36,10 @@ class RequestController extends Controller
     public function store(StoreRequestRequest $request)
     {
         $result = $this->requestService->storeRequest($request->getFormData());
-        if ($result instanceof MessageBag) {
-            return response()->json([
-                'message' => 'The given data was invalid.',
-                'errors' => $result->messages()
-            ], 422);
+        if (is_array($result)) {
+            return response()->json($result,  201);
         }
-        return $result;
+        return response()->json($result, 422);
     }
 
     /**
@@ -55,7 +50,7 @@ class RequestController extends Controller
      */
     public function show(int $id)
     {
-        return $this->requestService->findRequest($id);
+        return response()->json($this->requestService->findRequest($id));
     }
 
     /**
@@ -63,11 +58,15 @@ class RequestController extends Controller
      *
      * @param UpdateRequestRequest $request
      * @param int $id
-     * @return Response
+     * @return mixed
      */
     public function update(UpdateRequestRequest $request, int $id)
     {
-        return $this->requestService->updateRequest($request->getFormData(), $id);
+        $result = $this->requestService->updateRequest($request->getFormData(), $id);
+        if (is_array($result)) {
+            return response()->json($result);
+        }
+        return response()->json($result, 422);
     }
 
     /**
@@ -78,6 +77,7 @@ class RequestController extends Controller
      */
     public function destroy(int $id)
     {
-        return $this->requestService->destroyRequest($id);
+        $this->requestService->destroyRequest($id);
+        return response()->json([], 204);
     }
 }

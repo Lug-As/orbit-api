@@ -6,6 +6,7 @@ namespace App\Services\Api\V1\Requests;
 
 use App\Models\Account;
 use App\Models\Request;
+use App\Resources\ValidationErrorsResource;
 use App\Services\Api\V1\Requests\Resources\RequestResource;
 use App\Services\Api\V1\Requests\Resources\RequestsResource;
 use App\Traits\CanWrapInData;
@@ -34,13 +35,14 @@ class RequestService
         return $this->wrapInData(RequestResource::make($this->requestBuilder()->findOrFail($id)));
     }
 
+    /**
+     * @param array $data
+     * @return ValidationErrorsResource|array
+     */
     public function storeRequest(array $data)
     {
-        if (!$this->checkUserRequestName($data['name'])) {
-            return $this->messageBag->add('name', 'Request with current name has already been taken by you.');
-        }
-        if (!$this->checkAccountName($data['name'])) {
-            return $this->messageBag->add('name', 'The name has already been taken.');
+        if (!$this->checkRequestName($data['name'])) {
+            return $this->getErrorMessages();
         }
         $data['user_id'] = 1;
 //        $data['user_id'] = Auth::id();
@@ -49,21 +51,31 @@ class RequestService
         return $this->wrapInData(RequestResource::make($request));
     }
 
+    /**
+     * @param array $data
+     * @param int $id
+     * @return ValidationErrorsResource|array
+     */
     public function updateRequest(array $data, int $id)
     {
         $request = Request::findOrFail($id);
+        if (!$this->checkRequestName($data['name'], $id)) {
+            return $this->getErrorMessages();
+        }
         $request->update($data);
-        $request->topics()->sync($data['topics']);
+        if (isset($data['topics'])) {
+            $request->topics()->sync($data['topics']);
+        }
         return $this->wrapInData(RequestResource::make($request));
     }
 
     public function destroyRequest(int $id)
     {
-        return Request::findOrFail($id)->delete();
+        return Request::whereId($id)->delete();
     }
 
     /**
-     * Return builder with Request's relations
+     * Return builder with Request model's relations
      *
      * @return Builder
      */
@@ -72,13 +84,39 @@ class RequestService
         return Request::with('user', 'ad_types', 'topics');
     }
 
-    protected function checkUserRequestName(string $name): bool
+    /**
+     * @param string $name
+     * @param int|null $except
+     * @return ValidationErrorsResource|bool
+     */
+    protected function checkRequestName(string $name, ?int $except = null)
+    {
+        if (!$this->checkAccountName($name)) {
+            $this->messageBag->add('name', 'Account with this name already exists.');
+            return false;
+        }
+        if (!$this->checkUserRequestName($name, $except)) {
+            $this->messageBag->add('name', 'Request with current name has already been taken by you.');
+            return false;
+        }
+        return true;
+    }
+
+    protected function getErrorMessages()
+    {
+        return ValidationErrorsResource::make($this->messageBag->messages());
+    }
+
+    protected function checkUserRequestName(string $name, ?int $except = null): bool
     {
         $user_id = 1;
 //        $user_id = Auth::id();
-        $count = Request::whereUserId($user_id)
-            ->where('name', $name)
-            ->count();
+        $queryBuilder = Request::whereUserId($user_id)
+            ->where('name', $name);
+        if ($except !== null) {
+            $queryBuilder = $queryBuilder->where('id', '<>', $except);
+        }
+        $count = $queryBuilder->count();
         return !$count;
     }
 

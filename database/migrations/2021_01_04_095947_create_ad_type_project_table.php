@@ -17,8 +17,12 @@ class CreateAdTypeProjectTable extends Migration
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_general_ci';
             $table->id();
-            $table->foreignId('project_id')->constrained();
-            $table->foreignId('ad_type_id')->constrained();
+            $table->foreignId('project_id')->constrained()
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
+            $table->foreignId('ad_type_id')->constrained()
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
             $table->timestamps();
         });
     }
