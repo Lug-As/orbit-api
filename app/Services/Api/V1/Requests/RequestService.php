@@ -5,7 +5,6 @@ namespace App\Services\Api\V1\Requests;
 
 
 use App\Models\Account;
-use App\Models\AdType;
 use App\Models\Request;
 use App\Resources\ValidationErrorsResource;
 use App\Services\Api\V1\Requests\Resources\RequestResource;
@@ -45,8 +44,7 @@ class RequestService
         if (!$this->checkRequestName($data['name'])) {
             return $this->getErrorMessages();
         }
-        $data['user_id'] = 1;
-//        $data['user_id'] = Auth::id();
+        $data['user_id'] = Auth::id();
         $request = Request::create($data);
         $request->topics()->sync($data['topics']);
         $request->ad_types()->sync($this->transformAdTypes($data['ad_types']));
@@ -125,8 +123,7 @@ class RequestService
 
     protected function checkUserRequestName(string $name, ?int $except = null): bool
     {
-        $user_id = 1;
-//        $user_id = Auth::id();
+        $user_id = Auth::id();
         $queryBuilder = Request::whereUserId($user_id)
             ->where('name', $name);
         if ($except !== null) {

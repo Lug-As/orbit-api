@@ -8,6 +8,7 @@ use App\Models\Offer;
 use App\Services\Api\V1\Offers\Resources\OfferResource;
 use App\Services\Api\V1\Offers\Resources\OffersResource;
 use App\Traits\CanWrapInData;
+use Auth;
 use Illuminate\Database\Eloquent\Builder;
 
 class OfferService
@@ -26,8 +27,7 @@ class OfferService
 
     public function storeOffer(array $data)
     {
-        $data['user_id'] = 1;
-//        $data['user_id'] = Auth::id();
+        $data['user_id'] = Auth::id();
         $offer = Offer::create($data);
         return $this->wrapInData(OfferResource::make($offer));
     }

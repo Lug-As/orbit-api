@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\Offer\OfferController;
 use App\Http\Controllers\Api\V1\Request\RequestController;
+use App\Http\Controllers\Api\V1\Response\ResponseController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -28,8 +29,9 @@ Route::group([
     'prefix' => 'v1',
 ], function () {
     Route::middleware('auth:sanctum')->group(function () {
-        Route::apiResource('request', RequestController::class);
-        Route::apiResource('offer', OfferController::class);
+        Route::apiResource('requests', RequestController::class);
+        Route::apiResource('offers', OfferController::class);
+        Route::apiResource('responses', ResponseController::class);
         Route::get('/user', function (Request $request) {
             return UserResource::make($request->user());
         });
