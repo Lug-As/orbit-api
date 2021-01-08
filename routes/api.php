@@ -9,7 +9,9 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\VerificationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Services\Api\V1\Users\Resources\UserResource; // REMOVE THIS
+use App\Services\Api\V1\Users\Resources\UserResource;
+
+// REMOVE THIS
 
 /*
 |--------------------------------------------------------------------------
@@ -36,12 +38,14 @@ Route::group([
     Route::get('offer/by-user/{user_id}', [OfferController::class, 'getByUser']);
 
     // Auth::routes() // without Blade views
-    Route::post('login', [LoginController::class, 'login']);
-    Route::post('register', [RegisterController::class, 'register']);
-    Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
-    Route::post('password/reset', [ResetPasswordController::class, 'reset']);
-    Route::post('email/resend', 'Auth\VerificationController@resend')->name('verification.resend');
-    Route::get('email/verify/{id}/{hash}', [VerificationController::class, 'verify'])->name('verification.verify');
+    Route::middleware('guest')->group(function () {
+        Route::post('login', [LoginController::class, 'login']);
+        Route::post('register', [RegisterController::class, 'register']);
+    });
+//    Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+//    Route::post('password/reset', [ResetPasswordController::class, 'reset']);
+//    Route::post('email/resend', 'Auth\VerificationController@resend')->name('verification.resend');
+//    Route::get('email/verify/{id}/{hash}', [VerificationController::class, 'verify'])->name('verification.verify');
 });
 
 
