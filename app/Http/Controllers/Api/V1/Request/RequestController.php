@@ -36,10 +36,10 @@ class RequestController extends Controller
     public function store(StoreRequestRequest $request)
     {
         $result = $this->requestService->storeRequest($request->getFormData());
-        if (is_array($result)) {
-            return response()->json($result,  201);
+        if (!is_array($result)) {
+            return response()->json($result, 422);
         }
-        return response()->json($result, 422);
+        return response()->json($result,  201);
     }
 
     /**
@@ -63,10 +63,10 @@ class RequestController extends Controller
     public function update(UpdateRequestRequest $request, int $id)
     {
         $result = $this->requestService->updateRequest($request->getFormData(), $id);
-        if (is_array($result)) {
-            return response()->json($result);
+        if (!is_array($result)) {
+            return response()->json($result, 422);
         }
-        return response()->json($result, 422);
+        return response()->json($result);
     }
 
     /**

@@ -5,6 +5,7 @@ namespace App\Services\Api\V1\Requests;
 
 
 use App\Models\Account;
+use App\Models\AdType;
 use App\Models\Request;
 use App\Resources\ValidationErrorsResource;
 use App\Services\Api\V1\Requests\Resources\RequestResource;
@@ -48,6 +49,7 @@ class RequestService
 //        $data['user_id'] = Auth::id();
         $request = Request::create($data);
         $request->topics()->sync($data['topics']);
+        $request->ad_types()->sync($this->transformAdTypes($data['ad_types']));
         return $this->wrapInData(RequestResource::make($request));
     }
 
@@ -59,12 +61,15 @@ class RequestService
     public function updateRequest(array $data, int $id)
     {
         $request = Request::findOrFail($id);
-        if (!$this->checkRequestName($data['name'], $id)) {
+        if (isset($data['name']) and !$this->checkRequestName($data['name'], $id)) {
             return $this->getErrorMessages();
         }
         $request->update($data);
         if (isset($data['topics'])) {
             $request->topics()->sync($data['topics']);
+        }
+        if (isset($data['ad_types'])) {
+            $request->ad_types()->sync($this->transformAdTypes($data['ad_types']));
         }
         return $this->wrapInData(RequestResource::make($request));
     }
@@ -82,6 +87,17 @@ class RequestService
     protected function requestBuilder(): Builder
     {
         return Request::with('user', 'ad_types', 'topics');
+    }
+
+    protected function transformAdTypes(array $ad_types)
+    {
+        $out = [];
+        foreach ($ad_types as $ad_type) {
+            $out[$ad_type['id']] = [
+                'price' => $ad_type['price']
+            ];
+        }
+        return $out;
     }
 
     /**

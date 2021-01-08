@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Offer\OfferController;
 use App\Http\Controllers\Api\V1\Request\RequestController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
@@ -28,6 +29,9 @@ Route::group([
         });
     });
     Route::apiResource('request', RequestController::class);
+    Route::apiResource('offer', OfferController::class);
+    Route::get('offer/by-account/{account_id}', [OfferController::class, 'getByAccount']);
+    Route::get('offer/by-user/{user_id}', [OfferController::class, 'getByUser']);
 
     // Auth::routes() // without Blade views
     Route::post('login', [LoginController::class, 'login']);
