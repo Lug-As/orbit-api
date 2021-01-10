@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\V1\Request\FormRequests\StoreRequestRequest;
 use App\Http\Controllers\Api\V1\Request\FormRequests\UpdateRequestRequest;
 use App\Http\Controllers\Controller;
 use App\Services\Api\V1\Requests\RequestService;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class RequestController extends Controller
@@ -21,11 +22,12 @@ class RequestController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return Response
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json($this->requestService->searchRequests());
+        return response()->json($this->requestService->searchRequests($request->get('q')));
     }
 
     /**

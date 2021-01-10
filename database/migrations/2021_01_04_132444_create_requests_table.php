@@ -18,7 +18,7 @@ class CreateRequestsTable extends Migration
             $table->collation = 'utf8mb4_general_ci';
             $table->id();
             // Копия таблицы accounts
-            $table->string('name');
+            $table->string('name', 25);
             $table->string('image', 100)->nullable();
             $table->foreignId('user_id')->constrained();
             // ----------------------

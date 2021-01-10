@@ -13,6 +13,7 @@ use App\Traits\CanWrapInData;
 use Auth;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\MessageBag;
+use Illuminate\Support\Str;
 
 class RequestService
 {
@@ -25,9 +26,13 @@ class RequestService
         $this->messageBag = $messageBag;
     }
 
-    public function searchRequests()
+    public function searchRequests(?string $query)
     {
-        return RequestsResource::make($this->requestBuilder()->paginate(10));
+        $builder = $this->requestBuilder();
+        if ($this->validQuery($query)) {
+            $builder = $builder->where('name', 'LIKE', "%{$query}%");
+        }
+        return RequestsResource::make($builder->paginate(10));
     }
 
     public function findRequest(int $id)
@@ -148,5 +153,10 @@ class RequestService
         $count = Account::whereName($name)
             ->count();
         return !$count;
+    }
+
+    protected function validQuery(?string $query)
+    {
+        return Str::length($query) < 24;
     }
 }
