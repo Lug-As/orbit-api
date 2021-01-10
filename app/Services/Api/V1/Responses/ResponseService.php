@@ -61,6 +61,38 @@ class ResponseService
         return Response::whereId($id)->delete();
     }
 
+    public function searchByAccount(int $accountId)
+    {
+        return ResponsesResource::make($this->requestBuilder()
+            ->where('account_id', $accountId)
+            ->paginate(10));
+    }
+
+    public function searchByProject(int $projectId)
+    {
+        return ResponsesResource::make($this->requestBuilder()
+            ->where('project_id', $projectId)
+            ->paginate(10));
+    }
+
+    /**
+     * @param int $id
+     * @return mixed
+     */
+    public function getResponseOnlyAccountAndProject(int $id)
+    {
+        return Response::with(['account.user_id', 'project.user_id'])->findOrFail($id, ['id']);
+    }
+
+    /**
+     * @param int $id
+     * @return mixed
+     */
+    public function getResponseOnlyAccount(int $id)
+    {
+        return Response::with('account.user_id')->findOrFail($id, ['id']);
+    }
+
     /**
      * Return builder with Request model's relations
      *

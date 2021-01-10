@@ -39,6 +39,10 @@ class OfferController extends Controller
         return response()->json($this->offerService->searchUserOffers());
     }
 
+    /**
+     * @param int $accountId
+     * @return JsonResponse
+     */
     public function getByAccount(int $accountId)
     {
         $this->authorize('viewByAccount', Account::findOrFail($accountId, ['user_id']));
