@@ -79,10 +79,10 @@ class RequestController extends Controller
      * @param int $id
      * @return JsonResponse
      */
-    public function update(UpdateRequestRequest $updateRequest, Request $request)
+    public function update(UpdateRequestRequest $updateRequest, int $id)
     {
-        $this->authorize('update', $request);
-        $result = $this->requestService->updateRequest($updateRequest->getFormData(), $request);
+        $this->authorize('update', $this->requestService->getRequestOnlyUserId($id));
+        $result = $this->requestService->updateRequest($updateRequest->getFormData(), $id);
         if ($this->isBadRequestResponse($result)) {
             return response()->json($result, 400);
         }

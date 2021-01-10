@@ -61,12 +61,12 @@ class RequestService
 
     /**
      * @param array $data
-     * @param int|Request $requestOrId
+     * @param int $id
      * @return BadRequestResource|array
      */
-    public function updateRequest(array $data, $requestOrId)
+    public function updateRequest(array $data, $id)
     {
-        $request = $this->getRequestObject($requestOrId);
+        $request = Request::findOrFail($id);
         if (isset($data['name']) and !$this->checkRequestName($data['name'], $request->id)) {
             return $this->getErrorMessages();
         }
@@ -150,18 +150,6 @@ class RequestService
         $count = Account::whereName($name)
             ->count();
         return !$count;
-    }
-
-    /**
-     * @param int|Request $requestOrId
-     */
-    protected function getRequestObject($requestOrId)
-    {
-        if ($requestOrId instanceof Request) {
-            return $requestOrId;
-        } else {
-            return Request::findOrFail($requestOrId);
-        }
     }
 
     protected function validQuery(?string $query)
