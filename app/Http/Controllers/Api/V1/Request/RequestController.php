@@ -6,9 +6,10 @@ use App\Http\Controllers\Api\V1\Request\FormRequests\CancelRequestRequest;
 use App\Http\Controllers\Api\V1\Request\FormRequests\StoreRequestRequest;
 use App\Http\Controllers\Api\V1\Request\FormRequests\UpdateRequestRequest;
 use App\Http\Controllers\Controller;
+use App\Models\Request;
 use App\Services\Api\V1\Requests\RequestService;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request as HttpRequest;
 
 class RequestController extends Controller
 {
@@ -22,10 +23,10 @@ class RequestController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param HttpRequest $request
+     * @return JsonResponse
      */
-    public function index(Request $request)
+    public function index(HttpRequest $request)
     {
         return response()->json($this->requestService->searchRequests($request->get('q')));
     }
@@ -34,12 +35,12 @@ class RequestController extends Controller
      * Store a newly created resource in storage.
      *
      * @param StoreRequestRequest $request
-     * @return Response|mixed
+     * @return JsonResponse
      */
     public function store(StoreRequestRequest $request)
     {
         $result = $this->requestService->storeRequest($request->getFormData());
-        if (!is_array($result)) {
+        if ($this->isValidationErrorResponse($result)) {
             return response()->json($result, 422);
         }
         return response()->json($result, 201);
@@ -49,7 +50,7 @@ class RequestController extends Controller
      * Display the specified resource.
      *
      * @param int $id
-     * @return Response
+     * @return JsonResponse
      */
     public function show(int $id)
     {
@@ -59,12 +60,12 @@ class RequestController extends Controller
     /**
      * @param CancelRequestRequest $request
      * @param int $id
-     * @return Response
+     * @return JsonResponse
      */
     public function cancel(CancelRequestRequest $request, int $id)
     {
         $this->requestService->cancelRequest($id, $request->get('fail_msg'));
-        return response('', 204);
+        return response()->json([], 204);
     }
 
     /**
@@ -72,12 +73,13 @@ class RequestController extends Controller
      *
      * @param UpdateRequestRequest $request
      * @param int $id
-     * @return mixed
+     * @return JsonResponse
      */
-    public function update(UpdateRequestRequest $request, int $id)
+    public function update(UpdateRequestRequest $updateRequest, Request $request)
     {
-        $result = $this->requestService->updateRequest($request->getFormData(), $id);
-        if (!is_array($result)) {
+        $this->authorize('update', $request);
+        $result = $this->requestService->updateRequest($updateRequest->getFormData(), $request);
+        if ($this->isValidationErrorResponse($result)) {
             return response()->json($result, 422);
         }
         return response()->json($result);
@@ -87,7 +89,7 @@ class RequestController extends Controller
      * Remove the specified resource from storage.
      *
      * @param int $id
-     * @return Response
+     * @return JsonResponse
      */
     public function destroy(int $id)
     {

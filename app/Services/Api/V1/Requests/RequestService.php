@@ -68,13 +68,13 @@ class RequestService
 
     /**
      * @param array $data
-     * @param int $id
+     * @param int|Request $requestOrId
      * @return ValidationErrorsResource|array
      */
-    public function updateRequest(array $data, int $id)
+    public function updateRequest(array $data, $requestOrId)
     {
-        $request = Request::findOrFail($id);
-        if (isset($data['name']) and !$this->checkRequestName($data['name'], $id)) {
+        $request = $this->getRequestObject($requestOrId);
+        if (isset($data['name']) and !$this->checkRequestName($data['name'], $request->id)) {
             return $this->getErrorMessages();
         }
         $request->update($data);
@@ -153,6 +153,18 @@ class RequestService
         $count = Account::whereName($name)
             ->count();
         return !$count;
+    }
+
+    /**
+     * @param int|Request $requestOrId
+     */
+    protected function getRequestObject($requestOrId)
+    {
+        if ($requestOrId instanceof Request) {
+            return $requestOrId;
+        } else {
+            return Request::findOrFail($requestOrId);
+        }
     }
 
     protected function validQuery(?string $query)

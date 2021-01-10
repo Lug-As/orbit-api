@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\V1\Response\FormRequests\StoreResponseRequest;
 use App\Http\Controllers\Api\V1\Response\FormRequests\UpdateResponseRequest;
 use App\Http\Controllers\Controller;
 use App\Services\Api\V1\Responses\ResponseService;
+use Illuminate\Http\JsonResponse;
 
 class ResponseController extends Controller
 {
@@ -19,7 +20,7 @@ class ResponseController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return mixed
+     * @return JsonResponse
      */
     public function index()
     {
@@ -30,7 +31,7 @@ class ResponseController extends Controller
      * Store a newly created resource in storage.
      *
      * @param StoreResponseRequest $request
-     * @return mixed
+     * @return JsonResponse
      */
     public function store(StoreResponseRequest $request)
     {
@@ -45,7 +46,7 @@ class ResponseController extends Controller
      * Display the specified resource.
      *
      * @param int $id
-     * @return mixed
+     * @return JsonResponse
      */
     public function show($id)
     {
@@ -57,7 +58,7 @@ class ResponseController extends Controller
      *
      * @param UpdateResponseRequest $request
      * @param int $id
-     * @return mixed
+     * @return JsonResponse
      */
     public function update(UpdateResponseRequest $request, $id)
     {
@@ -72,7 +73,7 @@ class ResponseController extends Controller
      * Remove the specified resource from storage.
      *
      * @param int $id
-     * @return mixed
+     * @return JsonResponse
      */
     public function destroy($id)
     {

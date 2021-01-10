@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\V1\Offer\FormRequests\StoreOfferRequest;
 use App\Http\Controllers\Api\V1\Offer\FormRequests\UpdateOfferRequest;
 use App\Http\Controllers\Controller;
 use App\Services\Api\V1\Offers\OfferService;
+use Illuminate\Http\JsonResponse;
 
 class OfferController extends Controller
 {
@@ -19,7 +20,7 @@ class OfferController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return mixed
+     * @return JsonResponse
      */
     public function index()
     {
@@ -40,7 +41,7 @@ class OfferController extends Controller
      * Store a newly created resource in storage.
      *
      * @param StoreOfferRequest $request
-     * @return mixed
+     * @return JsonResponse
      */
     public function store(StoreOfferRequest $request)
     {
@@ -52,7 +53,7 @@ class OfferController extends Controller
      * Display the specified resource.
      *
      * @param int $id
-     * @return mixed
+     * @return JsonResponse
      */
     public function show($id)
     {
@@ -64,7 +65,7 @@ class OfferController extends Controller
      *
      * @param UpdateOfferRequest $request
      * @param int $id
-     * @return mixed
+     * @return JsonResponse
      */
     public function update(UpdateOfferRequest $request, $id)
     {
@@ -76,7 +77,7 @@ class OfferController extends Controller
      * Remove the specified resource from storage.
      *
      * @param int $id
-     * @return mixed
+     * @return JsonResponse
      */
     public function destroy($id)
     {
