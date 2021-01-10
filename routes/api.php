@@ -33,7 +33,7 @@ Route::group([
         Route::put('requests/{id}/cancel', [RequestController::class, 'cancel']);
         Route::apiResource('offers', OfferController::class);
         Route::get('offers/by-account/{account_id}', [OfferController::class, 'getByAccount']);
-        Route::get('offers/by-user/{user_id}', [OfferController::class, 'getByUser']);
+        Route::get('offers/my', [OfferController::class, 'ownIndex']);
         Route::apiResource('responses', ResponseController::class);
         Route::get('/user', function (Request $request) {
             return UserResource::make($request->user());

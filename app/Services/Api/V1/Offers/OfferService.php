@@ -53,8 +53,9 @@ class OfferService
         );
     }
 
-    public function searchOffersByUserId(int $userId)
+    public function searchUserOffers()
     {
+        $userId = Auth::id();
         return OffersResource::make(
             $this->requestBuilder()
                 ->where('user_id', $userId)
@@ -70,5 +71,23 @@ class OfferService
     protected function requestBuilder(): Builder
     {
         return Offer::with('user', 'account');
+    }
+
+    /**
+     * @param int $id
+     * @return Offer|null
+     */
+    public function getOfferOnlyUserId(int $id): ?Offer
+    {
+        return Offer::findOrFail($id, ['user_id']);
+    }
+
+    /**
+     * @param int $id
+     * @return mixed
+     */
+    public function getOfferOnlyUserIdAndAccount(int $id)
+    {
+        return Offer::with('account.user_id')->findOrFail($id, ['user_id']);
     }
 }

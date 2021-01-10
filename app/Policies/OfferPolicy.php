@@ -2,12 +2,13 @@
 
 namespace App\Policies;
 
-use App\Models\Request;
+use App\Models\Account;
+use App\Models\Offer;
 use App\Models\User;
 use App\Traits\DefaultPolicyFunctions;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class RequestPolicy
+class OfferPolicy
 {
     use HandlesAuthorization, DefaultPolicyFunctions;
 
@@ -22,15 +23,31 @@ class RequestPolicy
     }
 
     /**
+     * Determine whether the user can view own models.
+     *
+     * @return bool
+     */
+    public function viewOwn()
+    {
+        return true;
+    }
+
+    /**
      * Determine whether the user can view the model.
      *
      * @param User $user
-     * @param Request $request
+     * @param Offer $offer
      * @return bool
      */
-    public function view(User $user, Request $request)
+    public function view(User $user, Offer $offer)
     {
-        return $this->isOwnEntity($user, $request);
+        return $user->id === $offer->account->user_id
+            || $this->isOwnEntity($user, $offer);
+    }
+
+    public function viewByAccount(User $user, Account $account)
+    {
+        return $account->user_id === $user->id;
     }
 
     /**
@@ -47,28 +64,23 @@ class RequestPolicy
      * Determine whether the user can update the model.
      *
      * @param User $user
-     * @param Request $request
+     * @param Offer $offer
      * @return bool
      */
-    public function update(User $user, Request $request)
+    public function update(User $user, Offer $offer)
     {
-        return $this->isOwnEntity($user, $request);
+        return $this->isOwnEntity($user, $offer);
     }
 
     /**
      * Determine whether the user can delete the model.
      *
      * @param User $user
-     * @param Request $request
+     * @param Offer $offer
      * @return bool
      */
-    public function delete(User $user, Request $request)
+    public function delete(User $user, Offer $offer)
     {
-        return $this->isOwnEntity($user, $request);
-    }
-
-    public function cancel()
-    {
-        return false;
+        return $this->isOwnEntity($user, $offer);
     }
 }

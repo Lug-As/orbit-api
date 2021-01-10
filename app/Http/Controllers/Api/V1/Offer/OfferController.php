@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api\V1\Offer;
 use App\Http\Controllers\Api\V1\Offer\FormRequests\StoreOfferRequest;
 use App\Http\Controllers\Api\V1\Offer\FormRequests\UpdateOfferRequest;
 use App\Http\Controllers\Controller;
+use App\Models\Account;
+use App\Models\Offer;
 use App\Services\Api\V1\Offers\OfferService;
 use Illuminate\Http\JsonResponse;
 
@@ -24,16 +26,22 @@ class OfferController extends Controller
      */
     public function index()
     {
+        $this->authorize('viewAny', Offer::class);
         return response()->json($this->offerService->searchOffers());
     }
 
-    public function getByUser(int $userId)
+    /**
+     * @return JsonResponse
+     */
+    public function ownIndex()
     {
-        return response()->json($this->offerService->searchOffersByUserId($userId));
+        $this->authorize('viewOwn', Offer::class);
+        return response()->json($this->offerService->searchUserOffers());
     }
 
     public function getByAccount(int $accountId)
     {
+        $this->authorize('viewByAccount', Account::findOrFail($accountId, ['user_id']));
         return response()->json($this->offerService->searchOffersByAccountId($accountId));
     }
 
@@ -45,6 +53,7 @@ class OfferController extends Controller
      */
     public function store(StoreOfferRequest $request)
     {
+        $this->authorize('create', Offer::class);
         $result = $this->offerService->storeOffer($request->getFormData());
         return response()->json($result,  201);
     }
@@ -57,6 +66,7 @@ class OfferController extends Controller
      */
     public function show($id)
     {
+        $this->authorize('view', $this->offerService->getOfferOnlyUserIdAndAccount($id));
         return response()->json($this->offerService->findOffer($id));
     }
 
@@ -69,6 +79,7 @@ class OfferController extends Controller
      */
     public function update(UpdateOfferRequest $request, $id)
     {
+        $this->authorize('update', $this->offerService->getOfferOnlyUserId($id));
         $result = $this->offerService->updateOffer($request->getFormData(), $id);
         return response()->json($result);
     }
@@ -81,6 +92,7 @@ class OfferController extends Controller
      */
     public function destroy($id)
     {
+        $this->authorize('delete', $this->offerService->getOfferOnlyUserId($id));
         $this->offerService->destroyOffer($id);
         return response()->json([], 204);
     }
