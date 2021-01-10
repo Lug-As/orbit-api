@@ -19,7 +19,7 @@ class RequestPolicy
     public function before(User $user)
     {
         if ($user->is_admin) {
-            return true;
+            return false;
         }
         return null;
     }

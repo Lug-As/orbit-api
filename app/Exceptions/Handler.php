@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Handler extends ExceptionHandler
@@ -35,11 +36,20 @@ class Handler extends ExceptionHandler
     {
         $this->renderable(function (NotFoundHttpException $e) {
             $modelName = str_replace('App\\Models\\', '', $e->getPrevious()->getModel());
-            $code = $e->getStatusCode() ?? 404;
+            $code = 404;
             return response()->json([
                 'error' => [
                     'code' => $code,
                     'message' => $modelName . ' not found.',
+                ],
+            ], $code);
+        });
+        $this->renderable(function (AccessDeniedHttpException $e) {
+            $code = 403;
+            return response()->json([
+                'error' => [
+                    'code' => $code,
+                    'message' => 'This action is unauthorized.',
                 ],
             ], $code);
         });
