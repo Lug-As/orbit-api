@@ -5,6 +5,7 @@ namespace App\Services\Api\V1\Responses;
 
 
 use App\Models\Account;
+use App\Models\Project;
 use App\Models\Response;
 use App\Services\Api\V1\Projects\Resources\ResponsesResource;
 use App\Services\Api\V1\Responses\Resources\ResponseResource;
@@ -19,18 +20,18 @@ class ResponseService
 
     public function searchResponses()
     {
-        return ResponsesResource::make($this->requestBuilder()->paginate(10));
+        return ResponsesResource::make($this->queryBuilder()->paginate(10));
     }
 
     public function findResponse(int $id)
     {
-        return $this->wrapInData(ResponseResource::make($this->requestBuilder()->findOrFail($id)));
+        return $this->wrapInData(ResponseResource::make($this->queryBuilder()->findOrFail($id)));
     }
 
     public function storeResponse(array $data)
     {
         if (!$this->checkResponseAccount($data['account_id'])
-            || !$this->checkResponseSingular($data['project_id'], $data['account_id'])) {
+            || !$this->checkCreatingResponse($data['project_id'], $data['account_id'])) {
             return $this->getErrorMessages();
         }
         $data['user_id'] = Auth::id();
@@ -55,14 +56,14 @@ class ResponseService
 
     public function searchByAccount(int $accountId)
     {
-        return ResponsesResource::make($this->requestBuilder()
+        return ResponsesResource::make($this->queryBuilder()
             ->where('account_id', $accountId)
             ->paginate(10));
     }
 
     public function searchByProject(int $projectId)
     {
-        return ResponsesResource::make($this->requestBuilder()
+        return ResponsesResource::make($this->queryBuilder()
             ->where('project_id', $projectId)
             ->paginate(10));
     }
@@ -86,11 +87,11 @@ class ResponseService
     }
 
     /**
-     * Return builder with Request model's relations
+     * Return builder with model's relations
      *
      * @return Builder
      */
-    protected function requestBuilder(): Builder
+    protected function queryBuilder(): Builder
     {
         return Response::with('project', 'account');
     }
@@ -107,6 +108,12 @@ class ResponseService
         return $check;
     }
 
+    protected function checkCreatingResponse(int $projectId, int $accountId)
+    {
+        return $this->checkResponseSingular($projectId, $accountId)
+            && $this->checkResponseProject($projectId, $accountId);
+    }
+
     protected function checkResponseSingular(int $projectId, int $accountId)
     {
         $check = !boolval(Response::whereProjectId($projectId)
@@ -114,6 +121,17 @@ class ResponseService
             ->count());
         if (!$check) {
             $this->messageBag->add('account', 'You can create only one response for project by one account.');
+        }
+        return $check;
+    }
+
+    protected function checkResponseProject(int $projectId, int $accountId)
+    {
+        $project = Project::find($projectId, ['user_id']);
+        $account = Account::find($accountId, ['user_id']);
+        $check = $project->user_id !== $account->user_id;
+        if (!$check) {
+            $this->messageBag->add('project', 'You cannot leave response for your projects.');
         }
         return $check;
     }

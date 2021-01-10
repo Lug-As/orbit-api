@@ -21,7 +21,7 @@ class RequestService
 
     public function searchRequests(?string $query)
     {
-        $builder = $this->requestBuilder();
+        $builder = $this->queryBuilder();
         if ($this->validQuery($query)) {
             $builder = $builder->where('name', 'LIKE', "%{$query}%");
         }
@@ -30,7 +30,7 @@ class RequestService
 
     public function findRequest(int $id)
     {
-        return $this->wrapInData(RequestResource::make($this->requestBuilder()->findOrFail($id)));
+        return $this->wrapInData(RequestResource::make($this->queryBuilder()->findOrFail($id)));
     }
 
     public function cancelRequest(int $id, ?string $fail_msg)
@@ -95,11 +95,11 @@ class RequestService
     }
 
     /**
-     * Return builder with Request model's relations
+     * Return builder with model's relations
      *
      * @return Builder
      */
-    protected function requestBuilder(): Builder
+    protected function queryBuilder(): Builder
     {
         return Request::with('user', 'ad_types', 'topics');
     }
@@ -118,19 +118,12 @@ class RequestService
     /**
      * @param string $name
      * @param int|null $except
-     * @return BadRequestResource|bool
+     * @return bool
      */
-    protected function checkRequestName(string $name, ?int $except = null)
+    protected function checkRequestName(string $name, ?int $except = null): bool
     {
-        if (!$this->checkAccountName($name)) {
-            $this->messageBag->add('name', 'Account with this name already exists.');
-            return false;
-        }
-        if (!$this->checkUserRequestName($name, $except)) {
-            $this->messageBag->add('name', 'Request with current name has already been taken by you.');
-            return false;
-        }
-        return true;
+        return $this->checkAccountName($name)
+            && $this->checkUserRequestName($name, $except);
     }
 
     protected function checkUserRequestName(string $name, ?int $except = null): bool
@@ -141,15 +134,21 @@ class RequestService
         if ($except !== null) {
             $queryBuilder = $queryBuilder->where('id', '<>', $except);
         }
-        $count = $queryBuilder->count();
-        return !$count;
+        $check = !boolval($queryBuilder->count());
+        if (!$check) {
+            $this->messageBag->add('name', 'Request with current name has already been taken by you.');
+        }
+        return $check;
     }
 
     protected function checkAccountName(string $name): bool
     {
-        $count = Account::whereName($name)
-            ->count();
-        return !$count;
+        $check = !boolval(Account::whereName($name)
+            ->count());
+        if (!$check) {
+            $this->messageBag->add('name', 'Account with this name already exists.');
+        }
+        return $check;
     }
 
     protected function validQuery(?string $query)

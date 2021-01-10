@@ -59,6 +59,9 @@ class OfferController extends Controller
     {
         $this->authorize('create', Offer::class);
         $result = $this->offerService->storeOffer($request->getFormData());
+        if ($this->isBadRequestResponse($result)) {
+            return response()->json($result, 400);
+        }
         return response()->json($result,  201);
     }
 
