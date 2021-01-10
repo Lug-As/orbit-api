@@ -35,6 +35,16 @@ class RequestService
         return $this->wrapInData(RequestResource::make($this->requestBuilder()->findOrFail($id)));
     }
 
+    public function cancelRequest(int $id, ?string $fail_msg)
+    {
+        $request = Request::findOrFail($id);
+        $request->checked = true;
+        if ($fail_msg) {
+            $request->fail_msg = $fail_msg;
+        }
+        return $request->save();
+    }
+
     /**
      * @param array $data
      * @return ValidationErrorsResource|array
@@ -92,7 +102,7 @@ class RequestService
         $out = [];
         foreach ($ad_types as $ad_type) {
             $out[$ad_type['id']] = [
-                'price' => $ad_type['price']
+                'price' => $ad_type['price'],
             ];
         }
         return $out;

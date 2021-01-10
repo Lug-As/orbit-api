@@ -30,14 +30,15 @@ Route::group([
 ], function () {
     Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('requests', RequestController::class);
+        Route::put('requests/{id}/cancel', [RequestController::class, 'cancel']);
         Route::apiResource('offers', OfferController::class);
+        Route::get('offers/by-account/{account_id}', [OfferController::class, 'getByAccount']);
+        Route::get('offers/by-user/{user_id}', [OfferController::class, 'getByUser']);
         Route::apiResource('responses', ResponseController::class);
         Route::get('/user', function (Request $request) {
             return UserResource::make($request->user());
         });
     });
-    Route::get('offer/by-account/{account_id}', [OfferController::class, 'getByAccount']);
-    Route::get('offer/by-user/{user_id}', [OfferController::class, 'getByUser']);
 
     // Auth::routes() // without Blade views
     Route::middleware('guest')->group(function () {

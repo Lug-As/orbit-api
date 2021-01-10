@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Request;
 
+use App\Http\Controllers\Api\V1\Request\FormRequests\CancelRequestRequest;
 use App\Http\Controllers\Api\V1\Request\FormRequests\StoreRequestRequest;
 use App\Http\Controllers\Api\V1\Request\FormRequests\UpdateRequestRequest;
 use App\Http\Controllers\Controller;
@@ -39,7 +40,7 @@ class RequestController extends Controller
         if (!is_array($result)) {
             return response()->json($result, 422);
         }
-        return response()->json($result,  201);
+        return response()->json($result, 201);
     }
 
     /**
@@ -51,6 +52,17 @@ class RequestController extends Controller
     public function show(int $id)
     {
         return response()->json($this->requestService->findRequest($id));
+    }
+
+    /**
+     * @param CancelRequestRequest $request
+     * @param int $id
+     * @return Response
+     */
+    public function cancel(CancelRequestRequest $request, int $id)
+    {
+        $this->requestService->cancelRequest($id, $request->get('fail_msg'));
+        return response('', 204);
     }
 
     /**
