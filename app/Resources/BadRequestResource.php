@@ -6,7 +6,7 @@ namespace App\Resources;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class ValidationErrorsResource extends ResourceCollection
+class BadRequestResource extends ResourceCollection
 {
     /**
      * @param \Illuminate\Http\Request $request

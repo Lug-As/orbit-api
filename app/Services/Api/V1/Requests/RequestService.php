@@ -6,25 +6,18 @@ namespace App\Services\Api\V1\Requests;
 
 use App\Models\Account;
 use App\Models\Request;
-use App\Resources\ValidationErrorsResource;
+use App\Resources\BadRequestResource;
 use App\Services\Api\V1\Requests\Resources\RequestResource;
 use App\Services\Api\V1\Requests\Resources\RequestsResource;
+use App\Traits\BadRequestErrorsGetable;
 use App\Traits\CanWrapInData;
 use Auth;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\MessageBag;
 use Illuminate\Support\Str;
 
 class RequestService
 {
-    use CanWrapInData;
-
-    protected $messageBag;
-
-    public function __construct(MessageBag $messageBag)
-    {
-        $this->messageBag = $messageBag;
-    }
+    use CanWrapInData, BadRequestErrorsGetable;
 
     public function searchRequests(?string $query)
     {
@@ -52,7 +45,7 @@ class RequestService
 
     /**
      * @param array $data
-     * @return ValidationErrorsResource|array
+     * @return BadRequestResource|array
      */
     public function storeRequest(array $data)
     {
@@ -69,7 +62,7 @@ class RequestService
     /**
      * @param array $data
      * @param int|Request $requestOrId
-     * @return ValidationErrorsResource|array
+     * @return BadRequestResource|array
      */
     public function updateRequest(array $data, $requestOrId)
     {
@@ -125,7 +118,7 @@ class RequestService
     /**
      * @param string $name
      * @param int|null $except
-     * @return ValidationErrorsResource|bool
+     * @return BadRequestResource|bool
      */
     protected function checkRequestName(string $name, ?int $except = null)
     {
@@ -138,11 +131,6 @@ class RequestService
             return false;
         }
         return true;
-    }
-
-    protected function getErrorMessages()
-    {
-        return ValidationErrorsResource::make($this->messageBag->messages());
     }
 
     protected function checkUserRequestName(string $name, ?int $except = null): bool

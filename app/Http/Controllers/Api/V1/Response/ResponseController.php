@@ -53,8 +53,8 @@ class ResponseController extends Controller
     {
         $this->authorize('create', Response::class);
         $result = $this->responseService->storeResponse($request->getFormData());
-        if ($this->isValidationErrorResponse($result)) {
-            return response()->json($result, 422);
+        if ($this->isBadRequestResponse($result)) {
+            return response()->json($result, 400);
         }
         return response()->json($result, 201);
     }
@@ -82,8 +82,8 @@ class ResponseController extends Controller
     {
         $this->authorize('update', $this->responseService->getResponseOnlyAccount($id));
         $result = $this->responseService->updateResponse($request->getFormData(), $id);
-        if ($this->isValidationErrorResponse($result)) {
-            return response()->json($result, 422);
+        if ($this->isBadRequestResponse($result)) {
+            return response()->json($result, 400);
         }
         return response()->json($result);
     }

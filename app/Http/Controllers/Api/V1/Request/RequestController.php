@@ -42,8 +42,8 @@ class RequestController extends Controller
     {
         $this->authorize('create', Request::class);
         $result = $this->requestService->storeRequest($request->getFormData());
-        if ($this->isValidationErrorResponse($result)) {
-            return response()->json($result, 422);
+        if ($this->isBadRequestResponse($result)) {
+            return response()->json($result, 400);
         }
         return response()->json($result, 201);
     }
@@ -83,8 +83,8 @@ class RequestController extends Controller
     {
         $this->authorize('update', $request);
         $result = $this->requestService->updateRequest($updateRequest->getFormData(), $request);
-        if ($this->isValidationErrorResponse($result)) {
-            return response()->json($result, 422);
+        if ($this->isBadRequestResponse($result)) {
+            return response()->json($result, 400);
         }
         return response()->json($result);
     }

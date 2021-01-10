@@ -6,24 +6,16 @@ namespace App\Services\Api\V1\Responses;
 
 use App\Models\Account;
 use App\Models\Response;
-use App\Resources\ValidationErrorsResource;
 use App\Services\Api\V1\Projects\Resources\ResponsesResource;
 use App\Services\Api\V1\Responses\Resources\ResponseResource;
+use App\Traits\BadRequestErrorsGetable;
 use App\Traits\CanWrapInData;
 use Auth;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\MessageBag;
 
 class ResponseService
 {
-    use CanWrapInData;
-
-    protected $messageBag;
-
-    public function __construct(MessageBag $messageBag)
-    {
-        $this->messageBag = $messageBag;
-    }
+    use CanWrapInData, BadRequestErrorsGetable;
 
     public function searchResponses()
     {
@@ -124,10 +116,5 @@ class ResponseService
             $this->messageBag->add('account', 'You can create only one response for project by one account.');
         }
         return $check;
-    }
-
-    protected function getErrorMessages()
-    {
-        return ValidationErrorsResource::make($this->messageBag->messages());
     }
 }

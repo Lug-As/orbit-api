@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Resources\ValidationErrorsResource;
+use App\Resources\BadRequestResource;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -12,8 +12,12 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    protected function isValidationErrorResponse($response)
+    /**
+     * @param BadRequestResource|mixed $response
+     * @return bool
+     */
+    protected function isBadRequestResponse($response): bool
     {
-        return $response instanceof ValidationErrorsResource;
+        return $response instanceof BadRequestResource;
     }
 }
