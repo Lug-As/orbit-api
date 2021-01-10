@@ -27,12 +27,11 @@ class RequestPolicy
     /**
      * Determine whether the user can view any models.
      *
-     * @param User $user
-     * @return mixed
+     * @return bool
      */
-    public function viewAny(User $user)
+    public function viewAny()
     {
-        //
+        return false;
     }
 
     /**
@@ -40,22 +39,21 @@ class RequestPolicy
      *
      * @param User $user
      * @param Request $request
-     * @return mixed
+     * @return bool
      */
     public function view(User $user, Request $request)
     {
-        //
+        return $this->isOwnRequest($user, $request);
     }
 
     /**
      * Determine whether the user can create models.
      *
-     * @param User $user
-     * @return mixed
+     * @return bool
      */
-    public function create(User $user)
+    public function create()
     {
-        //
+        return true;
     }
 
     /**
@@ -63,11 +61,11 @@ class RequestPolicy
      *
      * @param User $user
      * @param Request $request
-     * @return mixed
+     * @return bool
      */
     public function update(User $user, Request $request)
     {
-        return $user->id === $request->user_id;
+        return $this->isOwnRequest($user, $request);
     }
 
     /**
@@ -75,34 +73,25 @@ class RequestPolicy
      *
      * @param User $user
      * @param Request $request
-     * @return mixed
+     * @return bool
      */
     public function delete(User $user, Request $request)
     {
-        //
+        return $this->isOwnRequest($user, $request);
+    }
+
+    public function cancel()
+    {
+        return false;
     }
 
     /**
-     * Determine whether the user can restore the model.
-     *
      * @param User $user
      * @param Request $request
-     * @return mixed
+     * @return bool
      */
-    public function restore(User $user, Request $request)
+    protected function isOwnRequest(User $user, Request $request): bool
     {
-        //
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     *
-     * @param User $user
-     * @param Request $request
-     * @return mixed
-     */
-    public function forceDelete(User $user, Request $request)
-    {
-        //
+        return $user->id === $request->user_id;
     }
 }

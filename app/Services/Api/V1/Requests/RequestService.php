@@ -93,6 +93,15 @@ class RequestService
     }
 
     /**
+     * @param int $id
+     * @return Request|null
+     */
+    public function getRequestOnlyUserId(int $id): ?Request
+    {
+        return Request::findOrFail($id, ['user_id']);
+    }
+
+    /**
      * Return builder with Request model's relations
      *
      * @return Builder

@@ -28,6 +28,7 @@ class RequestController extends Controller
      */
     public function index(HttpRequest $request)
     {
+        $this->authorize('viewAny', Request::class);
         return response()->json($this->requestService->searchRequests($request->get('q')));
     }
 
@@ -39,6 +40,7 @@ class RequestController extends Controller
      */
     public function store(StoreRequestRequest $request)
     {
+        $this->authorize('create', Request::class);
         $result = $this->requestService->storeRequest($request->getFormData());
         if ($this->isValidationErrorResponse($result)) {
             return response()->json($result, 422);
@@ -54,6 +56,7 @@ class RequestController extends Controller
      */
     public function show(int $id)
     {
+        $this->authorize('view', $this->requestService->getRequestOnlyUserId($id));
         return response()->json($this->requestService->findRequest($id));
     }
 
@@ -64,6 +67,7 @@ class RequestController extends Controller
      */
     public function cancel(CancelRequestRequest $request, int $id)
     {
+        $this->authorize('cancel', Request::class);
         $this->requestService->cancelRequest($id, $request->get('fail_msg'));
         return response()->json([], 204);
     }
@@ -93,6 +97,7 @@ class RequestController extends Controller
      */
     public function destroy(int $id)
     {
+        $this->authorize('delete', $this->requestService->getRequestOnlyUserId($id));
         $this->requestService->destroyRequest($id);
         return response()->json([], 204);
     }
