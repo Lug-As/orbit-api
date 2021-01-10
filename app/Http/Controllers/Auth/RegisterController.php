@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
-use App\Resources\AccessTokenResource;
+use App\Services\Api\V1\Tokens\AccessTokenService;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -33,14 +33,17 @@ class RegisterController extends Controller
      */
     protected $redirectTo = RouteServiceProvider::HOME;
 
+    protected $accessTokenService;
+
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(AccessTokenService $accessTokenService)
     {
         $this->middleware('guest');
+        $this->accessTokenService = $accessTokenService;
     }
 
     /**
@@ -77,7 +80,6 @@ class RegisterController extends Controller
 
     protected function registered(Request $request, $user)
     {
-
-        return response()->json(AccessTokenResource::make($request, $user));
+        return response()->json($this->accessTokenService->generate($request, $user));
     }
 }
