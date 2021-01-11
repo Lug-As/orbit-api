@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Account\AccountController;
 use App\Http\Controllers\Api\V1\Offer\OfferController;
 use App\Http\Controllers\Api\V1\Request\RequestController;
 use App\Http\Controllers\Api\V1\Response\ResponseController;
@@ -29,6 +30,7 @@ Route::group([
     'prefix' => 'v1',
 ], function () {
     Route::middleware('auth:sanctum')->group(function () {
+        Route::get('accounts', [AccountController::class, 'index']);
         Route::apiResource('requests', RequestController::class);
         Route::put('requests/{id}/cancel', [RequestController::class, 'cancel']);
         Route::apiResource('offers', OfferController::class);

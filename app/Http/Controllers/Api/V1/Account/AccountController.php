@@ -25,7 +25,7 @@ class AccountController extends Controller
      */
     public function index(Request $request)
     {
-        return response()->json($this->accountService->searchAccounts($request->all()));
+        return response()->json($this->accountService->searchAccounts($request->input()));
     }
 
     /**

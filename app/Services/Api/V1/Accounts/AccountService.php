@@ -5,6 +5,7 @@ namespace App\Services\Api\V1\Accounts;
 
 
 use App\Models\Account;
+use App\Services\Api\V1\Accounts\Handlers\QueryFilterHandler;
 use App\Services\Api\V1\Accounts\Resources\AccountResource;
 use App\Services\Api\V1\Accounts\Resources\AccountsResource;
 use App\Traits\CanWrapInData;
@@ -14,11 +15,16 @@ class AccountService
 {
     use CanWrapInData;
 
+    protected $filterHandler;
+
+    public function __construct(QueryFilterHandler $filterHandler)
+    {
+        $this->filterHandler = $filterHandler;
+    }
+
     public function searchAccounts(array $params)
     {
-        $params = $this->extractParams($params);
-        $queryBuilder = $this->queryBuilder();
-        $queryBuilder = $this->filterQuery($queryBuilder, $params);
+        $queryBuilder = $this->filterHandler->filter($this->queryBuilder(), $params);
         return AccountsResource::make($queryBuilder->paginate(10));
     }
 
@@ -47,15 +53,5 @@ class AccountService
     protected function queryBuilder(): Builder
     {
         return Account::with(['user', 'ad_types', 'topics']);
-    }
-
-    protected function extractParams(array $params)
-    {
-        return $params;
-    }
-
-    protected function filterQuery(Builder $queryBuilder, array $params)
-    {
-        return $queryBuilder;
     }
 }
