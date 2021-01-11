@@ -32,16 +32,31 @@ class QueryFilterHandler
     public function filter(Builder $queryBuilder, ?array $params): Builder
     {
         if (is_array($params)) {
-            $filters = $this->extractFilters($params);
-            $queryBuilder = $this->filterQuery($queryBuilder, $filters);
-            $sortParams = $this->extractSortParams($params);
-            $queryBuilder = $this->sortQuery($queryBuilder, $sortParams);
+            $queryBuilder = $this->prepareQueryBuilder($queryBuilder);
+            $queryBuilder = $this->filterQuery($queryBuilder, $params);
+            $queryBuilder = $this->sortQuery($queryBuilder, $params);
+            $queryBuilder = $this->searchQuery($queryBuilder, $params);
+            $queryBuilder = $this->postpareQueryBuilder($queryBuilder);
         }
         return $queryBuilder;
     }
 
+    protected function filterQuery(Builder $queryBuilder, array $params): Builder
+    {
+        return $this->buildFilterQuery($queryBuilder, $this->extractFilters($params));
+    }
 
-    protected function extractFilters(array $params)
+    protected function sortQuery(Builder $queryBuilder, array $params): Builder
+    {
+        return $this->buildSortQuery($queryBuilder, $this->extractSortParams($params));
+    }
+
+    protected function searchQuery(Builder $queryBuilder, array $params): Builder
+    {
+        return $this->buildSearchQuery($queryBuilder, $this->extractSearchQuery($params));
+    }
+
+    protected function extractFilters(array $params): array
     {
         $extracted = [];
         foreach (self::ALLOWED_FILTERS as $allowedFilter => $type) {
@@ -61,21 +76,6 @@ class QueryFilterHandler
         return $extracted;
     }
 
-    protected function extractSortParams(array $params)
-    {
-        $sort = false;
-        $direction = 'asc';
-        if (isset($params['sort']) and in_array($params['sort'], self::ALLOWED_SORTS)) {
-            $sort = $params['sort'];
-        }
-        if (isset($params['dir']) and strcasecmp($params['dir'], 'desc') === 0) {
-            $direction = 'desc';
-        }
-        $extracted['sort'] = $sort;
-        $extracted['direction'] = $direction;
-        return $extracted;
-    }
-
     protected function extractArrayType($var)
     {
         if (is_string($var)) {
@@ -91,14 +91,35 @@ class QueryFilterHandler
         return false;
     }
 
+    protected function extractSortParams(array $params): array
+    {
+        $sort = false;
+        $direction = 'asc';
+        if (isset($params['sort']) and in_array($params['sort'], self::ALLOWED_SORTS)) {
+            $sort = $params['sort'];
+        }
+        if (isset($params['dir']) and strcasecmp($params['dir'], 'desc') === 0) {
+            $direction = 'desc';
+        }
+        $extracted['sort'] = $sort;
+        $extracted['direction'] = $direction;
+        return $extracted;
+    }
+
+    protected function extractSearchQuery(array $params): string
+    {
+        return isset($params['q']) && is_string($params['q']) && mb_strlen($params['q']) <= 25
+            ? $params['q']
+            : '';
+    }
+
     /**
      * @param Builder $queryBuilder
      * @param array $filters
      * @return Builder
      */
-    protected function filterQuery(Builder $queryBuilder, array $filters): Builder
+    protected function buildFilterQuery(Builder $queryBuilder, array $filters): Builder
     {
-        $queryBuilder->select(['accounts.*'])->distinct();
         $joinAccountAdType = false;
         if ($filters['topic']) {
             $queryBuilder->join('account_topic', 'account_topic.account_id', '=', 'accounts.id');
@@ -131,7 +152,7 @@ class QueryFilterHandler
         return $queryBuilder;
     }
 
-    protected function sortQuery(Builder $queryBuilder, array $sortParams)
+    protected function buildSortQuery(Builder $queryBuilder, array $sortParams)
     {
         $sort = $sortParams['sort'];
         $direction = $sortParams['direction'];
@@ -140,6 +161,30 @@ class QueryFilterHandler
             $queryBuilder->orderBy('account_ad_type.price', $direction);
         }
         return $queryBuilder;
+    }
+
+    protected function buildSearchQuery(Builder $queryBuilder, string $searchQuery)
+    {
+        if ($searchQuery) {
+            $queryBuilder
+                ->addSelect('users.name')
+                ->join('users', 'accounts.user_id', '=', 'users.id')
+                ->where(function ($query) use ($searchQuery) {
+                    $query->where('accounts.name', 'LIKE', "%{$searchQuery}%")
+                        ->orWhere('users.name', 'LIKE', "%{$searchQuery}%");
+                });
+        }
+        return $queryBuilder;
+    }
+
+    protected function prepareQueryBuilder(Builder $queryBuilder)
+    {
+        return $queryBuilder->distinct();
+    }
+
+    protected function postpareQueryBuilder(Builder $queryBuilder)
+    {
+        return $queryBuilder->addSelect(['accounts.*']);
     }
 }
 //
