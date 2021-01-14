@@ -127,6 +127,14 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/laravel/sanctum" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/laravel/ui" />
       <excludeFolder url="file://$MODULE_DIR$/public" />
+      <excludeFolder url="file://$MODULE_DIR$/storage/framework/cache/data/52" />
+      <excludeFolder url="file://$MODULE_DIR$/storage/framework/cache/data/70" />
+      <excludeFolder url="file://$MODULE_DIR$/storage/framework/cache/data/99" />
+      <excludeFolder url="file://$MODULE_DIR$/storage/framework/cache/data/b7" />
+      <excludeFolder url="file://$MODULE_DIR$/storage/framework/cache/data/c0" />
+      <excludeFolder url="file://$MODULE_DIR$/storage/framework/cache/data/dc" />
+      <excludeFolder url="file://$MODULE_DIR$/storage/framework/cache/data/dd" />
+      <excludeFolder url="file://$MODULE_DIR$/storage/framework/cache/data/ec" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

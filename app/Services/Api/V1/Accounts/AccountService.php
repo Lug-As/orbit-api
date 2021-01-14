@@ -39,10 +39,31 @@ class AccountService
         $offer->update($data);
         return $this->wrapInData(AccountResource::make($offer));
     }
+
 // https://www.tiktok.com/node/share/user/@danya_milokhin?user_agent=
-    public function destroyAccount(int $id)
+
+    public function destroyAccount(int $id): void
     {
-        return Account::whereId($id)->delete();
+        $account = Account::find($id);
+        if ($account) {
+            $account->delete();
+        }
+    }
+
+    public function forceDestroyAccount(int $id): void
+    {
+        $account = Account::find($id);
+        if ($account and method_exists($account, 'forceDelete')) {
+            $account->forceDelete();
+        }
+    }
+
+    public function restoreAccount(int $id): void
+    {
+        $account = Account::find($id);
+        if ($account and method_exists($account, 'restore')) {
+            $account->restore();
+        }
     }
 
     /**
@@ -53,5 +74,14 @@ class AccountService
     protected function queryBuilder(): Builder
     {
         return Account::with(['user', 'ad_types', 'topics']);
+    }
+
+    /**
+     * @param int $id
+     * @return Account|null
+     */
+    public function getAccountOnlyUserId(int $id): ?Account
+    {
+        return Account::findOrFail($id, ['user_id']);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\Account;
 
 use App\Http\Controllers\Api\V1\Account\FormRequests\UpdateAccountRequest;
 use App\Http\Controllers\Controller;
+use App\Models\Account;
 use App\Services\Api\V1\Accounts\AccountService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -25,6 +26,7 @@ class AccountController extends Controller
      */
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Account::class);
         return response()->json($this->accountService->searchAccounts($request->input()));
     }
 
@@ -36,6 +38,7 @@ class AccountController extends Controller
      */
     public function show($id)
     {
+        $this->authorize('viewAny', $this->accountService->getAccountOnlyUserId($id));
         return response()->json($this->accountService->findAccount($id));
     }
 
@@ -48,6 +51,7 @@ class AccountController extends Controller
      */
     public function update(UpdateAccountRequest $request, $id)
     {
+        $this->authorize('update', $this->accountService->getAccountOnlyUserId($id));
         return response()->json($this->accountService->updateAccount($request->getFormData(), $id));
     }
 
@@ -59,7 +63,22 @@ class AccountController extends Controller
      */
     public function destroy($id)
     {
+        $this->authorize('delete', $this->accountService->getAccountOnlyUserId($id));
         $this->accountService->destroyAccount($id);
+        return response()->json([], 204);
+    }
+
+    public function forceDestroy($id)
+    {
+        $this->authorize('forceDelete', $this->accountService->getAccountOnlyUserId($id));
+        $this->accountService->forceDestroyAccount($id);
+        return response()->json([], 204);
+    }
+
+    public function restore($id)
+    {
+        $this->authorize('restore', $this->accountService->getAccountOnlyUserId($id));
+        $this->accountService->restoreAccount($id);
         return response()->json([], 204);
     }
 }
