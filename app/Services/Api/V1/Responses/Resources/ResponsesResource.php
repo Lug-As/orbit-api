@@ -1,10 +1,9 @@
 <?php
 
 
-namespace App\Services\Api\V1\Projects\Resources;
+namespace App\Services\Api\V1\Responses\Resources;
 
 
-use App\Services\Api\V1\Responses\Resources\ResponseResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class ResponsesResource extends ResourceCollection

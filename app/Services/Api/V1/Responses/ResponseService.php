@@ -7,7 +7,7 @@ namespace App\Services\Api\V1\Responses;
 use App\Models\Account;
 use App\Models\Project;
 use App\Models\Response;
-use App\Services\Api\V1\Projects\Resources\ResponsesResource;
+use App\Services\Api\V1\Responses\Resources\ResponsesResource;
 use App\Services\Api\V1\Responses\Resources\ResponseResource;
 use App\Traits\BadRequestErrorsGetable;
 use App\Traits\CanWrapInData;
@@ -35,18 +35,18 @@ class ResponseService
             return $this->getErrorMessages();
         }
         $data['user_id'] = Auth::id();
-        $offer = Response::create($data);
-        return $this->wrapInData(ResponseResource::make($offer));
+        $response = Response::create($data);
+        return $this->wrapInData(ResponseResource::make($response));
     }
 
     public function updateResponse(array $data, int $id)
     {
-        $offer = Response::findOrFail($id);
+        $response = Response::findOrFail($id);
         if (isset($data['account_id']) and !$this->checkResponseAccount($data['account_id'])) {
             return $this->getErrorMessages();
         }
-        $offer->update($data);
-        return $this->wrapInData(ResponseResource::make($offer));
+        $response->update($data);
+        return $this->wrapInData(ResponseResource::make($response));
     }
 
     public function destroyResponse(int $id)

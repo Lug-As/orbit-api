@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\Account\AccountController;
 use App\Http\Controllers\Api\V1\Offer\OfferController;
+use App\Http\Controllers\Api\V1\Project\ProjectController;
 use App\Http\Controllers\Api\V1\Request\RequestController;
 use App\Http\Controllers\Api\V1\Response\ResponseController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
@@ -38,6 +39,7 @@ Route::group([
                 'create'
             ]);
         Route::apiResource('requests', RequestController::class);
+        Route::apiResource('projects', ProjectController::class);
         Route::put('requests/{id}/cancel', [RequestController::class, 'cancel']);
         Route::apiResource('offers', OfferController::class);
         Route::get('offers/by-account/{account_id}', [OfferController::class, 'getByAccount']);

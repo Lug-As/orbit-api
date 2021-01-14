@@ -48,7 +48,7 @@ class Handler extends ExceptionHandler
                 'error' => [
                     'code' => $code,
                     'message' => 'Not Found',
-                    'description' => $desc
+                    'description' => $desc,
                 ],
             ], $code);
         });
