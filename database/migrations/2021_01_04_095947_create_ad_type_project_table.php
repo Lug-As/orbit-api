@@ -23,7 +23,6 @@ class CreateAdTypeProjectTable extends Migration
             $table->foreignId('ad_type_id')->constrained()
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
-            $table->timestamps();
         });
     }
 

@@ -52,7 +52,14 @@ Route::group([
 //    Route::post('email/resend', 'Auth\VerificationController@resend')->name('verification.resend');
 //    Route::get('email/verify/{id}/{hash}', [VerificationController::class, 'verify'])->name('verification.verify');
 });
+Route::get('/', function () {
+    return "Hello from API.";
+});
 
+Route::get('/{uri}', function () {
+    abort(404);
+    return "error";
+})->where('uri', '.*');
 
 // -------------------------------------------------------------------------------------------------
 // Это нужно воплотить во Vue

@@ -23,7 +23,6 @@ class CreateAccountTopicTable extends Migration
             $table->foreignId('topic_id')->constrained()
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
-            $table->timestamps();
         });
     }
 

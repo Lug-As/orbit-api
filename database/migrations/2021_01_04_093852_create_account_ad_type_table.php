@@ -17,14 +17,13 @@ class CreateAccountAdTypeTable extends Migration
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_general_ci';
             $table->id();
-            $table->integer('price');
+            $table->integer('price')->nullable();
             $table->foreignId('account_id')->constrained()
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
             $table->foreignId('ad_type_id')->constrained()
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
-            $table->timestamps();
         });
     }
 

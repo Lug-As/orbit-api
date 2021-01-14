@@ -35,12 +35,19 @@ class Handler extends ExceptionHandler
     public function register()
     {
         $this->renderable(function (NotFoundHttpException $e) {
-            $modelName = str_replace('App\\Models\\', '', $e->getPrevious()->getModel());
+            $prev = $e->getPrevious();
+            if ($prev) {
+                $modelName = str_replace('App\\Models\\', '', $prev->getModel());
+                $desc = $modelName . ' not found.';
+            } else {
+                $desc = 'Page not found.';
+            }
             $code = 404;
             return response()->json([
                 'error' => [
                     'code' => $code,
-                    'message' => $modelName . ' not found.',
+                    'message' => 'Not Found',
+                    'description' => $desc
                 ],
             ], $code);
         });

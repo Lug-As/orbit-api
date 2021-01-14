@@ -39,7 +39,7 @@ class AccountService
         $offer->update($data);
         return $this->wrapInData(AccountResource::make($offer));
     }
-
+// https://www.tiktok.com/node/share/user/@danya_milokhin?user_agent=
     public function destroyAccount(int $id)
     {
         return Account::whereId($id)->delete();
