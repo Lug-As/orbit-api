@@ -4,7 +4,7 @@
 namespace App\Services\Api\V1\Projects\Resources;
 
 
-use App\Services\Api\V1\Responses\Resources\ResponseResource;
+use App\Services\Api\V1\Responses\Resources\ResponseResourceNoProject;
 
 class ProjectResourceWithResponses extends ProjectResource
 {
@@ -17,7 +17,7 @@ class ProjectResourceWithResponses extends ProjectResource
         $withoutResponses = parent::toArray($request);
         unset($withoutResponses['responses_count']);
         return array_merge($withoutResponses, [
-            'responses' => ResponseResource::collection($this->responses)
+            'responses' => ResponseResourceNoProject::collection($this->responses)
         ]);
     }
 }
