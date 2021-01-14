@@ -82,7 +82,7 @@ class OfferService
      * @param int $id
      * @return Offer|null
      */
-    public function getOfferOnlyUserId(int $id): ?Offer
+    public function getOfferOnlyUserId($id): ?Offer
     {
         return Offer::findOrFail($id, ['user_id']);
     }
@@ -91,7 +91,7 @@ class OfferService
      * @param int $id
      * @return mixed
      */
-    public function getOfferOnlyUserIdAndAccount(int $id)
+    public function getOfferOnlyUserIdAndAccount($id)
     {
         return Offer::with('account.user_id')->findOrFail($id, ['user_id']);
     }

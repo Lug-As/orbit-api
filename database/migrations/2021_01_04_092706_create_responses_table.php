@@ -18,8 +18,12 @@ class CreateResponsesTable extends Migration
             $table->collation = 'utf8mb4_general_ci';
             $table->id();
             $table->text('text');
-            $table->foreignId('account_id')->constrained();
-            $table->foreignId('project_id')->constrained();
+            $table->foreignId('account_id')->constrained()
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
+            $table->foreignId('project_id')->constrained()
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
             $table->timestamps();
         });
     }

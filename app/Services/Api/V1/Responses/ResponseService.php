@@ -72,7 +72,7 @@ class ResponseService
      * @param int $id
      * @return mixed
      */
-    public function getResponseOnlyAccountAndProject(int $id)
+    public function getResponseOnlyAccountAndProject($id)
     {
         return Response::with(['account.user_id', 'project.user_id'])->findOrFail($id, ['id']);
     }
@@ -81,7 +81,7 @@ class ResponseService
      * @param int $id
      * @return mixed
      */
-    public function getResponseOnlyAccount(int $id)
+    public function getResponseOnlyAccount($id)
     {
         return Response::with('account.user_id')->findOrFail($id, ['id']);
     }

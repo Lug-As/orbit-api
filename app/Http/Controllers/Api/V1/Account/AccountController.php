@@ -38,7 +38,7 @@ class AccountController extends Controller
      */
     public function show($id)
     {
-        $this->authorize('viewAny', $this->accountService->getAccountOnlyUserId($id));
+        $this->authorize('view', $this->accountService->getAccountOnlyUserId($id));
         return response()->json($this->accountService->findAccount($id));
     }
 
@@ -70,15 +70,21 @@ class AccountController extends Controller
 
     public function forceDestroy($id)
     {
-        $this->authorize('forceDelete', $this->accountService->getAccountOnlyUserId($id));
+        $this->authorize('forceDelete', $this->accountService->getAccountOnlyUserId($id, true));
         $this->accountService->forceDestroyAccount($id);
         return response()->json([], 204);
     }
 
     public function restore($id)
     {
-        $this->authorize('restore', $this->accountService->getAccountOnlyUserId($id));
+        $this->authorize('restore', $this->accountService->getAccountOnlyUserId($id, true));
         $this->accountService->restoreAccount($id);
         return response()->json([], 204);
+    }
+
+    public function ownTrashed()
+    {
+        $this->authorize('ownTrashed', Account::class);
+        return response()->json($this->accountService->searchTrashedAccounts());
     }
 }

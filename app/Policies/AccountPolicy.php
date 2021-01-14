@@ -80,4 +80,9 @@ class AccountPolicy
     {
         return $this->isOwnEntity($user, $account);
     }
+
+    public function ownTrashed()
+    {
+        return true;
+    }
 }

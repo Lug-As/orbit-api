@@ -18,8 +18,12 @@ class CreateOffersTable extends Migration
             $table->collation = 'utf8mb4_general_ci';
             $table->id();
             $table->text('text');
-            $table->foreignId('user_id')->constrained();
-            $table->foreignId('account_id')->constrained();
+            $table->foreignId('user_id')->constrained()
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
+            $table->foreignId('account_id')->constrained()
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
             $table->timestamps();
         });
     }

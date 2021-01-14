@@ -22,7 +22,7 @@ class AccountService
         $this->filterHandler = $filterHandler;
     }
 
-    public function searchAccounts(array $params)
+    public function searchAccounts(?array $params = null)
     {
         $queryBuilder = $this->filterHandler->filter($this->queryBuilder(), $params);
         return AccountsResource::make($queryBuilder->paginate(10));
@@ -52,18 +52,12 @@ class AccountService
 
     public function forceDestroyAccount(int $id): void
     {
-        $account = Account::find($id);
-        if ($account and method_exists($account, 'forceDelete')) {
-            $account->forceDelete();
-        }
+        Account::withTrashed()->findOrFail($id)->forceDelete($id);
     }
 
     public function restoreAccount(int $id): void
     {
-        $account = Account::find($id);
-        if ($account and method_exists($account, 'restore')) {
-            $account->restore();
-        }
+        Account::withTrashed()->findOrFail($id)->restore();
     }
 
     /**
@@ -80,8 +74,16 @@ class AccountService
      * @param int $id
      * @return Account|null
      */
-    public function getAccountOnlyUserId(int $id): ?Account
+    public function getAccountOnlyUserId($id, $withTrashed = false): ?Account
     {
+        if ($withTrashed) {
+            return Account::withTrashed()->findOrFail($id, ['user_id']);
+        }
         return Account::findOrFail($id, ['user_id']);
+    }
+
+    public function searchTrashedAccounts()
+    {
+        return AccountsResource::make($this->queryBuilder()->onlyTrashed()->paginate(10));
     }
 }

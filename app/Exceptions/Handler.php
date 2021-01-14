@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Handler extends ExceptionHandler
@@ -59,6 +60,16 @@ class Handler extends ExceptionHandler
                     'message' => 'This action is unauthorized.',
                 ],
             ], $code);
+        });
+        $this->renderable(function (MethodNotAllowedHttpException $e) {
+            $code = 405;
+            $msg = $e->getMessage();
+            return response()->json([
+                'error' => [
+                    'code' => $code,
+                    'message' => $msg,
+                ],
+            ], $code)->withHeaders($e->getHeaders());
         });
     }
 }

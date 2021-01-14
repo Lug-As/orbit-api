@@ -89,7 +89,7 @@ class RequestService
      * @param int $id
      * @return Request|null
      */
-    public function getRequestOnlyUserId(int $id): ?Request
+    public function getRequestOnlyUserId($id): ?Request
     {
         return Request::findOrFail($id, ['user_id']);
     }
