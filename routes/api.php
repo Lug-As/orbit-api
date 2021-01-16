@@ -31,9 +31,9 @@ Route::group([
     'prefix' => 'v1',
 ], function () {
     Route::middleware('auth:sanctum')->group(function () {
-        Route::delete('accounts/{id}/force', [AccountController::class, 'forceDestroy']);
-        Route::post('accounts/{id}/restore', [AccountController::class, 'restore']);
-        Route::get('accounts/trashed', [AccountController::class, 'ownTrashed']);
+//        Route::delete('accounts/{id}/force', [AccountController::class, 'forceDestroy']);
+//        Route::post('accounts/{id}/restore', [AccountController::class, 'restore']);
+//        Route::get('accounts/trashed', [AccountController::class, 'ownTrashed']);
         Route::apiResource('accounts', AccountController::class)
             ->except([
                 'create'

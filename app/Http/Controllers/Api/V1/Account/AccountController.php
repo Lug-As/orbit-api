@@ -63,28 +63,25 @@ class AccountController extends Controller
      */
     public function destroy($id)
     {
-        $this->authorize('delete', $this->accountService->getAccountOnlyUserId($id));
-        $this->accountService->destroyAccount($id);
-        return response()->json([], 204);
-    }
-
-    public function forceDestroy($id)
-    {
+//        $this->authorize('delete', $this->accountService->getAccountOnlyUserId($id));
+//        $this->accountService->destroyAccount($id);
         $this->authorize('forceDelete', $this->accountService->getAccountOnlyUserId($id, true));
         $this->accountService->forceDestroyAccount($id);
         return response()->json([], 204);
     }
 
-    public function restore($id)
-    {
-        $this->authorize('restore', $this->accountService->getAccountOnlyUserId($id, true));
-        $this->accountService->restoreAccount($id);
-        return response()->json([], 204);
-    }
-
-    public function ownTrashed()
-    {
-        $this->authorize('ownTrashed', Account::class);
-        return response()->json($this->accountService->searchTrashedAccounts());
-    }
+//    public function forceDestroy($id) {
+//        $this->authorize('forceDelete', $this->accountService->getAccountOnlyUserId($id, true));
+//        $this->accountService->forceDestroyAccount($id);
+//        return response()->json([], 204);
+//    }
+//    public function restore($id) {
+//        $this->authorize('restore', $this->accountService->getAccountOnlyUserId($id, true));
+//        $this->accountService->restoreAccount($id);
+//        return response()->json([], 204);
+//    }
+//    public function ownTrashed() {
+//        $this->authorize('ownTrashed', Account::class);
+//        return response()->json($this->accountService->searchTrashedAccounts());
+//    }
 }
