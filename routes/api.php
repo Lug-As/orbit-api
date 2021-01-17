@@ -38,9 +38,10 @@ Route::group([
             ->except([
                 'create'
             ]);
+        Route::get('requests/canceled', [RequestController::class, 'canceled']);
+        Route::put('requests/{id}/cancel', [RequestController::class, 'cancel']);
         Route::apiResource('requests', RequestController::class);
         Route::apiResource('projects', ProjectController::class);
-        Route::put('requests/{id}/cancel', [RequestController::class, 'cancel']);
         Route::apiResource('offers', OfferController::class);
         Route::get('offers/by-account/{account_id}', [OfferController::class, 'getByAccount']);
         Route::get('offers/my', [OfferController::class, 'ownIndex']);

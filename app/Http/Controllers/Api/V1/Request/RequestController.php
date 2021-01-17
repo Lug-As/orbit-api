@@ -72,6 +72,12 @@ class RequestController extends Controller
         return response()->json([], 204);
     }
 
+    public function canceled()
+    {
+        $this->authorize('viewCanceled', Request::class);
+        return response()->json($this->requestService->searchOwnCanceledRequest());
+    }
+
     /**
      * Update the specified resource in storage.
      *

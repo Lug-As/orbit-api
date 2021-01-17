@@ -71,4 +71,9 @@ class RequestPolicy
     {
         return false;
     }
+
+    public function viewCanceled()
+    {
+        return true;
+    }
 }

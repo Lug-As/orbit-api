@@ -33,10 +33,11 @@ class RequestService
         return $this->wrapInData(RequestResource::make($this->queryBuilder()->findOrFail($id)));
     }
 
-    public function cancelRequest(int $id, ?string $fail_msg)
+    public function cancelRequest($id, ?string $fail_msg)
     {
         $request = Request::findOrFail($id);
         $request->checked = true;
+        $request->account_id = null;
         if ($fail_msg) {
             $request->fail_msg = $fail_msg;
         }
@@ -78,6 +79,15 @@ class RequestService
             $request->ad_types()->sync($this->transformAdTypes($data['ad_types']));
         }
         return $this->wrapInData(RequestResource::make($request));
+    }
+
+    public function searchOwnCanceledRequest()
+    {
+        $requests = $this->queryBuilder()
+            ->where('checked', true)
+            ->where('account_id', null)
+            ->paginate(10);
+        return RequestsResource::make($requests);
     }
 
     public function destroyRequest(int $id)

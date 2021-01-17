@@ -78,4 +78,9 @@ class Request extends Model
     {
         return $this->account_id !== null;
     }
+
+    public function isCanceled()
+    {
+        return $this->checked and !$this->isApproved();
+    }
 }
