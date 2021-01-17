@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Builder;
 
 /**
  * App\Models\Account
@@ -15,28 +16,39 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $user_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\AdType[] $ad_types
+ * @property-read \Illuminate\Database\Eloquent\Collection|AdType[] $ad_types
  * @property-read int|null $ad_types_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Response[] $responses
+ * @property-read \Illuminate\Database\Eloquent\Collection|Response[] $responses
  * @property-read int|null $responses_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Topic[] $topics
+ * @property-read \Illuminate\Database\Eloquent\Collection|Topic[] $topics
  * @property-read int|null $topics_count
- * @property-read \App\Models\User $user
- * @method static \Illuminate\Database\Eloquent\Builder|Account newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Account newQuery()
+ * @property-read User $user
+ * @method static Builder|Account newModelQuery()
+ * @method static Builder|Account newQuery()
  * @method static \Illuminate\Database\Query\Builder|Account onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Account query()
- * @method static \Illuminate\Database\Eloquent\Builder|Account whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Account whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Account whereImage($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Account whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Account whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Account whereUserId($value)
+ * @method static Builder|Account query()
+ * @method static Builder|Account whereCreatedAt($value)
+ * @method static Builder|Account whereId($value)
+ * @method static Builder|Account whereImage($value)
+ * @method static Builder|Account whereName($value)
+ * @method static Builder|Account whereUpdatedAt($value)
+ * @method static Builder|Account whereUserId($value)
  * @method static \Illuminate\Database\Query\Builder|Account withTrashed()
  * @method static \Illuminate\Database\Query\Builder|Account withoutTrashed()
  * @mixin \Eloquent
  * @property \Illuminate\Support\Carbon|null $deleted_at
- * @method static \Illuminate\Database\Eloquent\Builder|Account whereDeletedAt($value)
+ * @method static Builder|Account whereDeletedAt($value)
+ * @property int $followers
+ * @property int $likes
+ * @property-read Request|null $request
+ * @method static Builder|Account whereFollowers($value)
+ * @method static Builder|Account whereLikes($value)
+ * @property string|null $telegram
+ * @property string|null $email
+ * @property string|null $phone
+ * @method static Builder|Account whereEmail($value)
+ * @method static Builder|Account wherePhone($value)
+ * @method static Builder|Account whereTelegram($value)
  */
 class Account extends Model
 {

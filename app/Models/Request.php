@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -16,25 +17,36 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $fail_msg
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\AdType[] $ad_types
+ * @property-read \Illuminate\Database\Eloquent\Collection|AdType[] $ad_types
  * @property-read int|null $ad_types_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Topic[] $topics
+ * @property-read \Illuminate\Database\Eloquent\Collection|Topic[] $topics
  * @property-read int|null $topics_count
- * @property-read \App\Models\User $user
- * @method static \Illuminate\Database\Eloquent\Builder|Request newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Request newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Request query()
- * @method static \Illuminate\Database\Eloquent\Builder|Request whereChecked($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Request whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Request whereFailMsg($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Request whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Request whereImage($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Request whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Request whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Request whereUserId($value)
+ * @property-read User $user
+ * @method static Builder|Request newModelQuery()
+ * @method static Builder|Request newQuery()
+ * @method static Builder|Request query()
+ * @method static Builder|Request whereChecked($value)
+ * @method static Builder|Request whereCreatedAt($value)
+ * @method static Builder|Request whereFailMsg($value)
+ * @method static Builder|Request whereId($value)
+ * @method static Builder|Request whereImage($value)
+ * @method static Builder|Request whereName($value)
+ * @method static Builder|Request whereUpdatedAt($value)
+ * @method static Builder|Request whereUserId($value)
  * @mixin \Eloquent
  * @property int|null $account_id
- * @method static \Illuminate\Database\Eloquent\Builder|Request whereAccountId($value)
+ * @method static Builder|Request whereAccountId($value)
+ * @property int $followers
+ * @property int $likes
+ * @property-read Account|null $account
+ * @method static Builder|Request whereFollowers($value)
+ * @method static Builder|Request whereLikes($value)
+ * @property string|null $telegram
+ * @property string|null $email
+ * @property string|null $phone
+ * @method static Builder|Request whereEmail($value)
+ * @method static Builder|Request wherePhone($value)
+ * @method static Builder|Request whereTelegram($value)
  */
 class Request extends Model
 {

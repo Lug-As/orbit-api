@@ -25,7 +25,10 @@ class RequestFactory extends Factory
     {
         return [
             'name' => Str::lower(Str::random(10)),
-            'user_id' => User::all()->random()->id
+            'telegram' => Str::lower(Str::random(random_int(5, 12))),
+            'phone' => '800' . random_int(1000000, 9999999),
+            'email' => $this->faker->unique()->safeEmail,
+            'user_id' => User::all()->random()->id,
         ];
     }
 }

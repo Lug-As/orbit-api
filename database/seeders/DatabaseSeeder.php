@@ -28,10 +28,15 @@ class DatabaseSeeder extends Seeder
             'email' => 'skal.04@mail.ru',
             'password' => Hash::make('123123123'),
             'phone' => '8005553535',
-            'is_admin' => true,
-            'remember_token' => Str::random(10),
+            'is_admin' => true
         ]);
-        User::factory()->count(49)->create();
+        User::create([
+            'name' => 'User',
+            'email' => 'skal.03@mail.ru',
+            'password' => Hash::make('123123123'),
+            'phone' => '8005553536'
+        ]);
+        User::factory()->count(48)->create();
         Account::factory()->count(100)->create();
         Request::factory()->count(200)->create();
         Project::factory()->count(100)->create();
@@ -39,9 +44,9 @@ class DatabaseSeeder extends Seeder
         Offer::factory()->count(100)->create();
         $topics = ['Бизнес', 'Развлечение', 'Наука', 'Лайфхаки', 'Танцы'];
         /** @var Account[]|null $accounts */
-        $accounts = Account::take(50)->get();
+        $accounts = Account::all();
         /** @var Request[]|null $requests */
-        $requests = Request::take(100)->get();
+        $requests = Request::all();
         foreach ($topics as $topic) {
             $topicRecord = Topic::create([
                 'name' => $topic,
@@ -57,7 +62,7 @@ class DatabaseSeeder extends Seeder
                 }
             }
         }
-        $projects = Project::take(50)->get();
+        $projects = Project::all();
         $ad_types = ['Дуэт', 'Ссылка в шапке профиля', 'Видео', 'Танец', 'Реклама аудиотрека'];
         foreach ($ad_types as $ad_type) {
             $adTypeRecord = AdType::create([
