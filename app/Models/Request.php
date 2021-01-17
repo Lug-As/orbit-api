@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\Api\V1\Files\FileService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -84,6 +85,11 @@ class Request extends Model
     public function getNameAttribute($data)
     {
         return '@' . $data;
+    }
+
+    public function getImageAttribute($data)
+    {
+        return request()->getSchemeAndHttpHost() . '/' . FileService::UPLOAD_DIR . "/$data";
     }
 
     public function getRawName()
