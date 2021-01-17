@@ -72,7 +72,12 @@ class RequestPolicy
         return false;
     }
 
-    public function viewCanceled()
+    public function approve()
+    {
+        return false;
+    }
+
+    public function viewMarked()
     {
         return true;
     }

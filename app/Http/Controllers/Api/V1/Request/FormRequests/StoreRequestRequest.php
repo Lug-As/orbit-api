@@ -11,7 +11,7 @@ class StoreRequestRequest extends AppFormRequest
     public function rules()
     {
         return [
-            'name' => ['required', 'string', 'alpha_num'],
+            'name' => ['required', 'string'],
             'image' => ['nullable', 'file', 'mimetypes:image/jpeg,image/png,image/bmp', 'max:5000'],
             'topics' => ['required', 'array'],
             'topics.*' => ['integer', 'exists:topics,id'],

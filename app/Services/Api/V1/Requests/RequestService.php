@@ -7,6 +7,7 @@ namespace App\Services\Api\V1\Requests;
 use App\Models\Account;
 use App\Models\Request;
 use App\Resources\BadRequestResource;
+use App\Services\Api\V1\Accounts\Resources\AccountResource;
 use App\Services\Api\V1\Requests\Resources\RequestResource;
 use App\Services\Api\V1\Requests\Resources\RequestsResource;
 use App\Traits\BadRequestErrorsGetable;
@@ -42,6 +43,30 @@ class RequestService
             $request->fail_msg = $fail_msg;
         }
         return $request->save();
+    }
+
+    /**
+     * @param $id
+     * @return Account|\Illuminate\Database\Eloquent\Model|mixed
+     */
+    public function approveRequest($id)
+    {
+        $request = Request::findOrFail($id);
+        if ($request->isNotApproved()) {
+            $account = Account::create([
+                'name' => $request->getRawName(),
+                'image' => $request->image,
+                'user_id' => $request->user_id,
+            ]);
+            $account->ad_types()->sync($this->transformAdTypesFromModels($request->ad_types));
+            $account->topics()->sync($request->topics()->allRelatedIds());
+            $request->checked = true;
+            $request->account_id = $account->id;
+            $request->save();
+        } else {
+            $account = $request->account;
+        }
+        return AccountResource::make($account);
     }
 
     /**
@@ -85,7 +110,16 @@ class RequestService
     {
         $requests = $this->queryBuilder()
             ->where('checked', true)
-            ->where('account_id', null)
+            ->whereNull('account_id')
+            ->paginate(10);
+        return RequestsResource::make($requests);
+    }
+
+    public function searchOwnApprovedRequest()
+    {
+        $requests = $this->queryBuilder()
+            ->where('checked', true)
+            ->whereNotNull('account_id')
             ->paginate(10);
         return RequestsResource::make($requests);
     }
@@ -114,7 +148,7 @@ class RequestService
         return Request::with(['user', 'ad_types', 'topics', 'account']);
     }
 
-    protected function transformAdTypes(array $ad_types)
+    protected function transformAdTypes(array $ad_types): array
     {
         $out = [];
         foreach ($ad_types as $ad_type) {
@@ -127,6 +161,19 @@ class RequestService
             }
         }
         return $out;
+    }
+
+    /**
+     * @param \Illuminate\Database\Eloquent\Collection $ad_types
+     * @return array
+     */
+    protected function transformAdTypesFromModels($ad_types): array
+    {
+        /** @var \Illuminate\Database\Eloquent\Collection $ad_types */
+        return $this->transformAdTypes($ad_types->map(function ($item) {
+            $item->price = $item->pivot->price;
+            return $item;
+        })->toArray());
     }
 
     /**

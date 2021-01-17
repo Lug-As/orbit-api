@@ -72,10 +72,32 @@ class RequestController extends Controller
         return response()->json([], 204);
     }
 
+    /**
+     * @return JsonResponse
+     */
     public function canceled()
     {
-        $this->authorize('viewCanceled', Request::class);
+        $this->authorize('viewMarked', Request::class);
         return response()->json($this->requestService->searchOwnCanceledRequest());
+    }
+
+    /**\
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function approve(int $id)
+    {
+        $this->authorize('approve', Request::class);
+        return response()->json($this->requestService->approveRequest($id));
+    }
+
+    /**
+     * @return JsonResponse
+     */
+    public function approved()
+    {
+        $this->authorize('viewMarked', Request::class);
+        return response()->json($this->requestService->searchOwnApprovedRequest());
     }
 
     /**

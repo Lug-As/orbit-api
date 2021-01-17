@@ -40,6 +40,7 @@ Route::group([
             ]);
         Route::get('requests/canceled', [RequestController::class, 'canceled']);
         Route::put('requests/{id}/cancel', [RequestController::class, 'cancel']);
+        Route::post('requests/{id}/approve', [RequestController::class, 'approve']);
         Route::apiResource('requests', RequestController::class);
         Route::apiResource('projects', ProjectController::class);
         Route::apiResource('offers', OfferController::class);
@@ -65,10 +66,10 @@ Route::get('/', function () {
     return "Hello from API.";
 });
 
-Route::get('/{uri}', function () {
-    abort(404);
-    return "error";
-})->where('uri', '.*');
+//Route::get('/{uri}', function () {
+//    abort(404);
+//    return "error";
+//})->where('uri', '.*');
 
 // -------------------------------------------------------------------------------------------------
 // Это нужно воплотить во Vue

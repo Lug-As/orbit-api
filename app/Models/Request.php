@@ -74,13 +74,23 @@ class Request extends Model
         return '@' . $data;
     }
 
+    public function getRawName()
+    {
+        return $this->getAttributes()['name'];
+    }
+
     public function isApproved()
     {
         return $this->account_id !== null;
     }
 
+    public function isNotApproved()
+    {
+        return $this->account_id === null;
+    }
+
     public function isCanceled()
     {
-        return $this->checked and !$this->isApproved();
+        return $this->checked and $this->isNotApproved();
     }
 }

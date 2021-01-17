@@ -13,4 +13,4 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::view('/{request}', 'main')->where('request', '.*');
+//Route::view('/{request}', 'main')->where('request', '.*');
