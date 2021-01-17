@@ -17,12 +17,19 @@ class CreateRequestsTable extends Migration
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_general_ci';
             $table->id();
-            // Копия таблицы accounts
+            // Таблица accounts
             $table->string('name', 25);
             $table->string('image', 100)->nullable();
-            $table->foreignId('user_id')->constrained();
+            $table->foreignId('user_id')->constrained()
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
             // ----------------------
             $table->boolean('checked')->default(false);
+            $table->foreignId('account_id')
+                ->nullable()
+                ->constrained()
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
             $table->string('fail_msg')->nullable();
             $table->timestamps();
         });

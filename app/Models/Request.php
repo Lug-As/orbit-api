@@ -33,6 +33,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Request whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Request whereUserId($value)
  * @mixin \Eloquent
+ * @property int|null $account_id
+ * @method static \Illuminate\Database\Eloquent\Builder|Request whereAccountId($value)
  */
 class Request extends Model
 {
@@ -62,8 +64,18 @@ class Request extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function account()
+    {
+        return $this->belongsTo(Account::class);
+    }
+
     public function getNameAttribute($data)
     {
         return '@' . $data;
+    }
+
+    public function isApproved()
+    {
+        return $this->account_id !== null;
     }
 }

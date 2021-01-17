@@ -51,6 +51,8 @@ use Laravel\Sanctum\HasApiTokens;
  * @method static \Illuminate\Database\Eloquent\Builder|User whereIsAdmin($value)
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Request[] $requests
  * @property-read int|null $requests_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Laravel\Sanctum\PersonalAccessToken[] $tokens
+ * @property-read int|null $tokens_count
  */
 class User extends Authenticatable
 {

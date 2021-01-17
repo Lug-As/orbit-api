@@ -66,4 +66,9 @@ class Account extends Model
     {
         return $this->hasMany(Response::class);
     }
+
+    public function request()
+    {
+        return $this->hasOne(Request::class);
+    }
 }
