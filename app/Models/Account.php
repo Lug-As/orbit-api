@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Traits\GetsAccountAttrs;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -16,11 +18,11 @@ use Illuminate\Database\Eloquent\Builder;
  * @property int $user_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|AdType[] $ad_types
+ * @property-read Collection|AdType[] $ad_types
  * @property-read int|null $ad_types_count
- * @property-read \Illuminate\Database\Eloquent\Collection|Response[] $responses
+ * @property-read Collection|Response[] $responses
  * @property-read int|null $responses_count
- * @property-read \Illuminate\Database\Eloquent\Collection|Topic[] $topics
+ * @property-read Collection|Topic[] $topics
  * @property-read int|null $topics_count
  * @property-read User $user
  * @method static Builder|Account newModelQuery()
@@ -52,7 +54,7 @@ use Illuminate\Database\Eloquent\Builder;
  */
 class Account extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, GetsAccountAttrs;
 
     protected $fillable = [
         'name', 'image', 'user_id',

@@ -68,7 +68,7 @@ class RequestService
         if ($request->isNotApproved()) {
             $account = Account::create([
                 'name' => $request->getRawName(),
-                'image' => $request->image,
+                'image' => $request->getRawImage(),
                 'user_id' => $request->user_id,
             ]);
             $account->ad_types()->sync($this->transformAdTypesFromModels($request->ad_types));
@@ -79,7 +79,7 @@ class RequestService
         } else {
             $account = $request->account;
         }
-        return AccountResource::make($account);
+        return $this->wrapInData(AccountResource::make($account));
     }
 
     /**

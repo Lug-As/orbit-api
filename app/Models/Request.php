@@ -3,7 +3,9 @@
 namespace App\Models;
 
 use App\Services\Api\V1\Files\FileService;
+use App\Traits\GetsAccountAttrs;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -18,9 +20,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $fail_msg
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|AdType[] $ad_types
+ * @property-read Collection|AdType[] $ad_types
  * @property-read int|null $ad_types_count
- * @property-read \Illuminate\Database\Eloquent\Collection|Topic[] $topics
+ * @property-read Collection|Topic[] $topics
  * @property-read int|null $topics_count
  * @property-read User $user
  * @method static Builder|Request newModelQuery()
@@ -51,7 +53,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Request extends Model
 {
-    use HasFactory;
+    use HasFactory, GetsAccountAttrs;
 
     protected $fillable = [
         'name', 'image', 'user_id'
@@ -82,19 +84,19 @@ class Request extends Model
         return $this->belongsTo(Account::class);
     }
 
-    public function getNameAttribute($data)
-    {
-        return '@' . $data;
-    }
-
-    public function getImageAttribute($data)
-    {
-        return request()->getSchemeAndHttpHost() . '/' . FileService::UPLOAD_DIR . "/$data";
-    }
-
     public function getRawName()
     {
-        return $this->getAttributes()['name'];
+        return $this->getRaw('name');
+    }
+
+    public function getRawImage()
+    {
+        return $this->getRaw('image');
+    }
+
+    public function getRaw(string $attr)
+    {
+        return $this->getAttributes()[$attr];
     }
 
     public function isApproved()
