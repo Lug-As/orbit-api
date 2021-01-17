@@ -18,6 +18,7 @@ class RequestResource extends JsonResource
      */
     public function toArray($request)
     {
+        /** @var self|\App\Models\Request $this */
         return [
             'id' => $this->id,
             'name' => $this->name,

@@ -118,9 +118,13 @@ class RequestService
     {
         $out = [];
         foreach ($ad_types as $ad_type) {
-            $out[$ad_type['id']] = [
-                'price' => $ad_type['price'],
-            ];
+            if (isset($ad_type['price'])) {
+                $out[$ad_type['id']] = [
+                    'price' => $ad_type['price'],
+                ];
+            } else {
+                $out[] = $ad_type['id'];
+            }
         }
         return $out;
     }
