@@ -88,6 +88,7 @@ class RequestService
      */
     public function storeRequest(array $data)
     {
+        $data['name'] = Str::lower($data['name']);
         if (!$this->checkRequestName($data['name'])) {
             return $this->getErrorMessages();
         }
@@ -110,6 +111,7 @@ class RequestService
     public function updateRequest(array $data, $id)
     {
         $request = Request::findOrFail($id);
+        $data['name'] = Str::lower($data['name']);
         if (isset($data['name']) and !$this->checkRequestName($data['name'], $request->id)) {
             return $this->getErrorMessages();
         }
