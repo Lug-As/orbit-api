@@ -28,6 +28,9 @@ class CreateAccountsTable extends Migration
             $table->foreignId('user_id')->constrained()
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
+            $table->foreignId('region_id')
+                ->nullable()
+                ->constrained();
             $table->softDeletes();
             $table->timestamps();
         });

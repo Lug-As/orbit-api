@@ -52,13 +52,15 @@ use Illuminate\Database\Eloquent\Model;
  * @method static Builder|Request whereTelegram($value)
  * @property string|null $about
  * @method static Builder|Request whereAbout($value)
+ * @property int|null $region_id
+ * @method static Builder|Request whereRegionId($value)
  */
 class Request extends Model
 {
     use HasFactory, GetsAccountAttrs;
 
     protected $fillable = [
-        'name', 'image', 'about', 'user_id',
+        'name', 'image', 'about', 'user_id', 'region_id'
     ];
 
     protected $casts = [
@@ -79,6 +81,11 @@ class Request extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function region()
+    {
+        return $this->belongsTo(Region::class);
     }
 
     public function account()

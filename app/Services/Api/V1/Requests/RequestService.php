@@ -165,7 +165,7 @@ class RequestService
      */
     protected function queryBuilder(): Builder
     {
-        return Request::with(['user', 'ad_types', 'topics', 'account']);
+        return Request::with(['user', 'ad_types', 'topics', 'account', 'region']);
     }
 
     protected function transformAdTypes(array $ad_types): array

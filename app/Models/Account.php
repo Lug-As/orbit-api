@@ -53,13 +53,15 @@ use Illuminate\Database\Eloquent\Builder;
  * @method static Builder|Account whereTelegram($value)
  * @property string|null $about
  * @method static Builder|Account whereAbout($value)
+ * @property int|null $region_id
+ * @method static Builder|Account whereRegionId($value)
  */
 class Account extends Model
 {
     use HasFactory, SoftDeletes, GetsAccountAttrs;
 
     protected $fillable = [
-        'name', 'image', 'about', 'user_id',
+        'name', 'image', 'about', 'user_id', 'region_id'
     ];
 
     protected $casts = [
@@ -80,6 +82,11 @@ class Account extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function region()
+    {
+        return $this->belongsTo(Region::class);
     }
 
     public function responses()

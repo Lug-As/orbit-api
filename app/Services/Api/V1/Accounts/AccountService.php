@@ -40,8 +40,6 @@ class AccountService
         return $this->wrapInData(AccountResource::make($offer));
     }
 
-// https://www.tiktok.com/node/share/user/@danya_milokhin?user_agent=
-
     public function destroyAccount(int $id): void
     {
         $account = Account::find($id);
@@ -67,7 +65,7 @@ class AccountService
      */
     protected function queryBuilder(): Builder
     {
-        return Account::with(['user', 'ad_types', 'topics']);
+        return Account::with(['user', 'ad_types', 'topics', 'region']);
     }
 
     /**

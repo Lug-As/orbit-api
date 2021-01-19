@@ -27,6 +27,9 @@ class CreateRequestsTable extends Migration
             $table->foreignId('user_id')->constrained()
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
+            $table->foreignId('region_id')
+                ->nullable()
+                ->constrained();
             // ----------------
             $table->boolean('checked')->default(false);
             $table->foreignId('account_id')

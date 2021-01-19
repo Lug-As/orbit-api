@@ -6,6 +6,7 @@ use App\Models\Account;
 use App\Models\AdType;
 use App\Models\Offer;
 use App\Models\Project;
+use App\Models\Region;
 use App\Models\Request;
 use App\Models\Response;
 use App\Models\Topic;
@@ -28,17 +29,32 @@ class DatabaseSeeder extends Seeder
             'email' => 'skal.04@mail.ru',
             'password' => Hash::make('123123123'),
             'phone' => '8005553535',
-            'is_admin' => true
+            'is_admin' => true,
         ]);
         User::create([
             'name' => 'User',
             'email' => 'skal.03@mail.ru',
             'password' => Hash::make('123123123'),
-            'phone' => '8005553536'
+            'phone' => '8005553536',
         ]);
         User::factory()->count(48)->create();
-        Account::factory()->count(100)->create();
-        Request::factory()->count(200)->create();
+        $region_sources = include './storage/app/public/regions/regions.php';
+        foreach ($region_sources as $region_source) {
+            Region::create([
+                'name' => $region_source,
+                'country_name' => 'Россия',
+            ]);
+        }
+        /** @var Region[] $accounts */
+        $regions = Region::all();
+        foreach ($regions as $region) {
+            Account::factory()->count(random_int(0, 2))->create([
+                'region_id' => $region->id,
+            ]);
+            Request::factory()->count(random_int(0, 3))->create([
+                'region_id' => $region->id,
+            ]);
+        }
         Project::factory()->count(100)->create();
         Response::factory()->count(100)->create();
         Offer::factory()->count(100)->create();
@@ -70,7 +86,7 @@ class DatabaseSeeder extends Seeder
             ]);
             foreach ($accounts as $account) {
                 if (!random_int(0, 2)) {
-                    $account->ad_types()->attach($adTypeRecord->id, ['price' => random_int(500, 10000)]);
+                    $account->ad_types()->attach($adTypeRecord->id, ['price' => random_int(500, 100000)]);
                 }
             }
             foreach ($projects as $project) {
@@ -80,7 +96,7 @@ class DatabaseSeeder extends Seeder
             }
             foreach ($requests as $request) {
                 if (!random_int(0, 2)) {
-                    $request->ad_types()->attach($adTypeRecord->id, ['price' => random_int(500, 10000)]);
+                    $request->ad_types()->attach($adTypeRecord->id, ['price' => random_int(50, 100000)]);
                 }
             }
         }
