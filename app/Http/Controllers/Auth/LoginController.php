@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use App\Services\Api\V1\Tokens\AccessTokenService;
@@ -22,6 +23,15 @@ class LoginController extends Controller
     */
 
     use AuthenticatesUsers;
+
+    protected function sendLoginResponse(Request $request)
+    {
+        $this->clearLoginAttempts($request);
+        if ($response = $this->authenticated($request, $this->guard()->user())) {
+            return $response;
+        }
+        return response()->json([], 204);
+    }
 
     /**
      * Where to redirect users after login.

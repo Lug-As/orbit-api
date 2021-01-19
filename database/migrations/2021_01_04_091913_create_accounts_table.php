@@ -19,6 +19,7 @@ class CreateAccountsTable extends Migration
             $table->id();
             $table->string('name', 25)->unique();
             $table->string('image', 100)->nullable();
+            $table->text('about')->nullable();
             $table->string('telegram', 50)->nullable();
             $table->string('email')->nullable();
             $table->string('phone', 10)->nullable();

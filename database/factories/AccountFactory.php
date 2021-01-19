@@ -25,6 +25,8 @@ class AccountFactory extends Factory
     {
         return [
             'name' => Str::lower(Str::random(10)),
+            'about' => $this->faker->text(2000),
+            'image' => 'PvsiXHPTwOE6.jpg',
             'telegram' => Str::lower(Str::random(random_int(5, 16))),
             'phone' => '800' . random_int(1000000, 9999999),
             'email' => $this->faker->unique()->safeEmail,

@@ -50,17 +50,19 @@ use Illuminate\Database\Eloquent\Model;
  * @method static Builder|Request whereEmail($value)
  * @method static Builder|Request wherePhone($value)
  * @method static Builder|Request whereTelegram($value)
+ * @property string|null $about
+ * @method static Builder|Request whereAbout($value)
  */
 class Request extends Model
 {
     use HasFactory, GetsAccountAttrs;
 
     protected $fillable = [
-        'name', 'image', 'user_id'
+        'name', 'image', 'about', 'user_id',
     ];
 
     protected $casts = [
-        'checked' => 'bool'
+        'checked' => 'bool',
     ];
 
     public function ad_types()

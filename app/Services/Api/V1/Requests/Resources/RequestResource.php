@@ -22,6 +22,7 @@ class RequestResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'about' => $this->about,
             'image' => $this->image,
             'checked' => $this->checked,
             'created_at' => $this->created_at->toDateTimeString(),

@@ -51,13 +51,19 @@ use Illuminate\Database\Eloquent\Builder;
  * @method static Builder|Account whereEmail($value)
  * @method static Builder|Account wherePhone($value)
  * @method static Builder|Account whereTelegram($value)
+ * @property string|null $about
+ * @method static Builder|Account whereAbout($value)
  */
 class Account extends Model
 {
     use HasFactory, SoftDeletes, GetsAccountAttrs;
 
     protected $fillable = [
-        'name', 'image', 'user_id',
+        'name', 'image', 'about', 'user_id',
+    ];
+
+    protected $casts = [
+        'checked' => 'bool',
     ];
 
     public function ad_types()

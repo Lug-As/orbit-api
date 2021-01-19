@@ -69,6 +69,7 @@ class RequestService
             $account = Account::create([
                 'name' => $request->getRawName(),
                 'image' => $request->getRawImage(),
+                'about' => $request->about,
                 'user_id' => $request->user_id,
             ]);
             $account->ad_types()->sync($this->transformAdTypesFromModels($request->ad_types));

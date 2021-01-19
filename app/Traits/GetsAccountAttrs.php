@@ -15,6 +15,8 @@ trait GetsAccountAttrs
 
     public function getImageAttribute($data)
     {
-        return request()->getSchemeAndHttpHost() . '/' . FileService::UPLOAD_DIR . "/$data";
+        return $data ?
+            request()->getSchemeAndHttpHost() . '/' . FileService::UPLOAD_DIR . "/$data"
+            : null;
     }
 }

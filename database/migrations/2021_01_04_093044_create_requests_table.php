@@ -20,6 +20,7 @@ class CreateRequestsTable extends Migration
             // Таблица accounts
             $table->string('name', 25);
             $table->string('image', 100)->nullable();
+            $table->text('about')->nullable();
             $table->string('telegram', 50)->nullable();
             $table->string('email')->nullable();
             $table->string('phone', 10)->nullable();
