@@ -55,6 +55,7 @@ use Illuminate\Database\Eloquent\Builder;
  * @method static Builder|Account whereAbout($value)
  * @property int|null $region_id
  * @method static Builder|Account whereRegionId($value)
+ * @property-read \App\Models\Region|null $region
  */
 class Account extends Model
 {

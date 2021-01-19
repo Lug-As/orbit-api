@@ -38,12 +38,14 @@ class DatabaseSeeder extends Seeder
             'phone' => '8005553536',
         ]);
         User::factory()->count(48)->create();
-        $region_sources = include './storage/app/public/regions/regions.php';
-        foreach ($region_sources as $region_source) {
-            Region::create([
-                'name' => $region_source,
-                'country_name' => 'Россия',
-            ]);
+        $regions_data = include './storage/app/data/regions/regions.php';
+        foreach ($regions_data as $country_name => $regions_list) {
+            foreach ($regions_list as $region) {
+                Region::create([
+                    'name' => $region,
+                    'country_name' => $country_name,
+                ]);
+            }
         }
         /** @var Region[] $accounts */
         $regions = Region::all();
@@ -51,7 +53,7 @@ class DatabaseSeeder extends Seeder
             Account::factory()->count(random_int(0, 2))->create([
                 'region_id' => $region->id,
             ]);
-            Request::factory()->count(random_int(0, 3))->create([
+            Request::factory()->count(random_int(0, 4))->create([
                 'region_id' => $region->id,
             ]);
         }

@@ -54,6 +54,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static Builder|Request whereAbout($value)
  * @property int|null $region_id
  * @method static Builder|Request whereRegionId($value)
+ * @property-read \App\Models\Region|null $region
  */
 class Request extends Model
 {

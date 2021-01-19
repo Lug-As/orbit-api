@@ -18,6 +18,10 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Region whereCountryName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Region whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Region whereName($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Account[] $accounts
+ * @property-read int|null $accounts_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Request[] $requests
+ * @property-read int|null $requests_count
  */
 class Region extends Model
 {
