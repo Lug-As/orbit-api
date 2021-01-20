@@ -93,7 +93,7 @@ class RequestService
     public function resendRequest($id, array $data)
     {
         $request = Request::findOrFail($id);
-        if ($request->isCanceled()) {
+        if ($this->checkRequestIsCanceled($request)) {
             $result = $this->updateRequest($request->id, $data);
             if ($result instanceof BadRequestResource) {
                 return $result;
@@ -101,6 +101,8 @@ class RequestService
             $request->checked = false;
             $request->fail_msg = null;
             $request->save();
+        } else {
+            return $this->getErrorMessages();
         }
         return $request;
     }
@@ -259,5 +261,14 @@ class RequestService
     protected function validQuery(?string $query)
     {
         return Str::length($query) < 24;
+    }
+
+    protected function checkRequestIsCanceled(Request $request)
+    {
+        $check = $request->isCanceled();
+        if (!$check) {
+            $this->messageBag->add('request', 'You can resend only canceled request.');
+        }
+        return $check;
     }
 }
