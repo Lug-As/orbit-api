@@ -67,6 +67,16 @@ class RequestPolicy
         return $this->isOwnEntity($user, $request);
     }
 
+    /**
+     * @param User $user
+     * @param Request $request
+     * @return bool
+     */
+    public function resend(User $user, Request $request)
+    {
+        return $this->isOwnEntity($user, $request);
+    }
+
     public function cancel()
     {
         return false;

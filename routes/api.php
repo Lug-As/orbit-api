@@ -5,16 +5,15 @@ use App\Http\Controllers\Api\V1\Offer\OfferController;
 use App\Http\Controllers\Api\V1\Project\ProjectController;
 use App\Http\Controllers\Api\V1\Request\RequestController;
 use App\Http\Controllers\Api\V1\Response\ResponseController;
-use App\Http\Controllers\Auth\ForgotPasswordController;
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\Auth\ResetPasswordController;
-use App\Http\Controllers\Auth\VerificationController;
+use App\Http\Controllers\Api\V1\Auth\ForgotPasswordController;
+use App\Http\Controllers\Api\V1\Auth\LoginController;
+use App\Http\Controllers\Api\V1\Auth\RegisterController;
+use App\Http\Controllers\Api\V1\Auth\ResetPasswordController;
+use App\Http\Controllers\Api\V1\Auth\VerificationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Services\Api\V1\Users\Resources\UserResource;
 
-// REMOVE THIS
 
 /*
 |--------------------------------------------------------------------------
@@ -39,15 +38,16 @@ Route::group([
                 'create'
             ]);
         Route::get('requests/canceled', [RequestController::class, 'canceled']);
-        Route::put('requests/{id}/cancel', [RequestController::class, 'cancel']);
+        Route::post('requests/{id}/cancel', [RequestController::class, 'cancel']);
         Route::post('requests/{id}/approve', [RequestController::class, 'approve']);
+        Route::post('requests/{id}/resend', [RequestController::class, 'resend']);
         Route::apiResource('requests', RequestController::class);
         Route::apiResource('projects', ProjectController::class);
         Route::apiResource('offers', OfferController::class);
         Route::get('offers/by-account/{account_id}', [OfferController::class, 'getByAccount']);
         Route::get('offers/my', [OfferController::class, 'ownIndex']);
         Route::apiResource('responses', ResponseController::class);
-        Route::get('/user', function (Request $request) {
+        Route::get('user', function (Request $request) {
             return UserResource::make($request->user());
         });
     });

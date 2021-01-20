@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Services\Api\V1\Files\FileService;
 use App\Traits\GetsAccountAttrs;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -54,8 +53,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static Builder|Request whereAbout($value)
  * @property int|null $region_id
  * @method static Builder|Request whereRegionId($value)
- * @property-read \App\Models\Region|null $region
- * @property-read Collection|\App\Models\Age[] $ages
+ * @property-read Region|null $region
+ * @property-read Collection|Age[] $ages
  * @property-read int|null $ages_count
  */
 class Request extends Model

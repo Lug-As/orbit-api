@@ -60,7 +60,7 @@ class RequestService
 
     /**
      * @param $id
-     * @return Account|\Illuminate\Database\Eloquent\Model|mixed
+     * @return array
      */
     public function approveRequest($id)
     {
@@ -71,9 +71,11 @@ class RequestService
                 'image' => $request->getRawImage(),
                 'about' => $request->about,
                 'user_id' => $request->user_id,
+                'region_id' => $request->region_id,
             ]);
             $account->ad_types()->sync($this->transformAdTypesFromModels($request->ad_types));
             $account->topics()->sync($request->topics()->allRelatedIds());
+            $account->ages()->sync($request->ages()->allRelatedIds());
             $request->checked = true;
             $request->account_id = $account->id;
             $request->save();
@@ -81,6 +83,26 @@ class RequestService
             $account = $request->account;
         }
         return $this->wrapInData(AccountResource::make($account));
+    }
+
+    /**
+     * @param $id
+     * @param array $data
+     * @return Request|BadRequestResource
+     */
+    public function resendRequest($id, array $data)
+    {
+        $request = Request::findOrFail($id);
+        if ($request->isCanceled()) {
+            $result = $this->updateRequest($request->id, $data);
+            if ($result instanceof BadRequestResource) {
+                return $result;
+            }
+            $request->checked = false;
+            $request->fail_msg = null;
+            $request->save();
+        }
+        return $request;
     }
 
     /**
@@ -109,10 +131,12 @@ class RequestService
      * @param int $id
      * @return BadRequestResource|array
      */
-    public function updateRequest(array $data, $id)
+    public function updateRequest($id, array $data)
     {
         $request = Request::findOrFail($id);
-        $data['name'] = Str::lower($data['name']);
+        if (isset($data['name'])) {
+            $data['name'] = Str::lower($data['name']);
+        }
         if (isset($data['name']) and !$this->checkRequestName($data['name'], $request->id)) {
             return $this->getErrorMessages();
         }

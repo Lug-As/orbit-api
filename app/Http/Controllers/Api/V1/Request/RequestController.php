@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Request;
 
 use App\Http\Controllers\Api\V1\Request\FormRequests\CancelRequestRequest;
+use App\Http\Controllers\Api\V1\Request\FormRequests\ResendRequestRequest;
 use App\Http\Controllers\Api\V1\Request\FormRequests\StoreRequestRequest;
 use App\Http\Controllers\Api\V1\Request\FormRequests\UpdateRequestRequest;
 use App\Http\Controllers\Controller;
@@ -61,6 +62,20 @@ class RequestController extends Controller
     }
 
     /**
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function resend(int $id, ResendRequestRequest $request)
+    {
+        $this->authorize('resend', $this->requestService->getRequestOnlyUserId($id));
+        $result = $this->requestService->resendRequest($id, $request->getFormData());
+        if ($this->isBadRequestResponse($result)) {
+            return response()->json($result, 400);
+        }
+        return response()->json([], 204);
+    }
+
+    /**
      * @param CancelRequestRequest $request
      * @param int $id
      * @return JsonResponse
@@ -81,7 +96,7 @@ class RequestController extends Controller
         return response()->json($this->requestService->searchOwnCanceledRequest());
     }
 
-    /**\
+    /**
      * @param int $id
      * @return JsonResponse
      */
@@ -110,7 +125,7 @@ class RequestController extends Controller
     public function update(UpdateRequestRequest $updateRequest, int $id)
     {
         $this->authorize('update', $this->requestService->getRequestOnlyUserId($id));
-        $result = $this->requestService->updateRequest($updateRequest->getFormData(), $id);
+        $result = $this->requestService->updateRequest($id, $updateRequest->getFormData());
         if ($this->isBadRequestResponse($result)) {
             return response()->json($result, 400);
         }

@@ -29,6 +29,7 @@ class RequestResource extends JsonResource
             'checked' => $this->checked,
             'created_at' => $this->created_at->toDateTimeString(),
             'is_approved' => $this->isApproved(),
+            'is_canceled' => $this->isCanceled(),
             'fail_msg' => $this->fail_msg,
             'account' => $this->account ? AccountResourceNoRelations::make($this->account) : null,
             'user' => UserResource::make($this->user),
