@@ -69,6 +69,10 @@ class Request extends Model
         'checked' => 'bool',
     ];
 
+    protected $attributes = [
+        'checked' => false,
+    ];
+
     public function ad_types()
     {
         return $this->belongsToMany(AdType::class)

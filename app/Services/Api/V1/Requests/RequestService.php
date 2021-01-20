@@ -11,26 +11,31 @@ use App\Services\Api\V1\Accounts\Resources\AccountResource;
 use App\Services\Api\V1\Files\FileService;
 use App\Services\Api\V1\Requests\Resources\RequestResource;
 use App\Services\Api\V1\Requests\Resources\RequestsResource;
+use App\Services\Api\V1\TikTokApi\TikTokApiManager;
 use App\Traits\BadRequestErrorsGetable;
 use App\Traits\CanWrapInData;
-use Auth;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\MessageBag;
 use Illuminate\Support\Str;
+use Auth;
 
 class RequestService
 {
     use CanWrapInData, BadRequestErrorsGetable;
 
     protected $fileService;
+    protected $tikTokApiManager;
 
     public function __construct(
         MessageBag $messageBag,
-        FileService $fileService
+        FileService $fileService,
+        TikTokApiManager $tikTokApiManager
     )
     {
         $this->messageBag = $messageBag;
         $this->fileService = $fileService;
+        $this->tikTokApiManager = $tikTokApiManager;
     }
 
     public function searchRequests(?string $query)
@@ -79,6 +84,11 @@ class RequestService
             $request->checked = true;
             $request->account_id = $account->id;
             $request->save();
+            $info = $this->tikTokApiManager->loadAccountInfo($account->name);
+            if ($info) {
+                $account->followers = $info->followers;
+                $account->likes = $info->likes;
+            }
         } else {
             $account = $request->account;
         }

@@ -18,6 +18,8 @@ class AccountResourceNoRelations extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'image' => $this->image,
+            'likes' => $this->likes,
+            'followers' => $this->followers,
             'created_at' => $this->created_at->toDateTimeString(),
         ];
     }

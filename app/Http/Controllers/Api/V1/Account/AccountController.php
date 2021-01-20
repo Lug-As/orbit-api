@@ -55,6 +55,12 @@ class AccountController extends Controller
         return response()->json($this->accountService->updateAccount($request->getFormData(), $id));
     }
 
+    public function refreshInfo($id)
+    {
+        $this->authorize('refreshInfo', Account::class);
+        return response()->json($this->accountService->refreshAccountInfo($id));
+    }
+
     /**
      * Remove the specified resource from storage.
      *

@@ -20,16 +20,12 @@ class AccountResource extends JsonResource
     public function toArray($request)
     {
         /** @var self|\App\Models\Account $this */
-        return [
-            'id' => $this->id,
-            'name' => $this->name,
-            'image' => $this->image,
-            'created_at' => $this->created_at->toDateTimeString(),
-            'user' => UserResource::make($this->user),
-            'region' => RegionResource::make($this->region),
+        return array_merge(AccountResourceNoRelations::make($this->resource)->toArray($request), [
             'ad_types' => AdTypeResourceWithPrice::collection($this->ad_types),
             'topics' => TopicResource::collection($this->topics),
             'ages' => AgeResource::collection($this->ages),
-        ];
+            'region' => RegionResource::make($this->region),
+            'user' => UserResource::make($this->user),
+        ]);
     }
 }

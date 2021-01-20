@@ -13,7 +13,7 @@ class StoreRequestRequest extends AppFormRequest
         return [
             'name' => ['required', 'string', 'max:24'],
             'image' => ['nullable', 'file', 'mimetypes:image/jpeg,image/jpg,image/png', 'max:5000'],
-            'about' => ['required', 'string', 'max:2000'],
+            'about' => ['nullable', 'string', 'max:2000'],
             'topics' => ['required', 'array'],
             'topics.*' => ['integer', 'exists:topics,id'],
             'ad_types' => ['required', 'array'],

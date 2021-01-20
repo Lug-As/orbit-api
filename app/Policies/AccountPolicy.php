@@ -45,6 +45,11 @@ class AccountPolicy
         return $this->isOwnEntity($user, $account);
     }
 
+    public function refreshInfo()
+    {
+        return true;
+    }
+
     /**
      * Determine whether the user can delete the model.
      *

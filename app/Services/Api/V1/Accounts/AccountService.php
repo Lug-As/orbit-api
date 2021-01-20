@@ -8,6 +8,7 @@ use App\Models\Account;
 use App\Services\Api\V1\Accounts\Handlers\QueryFilterHandler;
 use App\Services\Api\V1\Accounts\Resources\AccountResource;
 use App\Services\Api\V1\Accounts\Resources\AccountsResource;
+use App\Services\Api\V1\TikTokApi\TikTokApiManager;
 use App\Traits\CanWrapInData;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -16,10 +17,15 @@ class AccountService
     use CanWrapInData;
 
     protected $filterHandler;
+    protected $tikTokApiManager;
 
-    public function __construct(QueryFilterHandler $filterHandler)
+    public function __construct(
+        QueryFilterHandler $filterHandler,
+        TikTokApiManager $tikTokApiManager
+    )
     {
         $this->filterHandler = $filterHandler;
+        $this->tikTokApiManager = $tikTokApiManager;
     }
 
     public function searchAccounts(?array $params = null)
@@ -35,9 +41,9 @@ class AccountService
 
     public function updateAccount(array $data, int $id)
     {
-        $offer = Account::findOrFail($id);
-        $offer->update($data);
-        return $this->wrapInData(AccountResource::make($offer));
+        $account = Account::findOrFail($id);
+        $account->update($data);
+        return $this->wrapInData(AccountResource::make($account));
     }
 
     public function destroyAccount(int $id): void
@@ -48,12 +54,23 @@ class AccountService
         }
     }
 
-    public function forceDestroyAccount(int $id): void
+    public function refreshAccountInfo($id)
+    {
+        $account = Account::findOrFail($id);
+        $info = $this->tikTokApiManager->loadAccountInfo($account->name);
+        if ($info) {
+            $account->followers = $info->followers;
+            $account->likes = $info->likes;
+        }
+        return $this->wrapInData(AccountResource::make($account));
+    }
+
+    public function forceDestroyAccount($id): void
     {
         Account::withTrashed()->findOrFail($id)->forceDelete($id);
     }
 
-    public function restoreAccount(int $id): void
+    public function restoreAccount($id): void
     {
         Account::withTrashed()->findOrFail($id)->restore();
     }
