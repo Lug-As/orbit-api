@@ -5,7 +5,7 @@ namespace App\Services\Api\V1\Requests\Resources;
 
 
 use App\Services\Api\V1\Accounts\Resources\AccountResourceNoRelations;
-use App\Services\Api\V1\AdTypes\Resources\AdTypeResourceWithPrice;
+use App\Services\Api\V1\AdTypes\Resources\AdTypeWithPriceResource;
 use App\Services\Api\V1\Ages\Resources\AgeResource;
 use App\Services\Api\V1\Regions\Resources\RegionResource;
 use App\Services\Api\V1\Topics\Resources\TopicResource;
@@ -34,7 +34,7 @@ class RequestResource extends JsonResource
             'account' => $this->account ? AccountResourceNoRelations::make($this->account) : null,
             'user' => UserResource::make($this->user),
             'region' => RegionResource::make($this->region),
-            'ad_types' => AdTypeResourceWithPrice::collection($this->ad_types),
+            'ad_types' => AdTypeWithPriceResource::collection($this->ad_types),
             'topics' => TopicResource::collection($this->topics),
             'ages' => AgeResource::collection($this->ages),
         ];

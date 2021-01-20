@@ -4,7 +4,7 @@
 namespace App\Services\Api\V1\Accounts\Resources;
 
 
-use App\Services\Api\V1\AdTypes\Resources\AdTypeResourceWithPrice;
+use App\Services\Api\V1\AdTypes\Resources\AdTypeWithPriceResource;
 use App\Services\Api\V1\Ages\Resources\AgeResource;
 use App\Services\Api\V1\Regions\Resources\RegionResource;
 use App\Services\Api\V1\Topics\Resources\TopicResource;
@@ -21,7 +21,7 @@ class AccountResource extends JsonResource
     {
         /** @var self|\App\Models\Account $this */
         return array_merge(AccountResourceNoRelations::make($this->resource)->toArray($request), [
-            'ad_types' => AdTypeResourceWithPrice::collection($this->ad_types),
+            'ad_types' => AdTypeWithPriceResource::collection($this->ad_types),
             'topics' => TopicResource::collection($this->topics),
             'ages' => AgeResource::collection($this->ages),
             'region' => RegionResource::make($this->region),
