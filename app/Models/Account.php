@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Builder;
  * App\Models\Account
  *
  * @property int $id
- * @property string $name
+ * @property string $title
  * @property string|null $image
  * @property int $user_id
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -64,7 +64,7 @@ class Account extends Model
     use HasFactory, SoftDeletes, GetsAccountAttrs;
 
     protected $fillable = [
-        'name', 'image', 'about', 'user_id', 'region_id',
+        'title', 'image', 'about', 'user_id', 'region_id',
     ];
 
     protected $casts = [

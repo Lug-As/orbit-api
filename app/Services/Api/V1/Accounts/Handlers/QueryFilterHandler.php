@@ -15,11 +15,14 @@ class QueryFilterHandler
         'type' => 'array',
         'followers_from' => 'int',
         'followers_to' => 'int',
+        'likes_from' => 'int',
+        'likes_to' => 'int',
     ];
 
     const ALLOWED_SORTS = [
         'price',
         'followers',
+        'likes',
     ];
 
     protected $onlyOneAdType = false;
@@ -31,12 +34,11 @@ class QueryFilterHandler
      */
     public function filter(Builder $queryBuilder, ?array $params): Builder
     {
-        if (is_array($params)) {
+        if ($params) {
             $queryBuilder = $this->prepareQueryBuilder($queryBuilder);
             $queryBuilder = $this->filterQuery($queryBuilder, $params);
             $queryBuilder = $this->sortQuery($queryBuilder, $params);
             $queryBuilder = $this->searchQuery($queryBuilder, $params);
-            $queryBuilder = $this->postpareQueryBuilder($queryBuilder);
         }
         return $queryBuilder;
     }
@@ -146,6 +148,22 @@ class QueryFilterHandler
             $queryBuilder->where('account_ad_type.price', '<=', $filters['price_to']);
             $joinAccountAdType = true;
         }
+        if ($filters['followers_from']) {
+            $queryBuilder->where('account_ad_type.followers', '>=', $filters['followers_from']);
+            $joinAccountAdType = true;
+        }
+        if ($filters['followers_to']) {
+            $queryBuilder->where('account_ad_type.followers', '<=', $filters['followers_to']);
+            $joinAccountAdType = true;
+        }
+        if ($filters['likes_from']) {
+            $queryBuilder->where('account_ad_type.likes', '>=', $filters['likes_from']);
+            $joinAccountAdType = true;
+        }
+        if ($filters['likes_to']) {
+            $queryBuilder->where('account_ad_type.likes', '<=', $filters['likes_to']);
+            $joinAccountAdType = true;
+        }
         if ($joinAccountAdType) {
             $queryBuilder->join('account_ad_type', 'account_ad_type.account_id', '=', 'accounts.id');
         }
@@ -156,9 +174,13 @@ class QueryFilterHandler
     {
         $sort = $sortParams['sort'];
         $direction = $sortParams['direction'];
-        if ($sort === 'price' and $this->onlyOneAdType) {
-            $queryBuilder->addSelect('account_ad_type.price');
-            $queryBuilder->orderBy('account_ad_type.price', $direction);
+        if ($sort === 'price') {
+            if ($this->onlyOneAdType) {
+                $queryBuilder->addSelect("account_ad_type.{$sort}");
+                $queryBuilder->orderBy("account_ad_type.{$sort}", $direction);
+            }
+        } elseif ($sort) {
+            $queryBuilder->orderBy("accounts.{$sort}", $direction);
         }
         return $queryBuilder;
     }
@@ -170,7 +192,7 @@ class QueryFilterHandler
                 ->addSelect('users.name')
                 ->join('users', 'accounts.user_id', '=', 'users.id')
                 ->where(function ($query) use ($searchQuery) {
-                    $query->where('accounts.name', 'LIKE', "%{$searchQuery}%")
+                    $query->where('accounts.title', 'LIKE', "%{$searchQuery}%")
                         ->orWhere('users.name', 'LIKE', "%{$searchQuery}%");
                 });
         }
@@ -179,37 +201,6 @@ class QueryFilterHandler
 
     protected function prepareQueryBuilder(Builder $queryBuilder)
     {
-        return $queryBuilder->distinct();
-    }
-
-    protected function postpareQueryBuilder(Builder $queryBuilder)
-    {
-        return $queryBuilder->addSelect(['accounts.*']);
+        return $queryBuilder->addSelect('accounts.*')->distinct('accounts.id');
     }
 }
-//
-//    SELECT DISTINCT
-//        `accounts`.*
-//    FROM
-//        `accounts`
-//    JOIN `account_ad_type` ON `account_ad_type`.`account_id` = `accounts`.`id`
-//    JOIN `account_topic` ON `account_topic`.`account_id` = `accounts`.`id`
-//    WHERE
-//        `account_ad_type`.`price` > 2000 AND `account_ad_type`.`price` < 4000 AND `account_ad_type`.`ad_type_id` IN(2, 3, 4) AND `account_topic`.`topic_id` IN(1, 2, 4)
-//
-//    <-------------------------------------------------------------------------------------------->
-//
-//    Если выбран один вид рекламы и сортировка по цене
-//
-//    SELECT DISTINCT
-//        `accounts`.*,
-//        `account_ad_type`.`price`
-//    FROM
-//        `accounts`
-//    JOIN `account_ad_type` ON `account_ad_type`.`account_id` = `accounts`.`id`
-//    JOIN `account_topic` ON `account_topic`.`account_id` = `accounts`.`id`
-//    WHERE
-//        `account_ad_type`.`price` > 2000 AND `account_ad_type`.`price` < 4000 AND `account_ad_type`.`ad_type_id` = 2 AND `account_topic`.`topic_id` IN(1, 2, 4)
-//    ORDER BY
-//        `account_ad_type`.`price` ASC
-//

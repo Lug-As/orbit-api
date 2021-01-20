@@ -16,7 +16,7 @@ class AccountResourceNoRelations extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
+            'title' => $this->title,
             'image' => $this->image,
             'likes' => $this->likes,
             'followers' => $this->followers,

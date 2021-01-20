@@ -72,7 +72,7 @@ class RequestService
         $request = Request::findOrFail($id);
         if ($request->isNotApproved()) {
             $account = Account::create([
-                'name' => $request->getRawName(),
+                'title' => $request->getRawName(),
                 'image' => $request->getRawImage(),
                 'about' => $request->about,
                 'user_id' => $request->user_id,
@@ -84,7 +84,7 @@ class RequestService
             $request->checked = true;
             $request->account_id = $account->id;
             $request->save();
-            $info = $this->tikTokApiManager->loadAccountInfo($account->name);
+            $info = $this->tikTokApiManager->loadAccountInfo($account->title);
             if ($info) {
                 $account->followers = $info->followers;
                 $account->likes = $info->likes;

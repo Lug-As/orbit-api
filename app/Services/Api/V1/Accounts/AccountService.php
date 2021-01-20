@@ -31,6 +31,7 @@ class AccountService
     public function searchAccounts(?array $params = null)
     {
         $queryBuilder = $this->filterHandler->filter($this->queryBuilder(), $params);
+//        print_r($queryBuilder->toSql());die;
         return AccountsResource::make($queryBuilder->paginate(10));
     }
 
@@ -57,7 +58,7 @@ class AccountService
     public function refreshAccountInfo($id)
     {
         $account = Account::findOrFail($id);
-        $info = $this->tikTokApiManager->loadAccountInfo($account->name);
+        $info = $this->tikTokApiManager->loadAccountInfo($account->title);
         if ($info) {
             $account->followers = $info->followers;
             $account->likes = $info->likes;

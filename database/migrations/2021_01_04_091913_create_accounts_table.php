@@ -17,7 +17,7 @@ class CreateAccountsTable extends Migration
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_general_ci';
             $table->id();
-            $table->string('name', 25)->unique();
+            $table->string('title', 25)->unique();
             $table->string('image', 100)->nullable();
             $table->text('about')->nullable();
             $table->string('telegram', 50)->nullable();
