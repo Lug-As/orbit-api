@@ -65,7 +65,7 @@ class AccountService
      */
     protected function queryBuilder(): Builder
     {
-        return Account::with(['user', 'ad_types', 'topics', 'region']);
+        return Account::with(['user', 'ad_types', 'topics', 'region', 'ages']);
     }
 
     /**

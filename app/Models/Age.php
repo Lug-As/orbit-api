@@ -2,23 +2,25 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 /**
  * App\Models\Age
  *
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Account[] $accounts
+ * @property-read Collection|Account[] $accounts
  * @property-read int|null $accounts_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Request[] $requests
+ * @property-read Collection|Request[] $requests
  * @property-read int|null $requests_count
- * @method static \Illuminate\Database\Eloquent\Builder|Age newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Age newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Age query()
+ * @method static Builder|Age newModelQuery()
+ * @method static Builder|Age newQuery()
+ * @method static Builder|Age query()
  * @mixin \Eloquent
  * @property int $id
  * @property string $range
- * @method static \Illuminate\Database\Eloquent\Builder|Age whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Age whereRange($value)
+ * @method static Builder|Age whereId($value)
+ * @method static Builder|Age whereRange($value)
  */
 class Age extends Model
 {
