@@ -32,7 +32,7 @@ class Response extends Model
     use HasFactory;
 
     protected $fillable = [
-        'text', 'account_id', 'project_id'
+        'text', 'account_id', 'project_id',
     ];
 
     public function project()

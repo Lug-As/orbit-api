@@ -55,13 +55,15 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $region_id
  * @method static Builder|Request whereRegionId($value)
  * @property-read \App\Models\Region|null $region
+ * @property-read Collection|\App\Models\Age[] $ages
+ * @property-read int|null $ages_count
  */
 class Request extends Model
 {
     use HasFactory, GetsAccountAttrs;
 
     protected $fillable = [
-        'name', 'image', 'about', 'user_id', 'region_id'
+        'name', 'image', 'about', 'user_id', 'region_id',
     ];
 
     protected $casts = [
@@ -77,6 +79,11 @@ class Request extends Model
     public function topics()
     {
         return $this->belongsToMany(Topic::class);
+    }
+
+    public function ages()
+    {
+        return $this->belongsToMany(Age::class);
     }
 
     public function user()

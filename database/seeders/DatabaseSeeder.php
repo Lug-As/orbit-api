@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Account;
 use App\Models\AdType;
+use App\Models\Age;
 use App\Models\Offer;
 use App\Models\Project;
 use App\Models\Region;
@@ -41,29 +42,23 @@ class DatabaseSeeder extends Seeder
         $regions_data = include './storage/app/data/regions/regions.php';
         foreach ($regions_data as $country_name => $regions_list) {
             foreach ($regions_list as $region) {
-                Region::create([
+                $regionRecord = Region::create([
                     'name' => $region,
                     'country_name' => $country_name,
                 ]);
+                Account::factory()->count(random_int(0, 2))->create([
+                    'region_id' => $regionRecord->id,
+                ]);
+                Request::factory()->count(random_int(0, 4))->create([
+                    'region_id' => $regionRecord->id,
+                ]);
             }
-        }
-        /** @var Region[] $accounts */
-        $regions = Region::all();
-        foreach ($regions as $region) {
-            Account::factory()->count(random_int(0, 2))->create([
-                'region_id' => $region->id,
-            ]);
-            Request::factory()->count(random_int(0, 4))->create([
-                'region_id' => $region->id,
-            ]);
         }
         Project::factory()->count(100)->create();
         Response::factory()->count(100)->create();
         Offer::factory()->count(100)->create();
         $topics = ['Бизнес', 'Развлечение', 'Наука', 'Лайфхаки', 'Танцы'];
-        /** @var Account[]|null $accounts */
         $accounts = Account::all();
-        /** @var Request[]|null $requests */
         $requests = Request::all();
         foreach ($topics as $topic) {
             $topicRecord = Topic::create([
@@ -77,6 +72,22 @@ class DatabaseSeeder extends Seeder
             foreach ($requests as $request) {
                 if (!random_int(0, 2)) {
                     $request->topics()->attach($topicRecord->id);
+                }
+            }
+        }
+        $ages_data = include './storage/app/data/ages/ages.php';
+        foreach ($ages_data as $age_range) {
+            $ageRecord = Age::create([
+                'range' => $age_range,
+            ]);
+            foreach ($accounts as $account) {
+                if (!random_int(0, 2)) {
+                    $account->ages()->attach($ageRecord->id);
+                }
+            }
+            foreach ($requests as $request) {
+                if (!random_int(0, 2)) {
+                    $request->ages()->attach($ageRecord->id);
                 }
             }
         }

@@ -56,13 +56,15 @@ use Illuminate\Database\Eloquent\Builder;
  * @property int|null $region_id
  * @method static Builder|Account whereRegionId($value)
  * @property-read \App\Models\Region|null $region
+ * @property-read Collection|\App\Models\Age[] $ages
+ * @property-read int|null $ages_count
  */
 class Account extends Model
 {
     use HasFactory, SoftDeletes, GetsAccountAttrs;
 
     protected $fillable = [
-        'name', 'image', 'about', 'user_id', 'region_id'
+        'name', 'image', 'about', 'user_id', 'region_id',
     ];
 
     protected $casts = [
@@ -88,6 +90,11 @@ class Account extends Model
     public function region()
     {
         return $this->belongsTo(Region::class);
+    }
+
+    public function ages()
+    {
+        return $this->belongsToMany(Age::class);
     }
 
     public function responses()
