@@ -88,6 +88,7 @@ class RequestService
             if ($info) {
                 $account->followers = $info->followers;
                 $account->likes = $info->likes;
+                $account->save();
             }
         } else {
             $account = $request->account;
