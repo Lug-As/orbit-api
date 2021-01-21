@@ -15,7 +15,6 @@ use App\Services\Api\V1\TikTokApi\TikTokApiManager;
 use App\Traits\BadRequestErrorsGetable;
 use App\Traits\CanWrapInData;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\MessageBag;
 use Illuminate\Support\Str;
 use Auth;
@@ -77,6 +76,9 @@ class RequestService
                 'about' => $request->about,
                 'user_id' => $request->user_id,
                 'region_id' => $request->region_id,
+                'telegram' => $request->telegram,
+                'email' => $request->email,
+                'phone' => $request->phone,
             ]);
             $account->ad_types()->sync($this->transformAdTypesFromModels($request->ad_types));
             $account->topics()->sync($request->topics()->allRelatedIds());
@@ -132,6 +134,9 @@ class RequestService
         $request = Request::create($data);
         $request->topics()->sync($data['topics']);
         $request->ad_types()->sync($this->transformAdTypes($data['ad_types']));
+        if (isset($data['ages'])) {
+            $request->ages()->sync($data['ages']);
+        }
         if (isset($data['image'])) {
             $request->image = $this->fileService->handle($data['image']);
             $request->save();
@@ -157,8 +162,15 @@ class RequestService
         if (isset($data['topics'])) {
             $request->topics()->sync($data['topics']);
         }
+        if (isset($data['ages'])) {
+            $request->ages()->sync($data['ages']);
+        }
         if (isset($data['ad_types'])) {
             $request->ad_types()->sync($this->transformAdTypes($data['ad_types']));
+        }
+        if (isset($data['image'])) {
+            $request->image = $this->fileService->handle($data['image']);
+            $request->save();
         }
         return $this->wrapInData(RequestResource::make($request));
     }
@@ -240,7 +252,7 @@ class RequestService
      */
     protected function checkRequestName(string $name, ?int $except = null): bool
     {
-        return $this->checkAccountName($name)
+        return $this->checkAccountTitle($name)
             && $this->checkUserRequestName($name, $except);
     }
 
@@ -259,9 +271,9 @@ class RequestService
         return $check;
     }
 
-    protected function checkAccountName(string $name): bool
+    protected function checkAccountTitle(string $name): bool
     {
-        $check = !boolval(Account::whereName($name)
+        $check = !boolval(Account::whereTitle($name)
             ->count());
         if (!$check) {
             $this->messageBag->add('name', 'Account with this name already exists.');

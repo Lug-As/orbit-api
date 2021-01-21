@@ -17,7 +17,11 @@ class AccountResourceNoRelations extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
+            'about' => $this->about,
             'image' => $this->image,
+            'email' => $this->email,
+            'phone' => $this->phone,
+            'telegram' => $this->telegram,
             'likes' => $this->likes,
             'followers' => $this->followers,
             'created_at' => $this->created_at->toDateTimeString(),

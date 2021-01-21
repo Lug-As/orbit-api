@@ -58,17 +58,20 @@ use Illuminate\Database\Eloquent\Builder;
  * @property-read \App\Models\Region|null $region
  * @property-read Collection|\App\Models\Age[] $ages
  * @property-read int|null $ages_count
+ * @property-read mixed $name
+ * @method static Builder|Account whereTitle($value)
  */
 class Account extends Model
 {
     use HasFactory, SoftDeletes, GetsAccountAttrs;
 
     protected $fillable = [
-        'title', 'image', 'about', 'user_id', 'region_id',
+        'title', 'image', 'about', 'user_id', 'region_id', 'telegram', 'email', 'phone',
     ];
 
-    protected $casts = [
-        'checked' => 'bool',
+    protected $attributes = [
+        'followers' => 0,
+        'likes' => 0,
     ];
 
     public function ad_types()
@@ -105,5 +108,10 @@ class Account extends Model
     public function request()
     {
         return $this->hasOne(Request::class);
+    }
+
+    public function getTitleAttribute($data)
+    {
+        return '@' . $data;
     }
 }

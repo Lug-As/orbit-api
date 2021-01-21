@@ -62,7 +62,7 @@ class Request extends Model
     use HasFactory, GetsAccountAttrs;
 
     protected $fillable = [
-        'name', 'image', 'about', 'user_id', 'region_id',
+        'name', 'image', 'about', 'user_id', 'region_id', 'telegram', 'email', 'phone',
     ];
 
     protected $casts = [
@@ -102,6 +102,11 @@ class Request extends Model
     public function account()
     {
         return $this->belongsTo(Account::class);
+    }
+
+    public function getNameAttribute($data)
+    {
+        return '@' . $data;
     }
 
     public function getRawName()

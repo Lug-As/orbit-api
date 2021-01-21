@@ -45,7 +45,7 @@ class AccountPolicy
         return $this->isOwnEntity($user, $account);
     }
 
-    public function refreshInfo()
+    public function refresh()
     {
         return true;
     }

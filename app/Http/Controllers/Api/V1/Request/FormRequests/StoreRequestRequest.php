@@ -12,10 +12,16 @@ class StoreRequestRequest extends AppFormRequest
     {
         return [
             'name' => ['required', 'string', 'max:24'],
-            'image' => ['nullable', 'file', 'mimetypes:image/jpeg,image/jpg,image/png', 'max:5000'],
+            'image' => ['required', 'file', 'mimetypes:image/jpeg,image/jpg,image/png', 'max:5000'],
             'about' => ['nullable', 'string', 'max:2000'],
+            'phone' => ['nullable', 'string', 'size:10'],
+            'email' => ['nullable', 'string', 'email', 'max:255'],
+            'telegram' => ['nullable', 'string', 'max:32'],
+            'region_id' => ['nullable', 'integer', 'exists:regions,id'],
             'topics' => ['required', 'array'],
             'topics.*' => ['integer', 'exists:topics,id'],
+            'ages' => ['nullable', 'array'],
+            'ages.*' => ['integer', 'exists:ages,id'],
             'ad_types' => ['required', 'array'],
             'ad_types.*' => ['required', 'array'],
             'ad_types.*.id' => ['required', 'integer', 'exists:ad_types,id'],

@@ -33,7 +33,7 @@ Route::group([
 //        Route::delete('accounts/{id}/force', [AccountController::class, 'forceDestroy']);
 //        Route::post('accounts/{id}/restore', [AccountController::class, 'restore']);
 //        Route::get('accounts/trashed', [AccountController::class, 'ownTrashed']);
-        Route::post('accounts/{id}/refresh', [AccountController::class. 'refreshInfo']);
+        Route::post('accounts/{id}/refresh', [AccountController::class, 'refresh']);
         Route::apiResource('accounts', AccountController::class)
             ->except([
                 'create'
