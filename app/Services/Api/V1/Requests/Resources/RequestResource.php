@@ -4,7 +4,7 @@
 namespace App\Services\Api\V1\Requests\Resources;
 
 
-use App\Services\Api\V1\Accounts\Resources\AccountResourceNoRelations;
+use App\Services\Api\V1\Accounts\Resources\AccountNoRelationsResource;
 use App\Services\Api\V1\AdTypes\Resources\AdTypeWithPriceResource;
 use App\Services\Api\V1\Ages\Resources\AgeResource;
 use App\Services\Api\V1\Regions\Resources\RegionResource;
@@ -34,7 +34,7 @@ class RequestResource extends JsonResource
             'is_approved' => $this->isApproved(),
             'is_canceled' => $this->isCanceled(),
             'fail_msg' => $this->fail_msg,
-            'account' => $this->account ? AccountResourceNoRelations::make($this->account) : null,
+            'account' => $this->account ? AccountNoRelationsResource::make($this->account) : null,
             'user' => UserResource::make($this->user),
             'region' => RegionResource::make($this->region),
             'ad_types' => AdTypeWithPriceResource::collection($this->ad_types),
