@@ -14,6 +14,7 @@ class AccountNoRelationsResource extends JsonResource
      */
     public function toArray($request)
     {
+        /** @var self|\App\Models\Account $this */
         return [
             'id' => $this->id,
             'title' => $this->title,

@@ -9,9 +9,8 @@ use App\Services\Api\V1\Ages\Resources\AgeResource;
 use App\Services\Api\V1\Regions\Resources\RegionResource;
 use App\Services\Api\V1\Topics\Resources\TopicResource;
 use App\Services\Api\V1\Users\Resources\UserResource;
-use Illuminate\Http\Resources\Json\JsonResource;
 
-class AccountResource extends JsonResource
+class AccountResource extends AccountNoRelationsResource
 {
     /**
      * @param \Illuminate\Http\Request $request
@@ -20,7 +19,7 @@ class AccountResource extends JsonResource
     public function toArray($request)
     {
         /** @var self|\App\Models\Account $this */
-        return array_merge(AccountNoRelationsResource::make($this->resource)->toArray($request), [
+        return array_merge(parent::toArray($request), [
             'ad_types' => AdTypeWithPriceResource::collection($this->ad_types),
             'topics' => TopicResource::collection($this->topics),
             'ages' => AgeResource::collection($this->ages),

@@ -31,7 +31,6 @@ class AccountService
     public function searchAccounts(?array $params = null)
     {
         $queryBuilder = $this->filterHandler->filter($this->queryBuilder(), $params);
-//        print_r($queryBuilder->toSql());die;
         return AccountsResource::make($queryBuilder->paginate(10));
     }
 

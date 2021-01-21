@@ -4,9 +4,7 @@
 namespace App\Services\Api\V1\AdTypes\Resources;
 
 
-use Illuminate\Http\Resources\Json\JsonResource;
-
-class AdTypeWithPriceResource extends JsonResource
+class AdTypeWithPriceResource extends AdTypeResource
 {
     /**
      * @param \Illuminate\Http\Request $request
@@ -14,7 +12,7 @@ class AdTypeWithPriceResource extends JsonResource
      */
     public function toArray($request)
     {
-        return array_merge(AdTypeResource::make($this->resource)->toArray($request), [
+        return array_merge(parent::toArray($request), [
             'price' => $this->pivot ? $this->pivot->price : null,
         ]);
     }
