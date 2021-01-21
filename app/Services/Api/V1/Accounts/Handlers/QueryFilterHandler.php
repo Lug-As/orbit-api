@@ -13,6 +13,8 @@ class QueryFilterHandler
         'price_to' => 'int',
         'topic' => 'array',
         'type' => 'array',
+        'age' => 'array',
+        'region' => 'array',
         'followers_from' => 'int',
         'followers_to' => 'int',
         'likes_from' => 'int',
@@ -131,6 +133,21 @@ class QueryFilterHandler
                 $queryBuilder->where('account_topic.topic_id', $filters['topic']);
             }
         }
+        if ($filters['age']) {
+            $queryBuilder->join('account_age', 'account_age.account_id', '=', 'accounts.id');
+            if (is_array($filters['age'])) {
+                $queryBuilder->whereIn('account_age.age_id', $filters['age']);
+            } else {
+                $queryBuilder->where('account_age.age_id', $filters['age']);
+            }
+        }
+        if ($filters['region']) {
+            if (is_array($filters['region'])) {
+                $queryBuilder->whereIn('accounts.region_id', $filters['region']);
+            } else {
+                $queryBuilder->where('accounts.region_id', $filters['region']);
+            }
+        }
         if ($filters['type']) {
             if (is_array($filters['type'])) {
                 $queryBuilder->whereIn('account_ad_type.ad_type_id', $filters['type']);
@@ -173,14 +190,16 @@ class QueryFilterHandler
     protected function buildSortQuery(Builder $queryBuilder, array $sortParams)
     {
         $sort = $sortParams['sort'];
-        $direction = $sortParams['direction'];
-        if ($sort === 'price') {
-            if ($this->onlyOneAdType) {
-                $queryBuilder->addSelect("account_ad_type.{$sort}");
-                $queryBuilder->orderBy("account_ad_type.{$sort}", $direction);
+        if ($sort) {
+            $direction = $sortParams['direction'];
+            if ($sort === 'price') {
+                if ($this->onlyOneAdType) {
+                    $queryBuilder->addSelect("account_ad_type.{$sort}");
+                    $queryBuilder->orderBy("account_ad_type.{$sort}", $direction);
+                }
+            } else {
+                $queryBuilder->orderBy("accounts.{$sort}", $direction);
             }
-        } elseif ($sort) {
-            $queryBuilder->orderBy("accounts.{$sort}", $direction);
         }
         return $queryBuilder;
     }
