@@ -36,7 +36,7 @@ Route::group([
         Route::post('accounts/{id}/refresh', [AccountController::class, 'refresh']);
         Route::apiResource('accounts', AccountController::class)
             ->except([
-                'create'
+                'store'
             ]);
         Route::get('requests/canceled', [RequestController::class, 'canceled']);
         Route::post('requests/{id}/cancel', [RequestController::class, 'cancel']);
