@@ -16,6 +16,7 @@ class ProjectResource extends JsonResource
      */
     public function toArray($request)
     {
+        /** @var self|\App\Models\Project $this */
         return [
             'id' => $this->id,
             'text' => $this->text,

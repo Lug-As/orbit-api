@@ -7,7 +7,7 @@ namespace App\Services\Api\V1\Responses\Resources;
 use App\Services\Api\V1\Accounts\Resources\AccountNoRelationsResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ResponseResourceNoProject extends JsonResource
+class ResponseNoProjectResource extends JsonResource
 {
     /**
      * @param \Illuminate\Http\Request $request

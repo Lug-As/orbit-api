@@ -4,8 +4,8 @@
 namespace App\Services\Api\V1\Offers\Resources;
 
 
-use App\Services\Api\V1\Accounts\Resources\AccountResource;
-use App\Services\Api\V1\Users\Resources\UserResource;
+use App\Services\Api\V1\Accounts\Resources\AccountNoRelationsResource;
+use App\Services\Api\V1\Users\Resources\UserWithContactsResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class OfferResource extends JsonResource
@@ -16,11 +16,12 @@ class OfferResource extends JsonResource
      */
     public function toArray($request)
     {
+        /** @var self|\App\Models\Offer $this */
         return [
             'id' => $this->id,
             'text' => $this->text,
-            'user' => UserResource::make($this->user),
-            'account' => AccountResource::make($this->account),
+            'user' => UserWithContactsResource::make($this->user),
+            'account' => AccountNoRelationsResource::make($this->account),
             'created_at' => $this->created_at->toDateTimeString(),
         ];
     }

@@ -6,7 +6,7 @@ namespace App\Services\Api\V1\Projects;
 
 use App\Models\Project;
 use App\Services\Api\V1\Projects\Resources\ProjectResource;
-use App\Services\Api\V1\Projects\Resources\ProjectResourceWithResponses;
+use App\Services\Api\V1\Projects\Resources\ProjectWithResponsesResource;
 use App\Services\Api\V1\Projects\Resources\ProjectsResource;
 use App\Traits\CanWrapInData;
 use Illuminate\Database\Eloquent\Builder;
@@ -24,7 +24,7 @@ class ProjectService
     public function findProject($id)
     {
         $project = $this->queryBuilderWithResponses()->findOrFail($id);
-        return $this->wrapInData(ProjectResourceWithResponses::make($project));
+        return $this->wrapInData(ProjectWithResponsesResource::make($project));
     }
 
     public function storeProject(array $data)
