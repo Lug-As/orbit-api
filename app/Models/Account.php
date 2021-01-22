@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Traits\GetsAccountAttrs;
+use App\Traits\CanFormatImage;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -55,17 +55,17 @@ use Illuminate\Database\Eloquent\Builder;
  * @method static Builder|Account whereAbout($value)
  * @property int|null $region_id
  * @method static Builder|Account whereRegionId($value)
- * @property-read \App\Models\Region|null $region
- * @property-read Collection|\App\Models\Age[] $ages
+ * @property-read Region|null $region
+ * @property-read Collection|Age[] $ages
  * @property-read int|null $ages_count
  * @property-read mixed $name
  * @method static Builder|Account whereTitle($value)
- * @property-read Collection|\App\Models\ImageAccount[] $images
+ * @property-read Collection|ImageAccount[] $images
  * @property-read int|null $images_count
  */
 class Account extends Model
 {
-    use HasFactory, SoftDeletes, GetsAccountAttrs;
+    use HasFactory, SoftDeletes, CanFormatImage;
 
     protected $fillable = [
         'title', 'image', 'about', 'user_id', 'region_id', 'telegram', 'email', 'phone',
@@ -115,6 +115,11 @@ class Account extends Model
     public function images()
     {
         return $this->hasMany(ImageAccount::class);
+    }
+
+    public function getImageAttribute($data)
+    {
+        return $data ? $this->formatImage($data) : null;
     }
 
     public function getTitleAttribute($data)

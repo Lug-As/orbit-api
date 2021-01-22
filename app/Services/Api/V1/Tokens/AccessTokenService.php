@@ -8,6 +8,11 @@ use Illuminate\Support\Str;
 
 class AccessTokenService
 {
+    /**
+     * @param $request
+     * @param \App\Models\User $user
+     * @return array
+     */
     public static function generate($request, $user)
     {
         $tokenName = Str::substr($request->userAgent(), 0, 230) . '|' . $request->ip();

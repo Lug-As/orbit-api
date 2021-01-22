@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Traits\CanFormatImage;
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -11,17 +13,19 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property string $src
  * @property int $request_id
- * @property-read \App\Models\Request $request
- * @method static \Illuminate\Database\Eloquent\Builder|ImageRequest newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|ImageRequest newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|ImageRequest query()
- * @method static \Illuminate\Database\Eloquent\Builder|ImageRequest whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ImageRequest whereRequestId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ImageRequest whereSrc($value)
- * @mixin \Eloquent
+ * @property-read Request $request
+ * @method static Builder|ImageRequest newModelQuery()
+ * @method static Builder|ImageRequest newQuery()
+ * @method static Builder|ImageRequest query()
+ * @method static Builder|ImageRequest whereId($value)
+ * @method static Builder|ImageRequest whereRequestId($value)
+ * @method static Builder|ImageRequest whereSrc($value)
+ * @mixin Eloquent
  */
 class ImageRequest extends Model
 {
+    use CanFormatImage;
+
     protected $fillable = [
         'src', 'request_id',
     ];
@@ -31,5 +35,10 @@ class ImageRequest extends Model
     public function request()
     {
         return $this->belongsTo(Request::class);
+    }
+
+    public function getSrcAttribute($data)
+    {
+        return $data ? $this->formatImage($data) : null;
     }
 }

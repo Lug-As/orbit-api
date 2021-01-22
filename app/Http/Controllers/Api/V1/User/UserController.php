@@ -11,7 +11,6 @@ class UserController extends Controller
     public function show()
     {
         $user = Auth::user();
-        $this->authorize('show', $user);
         return UserWithContactsResource::make($user);
     }
 }

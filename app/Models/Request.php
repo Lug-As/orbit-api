@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Traits\GetsAccountAttrs;
+use App\Traits\CanFormatImage;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -56,12 +56,12 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read Region|null $region
  * @property-read Collection|Age[] $ages
  * @property-read int|null $ages_count
- * @property-read Collection|\App\Models\ImageAccount[] $images
+ * @property-read Collection|ImageAccount[] $images
  * @property-read int|null $images_count
  */
 class Request extends Model
 {
-    use HasFactory, GetsAccountAttrs;
+    use HasFactory, CanFormatImage;
 
     protected $fillable = [
         'name', 'image', 'about', 'user_id', 'region_id', 'telegram', 'email', 'phone',
@@ -114,6 +114,11 @@ class Request extends Model
     public function getNameAttribute($data)
     {
         return '@' . $data;
+    }
+
+    public function getImageAttribute($data)
+    {
+        return $data ? $this->formatImage($data) : null;
     }
 
     public function getRawName()
