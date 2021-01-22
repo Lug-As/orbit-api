@@ -72,7 +72,7 @@ class AccountService
                 ]);
             }
         }
-        return $this->wrapInData(AccountResource::make($account));
+        return $this->wrapInData(AccountWithGalleryResource::make($account));
     }
 
     public function destroyAccount(int $id)
