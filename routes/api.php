@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\V1\Auth\LoginController;
 use App\Http\Controllers\Api\V1\Auth\RegisterController;
 use App\Http\Controllers\Api\V1\Auth\ResetPasswordController;
 use App\Http\Controllers\Api\V1\Auth\VerificationController;
+use App\Http\Controllers\Api\V1\User\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Services\Api\V1\Users\Resources\UserResource;
@@ -48,9 +49,7 @@ Route::group([
         Route::get('offers/by-account/{account_id}', [OfferController::class, 'getByAccount']);
         Route::get('offers/my', [OfferController::class, 'ownIndex']);
         Route::apiResource('responses', ResponseController::class);
-        Route::get('user', function (Request $request) {
-            return UserResource::make($request->user());
-        });
+        Route::get('user', [UserController::class, 'show']);
     });
 
     // Auth::routes() // without Blade views
