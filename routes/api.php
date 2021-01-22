@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\Account\AccountController;
+use App\Http\Controllers\Api\V1\ImageRequest\ImageRequestController;
 use App\Http\Controllers\Api\V1\Offer\OfferController;
 use App\Http\Controllers\Api\V1\Project\ProjectController;
 use App\Http\Controllers\Api\V1\Request\RequestController;
@@ -11,9 +12,7 @@ use App\Http\Controllers\Api\V1\Auth\RegisterController;
 use App\Http\Controllers\Api\V1\Auth\ResetPasswordController;
 use App\Http\Controllers\Api\V1\Auth\VerificationController;
 use App\Http\Controllers\Api\V1\User\UserController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Services\Api\V1\Users\Resources\UserResource;
 
 
 /*
@@ -31,25 +30,24 @@ Route::group([
     'prefix' => 'v1',
 ], function () {
     Route::middleware('auth:sanctum')->group(function () {
-//        Route::delete('accounts/{id}/force', [AccountController::class, 'forceDestroy']);
-//        Route::post('accounts/{id}/restore', [AccountController::class, 'restore']);
-//        Route::get('accounts/trashed', [AccountController::class, 'ownTrashed']);
+        Route::delete('gallery-request/{id}', [ImageRequestController::class, 'destroy']);
         Route::post('accounts/{id}/refresh', [AccountController::class, 'refresh']);
-        Route::apiResource('accounts', AccountController::class)
-            ->except([
-                'store'
-            ]);
         Route::get('requests/canceled', [RequestController::class, 'canceled']);
         Route::post('requests/{id}/cancel', [RequestController::class, 'cancel']);
         Route::post('requests/{id}/approve', [RequestController::class, 'approve']);
         Route::post('requests/{id}/resend', [RequestController::class, 'resend']);
+        Route::get('offers/by-account/{account_id}', [OfferController::class, 'getByAccount']);
+        Route::get('offers/my', [OfferController::class, 'ownIndex']);
+        Route::get('user', [UserController::class, 'show']);
         Route::apiResource('requests', RequestController::class);
         Route::apiResource('projects', ProjectController::class);
         Route::apiResource('offers', OfferController::class);
-        Route::get('offers/by-account/{account_id}', [OfferController::class, 'getByAccount']);
-        Route::get('offers/my', [OfferController::class, 'ownIndex']);
         Route::apiResource('responses', ResponseController::class);
-        Route::get('user', [UserController::class, 'show']);
+        Route::apiResource('accounts', AccountController::class)
+            ->except('store');
+//        Route::delete('accounts/{id}/force', [AccountController::class, 'forceDestroy']);
+//        Route::post('accounts/{id}/restore', [AccountController::class, 'restore']);
+//        Route::get('accounts/trashed', [AccountController::class, 'ownTrashed']);
     });
 
     // Auth::routes() // without Blade views
@@ -61,9 +59,6 @@ Route::group([
 //    Route::post('password/reset', [ResetPasswordController::class, 'reset']);
 //    Route::post('email/resend', 'Auth\VerificationController@resend')->name('verification.resend');
 //    Route::get('email/verify/{id}/{hash}', [VerificationController::class, 'verify'])->name('verification.verify');
-});
-Route::get('/', function () {
-    return "Hello from API.";
 });
 
 //Route::get('/{uri}', function () {

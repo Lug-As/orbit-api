@@ -47,7 +47,7 @@ class OfferPolicy
 
     public function viewByAccount(User $user, Account $account)
     {
-        return $account->user_id === $user->id;
+        return $this->isOwnEntity($user, $account);
     }
 
     /**

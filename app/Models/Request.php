@@ -131,7 +131,7 @@ class Request extends Model
         return $this->getRaw('image');
     }
 
-    public function getRaw(string $attr)
+    public function getRaw($attr)
     {
         return $this->getAttributes()[$attr];
     }

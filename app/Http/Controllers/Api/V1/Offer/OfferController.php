@@ -45,7 +45,7 @@ class OfferController extends Controller
      */
     public function getByAccount(int $accountId)
     {
-        $this->authorize('viewByAccount', Account::findOrFail($accountId, ['user_id']));
+        $this->authorize('viewByAccount', [Offer::class, Account::findOrFail($accountId, ['user_id'])]);
         return response()->json($this->offerService->searchOffersByAccountId($accountId));
     }
 

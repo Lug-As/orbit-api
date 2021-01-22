@@ -32,7 +32,7 @@ class Offer extends Model
     use HasFactory;
 
     protected $fillable = [
-        'text', 'user_id', 'account_id'
+        'text', 'user_id', 'account_id',
     ];
 
     public function user()

@@ -40,4 +40,14 @@ class ImageRequest extends Model
     {
         return $data ? $this->formatImage($data) : null;
     }
+
+    public function getRawSrc()
+    {
+        return $this->getRaw('src');
+    }
+
+    public function getRaw($attr)
+    {
+        return $this->getAttributes()[$attr];
+    }
 }

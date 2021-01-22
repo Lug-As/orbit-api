@@ -12,6 +12,7 @@ class ImageAccountResource extends JsonResource
     {
         /** @var self|\App\Models\ImageAccount $this */
         return [
+            'id' => $this->id,
             'src' => $this->src,
         ];
     }

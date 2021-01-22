@@ -171,9 +171,9 @@ class RequestService
         $request = Request::findOrFail($id);
         if (isset($data['name'])) {
             $data['name'] = Str::lower($data['name']);
-        }
-        if (isset($data['name']) and !$this->checkRequestName($data['name'], $request->id)) {
-            return $this->getErrorMessages();
+            if (!$this->checkRequestName($data['name'], $request->id)) {
+                return $this->getErrorMessages();
+            }
         }
         $request->update($data);
         if (isset($data['topics'])) {

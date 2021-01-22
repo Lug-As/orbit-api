@@ -12,6 +12,7 @@ class ImageRequestResource extends JsonResource
     {
         /** @var self|\App\Models\ImageRequest $this */
         return [
+            'id' => $this->id,
             'src' => $this->src,
         ];
     }
