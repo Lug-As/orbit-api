@@ -12,6 +12,9 @@ class UpdateAccountRequest extends UpdateRequestRequest
     {
         $parent_rules = parent::rules();
         unset($parent_rules['name']);
-        return $parent_rules;
+        return array_merge($parent_rules, [
+            'gallery' => ['nullable', 'array', 'max:10'],
+            'gallery.*' => ['required', 'file', 'mimetypes:image/jpeg,image/jpg,image/png', 'max:5000'],
+        ]);
     }
 }

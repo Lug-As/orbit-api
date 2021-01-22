@@ -11,28 +11,36 @@ use App\Services\Api\V1\Accounts\Resources\AccountResource;
 use App\Services\Api\V1\Accounts\Resources\AccountsResource;
 use App\Services\Api\V1\Accounts\Resources\AccountWithGalleryResource;
 use App\Services\Api\V1\Files\FileService;
+use App\Services\Api\V1\ImageAccounts\ImageAccountService;
 use App\Services\Api\V1\TikTokApi\TikTokApiManager;
+use App\Traits\BadRequestErrorsGetable;
 use App\Traits\CanWrapInData;
 use File;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\MessageBag;
 
 class AccountService
 {
-    use CanWrapInData;
+    use CanWrapInData, BadRequestErrorsGetable;
 
     protected $filterHandler;
     protected $tikTokApiManager;
     protected $fileService;
+    protected $imageAccountService;
 
     public function __construct(
         QueryFilterHandler $filterHandler,
         TikTokApiManager $tikTokApiManager,
-        FileService $fileService
+        FileService $fileService,
+        MessageBag $messageBag,
+        ImageAccountService $imageAccountService
     )
     {
         $this->filterHandler = $filterHandler;
         $this->tikTokApiManager = $tikTokApiManager;
         $this->fileService = $fileService;
+        $this->messageBag = $messageBag;
+        $this->imageAccountService = $imageAccountService;
     }
 
     public function searchAccounts(?array $params = null)
@@ -65,12 +73,16 @@ class AccountService
             $account->save();
         }
         if (isset($data['gallery'])) {
-            foreach ($data['gallery'] as $gallery_image) {
-                $src = $this->fileService->handle($gallery_image);
-                ImageAccount::create([
-                    'src' => $src,
-                    'account_id' => $account->id,
-                ]);
+            if ($this->checkGalleryImagesCount($account->id, count($data['gallery']))) {
+                foreach ($data['gallery'] as $gallery_image) {
+                    $src = $this->fileService->handle($gallery_image);
+                    ImageAccount::create([
+                        'src' => $src,
+                        'account_id' => $account->id,
+                    ]);
+                }
+            } else {
+                return $this->getErrorMessages();
             }
         }
         return $this->wrapInData(AccountWithGalleryResource::make($account));
@@ -97,18 +109,25 @@ class AccountService
         return $this->wrapInData(AccountResource::make($account));
     }
 
-    public function forceDestroyAccount($id): void
+    public function forceDestroyAccount($id)
     {
         $account = Account::withTrashed()->findOrFail($id);
         if ($account->image) {
             File::delete(public_path(FileService::UPLOAD_DIR . '/' . $account->image));
         }
-        $account->forceDelete();
+        if ($account->images) {
+            foreach ($account->images as $image) {
+                $this->imageAccountService->destroyImageAccount($image);
+            }
+        }
+        return $account->forceDelete();
     }
 
-    public function restoreAccount($id): void
+    public function restoreAccount($id)
     {
-        Account::withTrashed()->findOrFail($id)->restore();
+        $account = Account::withTrashed()->findOrFail($id);
+        $account->restore();
+        return $this->wrapInData(AccountWithGalleryResource::make($account));
     }
 
     /**
@@ -151,5 +170,14 @@ class AccountService
             }
         }
         return $out;
+    }
+
+    protected function checkGalleryImagesCount($account_id, $with_count = 0)
+    {
+        $check = (ImageAccount::whereAccountId($account_id)->count() + $with_count) < 10;
+        if (!$check) {
+            $this->messageBag->add('gallery', 'You can upload max 10 images to gallery.');
+        }
+        return $check;
     }
 }

@@ -13,11 +13,8 @@ class FileService
     public const UPLOAD_DIR = 'uploads';
     protected const FILENAME_CHARACTERS = 12;
 
-    public function handle($image)
+    public function handle(UploadedFile $image)
     {
-        if (!($image instanceof UploadedFile)) {
-            throw new LogicException('First argument must be an instance of ' . UploadedFile::class);
-        }
         $filename = $this->getFilename($image);
         $this->saveImage($image, $filename);
         return $filename;

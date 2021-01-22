@@ -10,9 +10,15 @@ use File;
 
 class ImageAccountService
 {
-    public function destroyImageAccount($id)
+    /**
+     * @param ImageAccount|int $imageAccountOrId
+     * @return bool|null
+     * @throws \Exception
+     */
+    public function destroyImageAccount($imageAccountOrId)
     {
-        $imageAccount = ImageAccount::findOrFail($id);
+        $imageAccount = $imageAccountOrId instanceof ImageAccount ? $imageAccountOrId
+            : ImageAccount::findOrFail($imageAccountOrId);
         File::delete(public_path(FileService::UPLOAD_DIR . '/' . $imageAccount->getRawSrc()));
         return $imageAccount->delete();
     }

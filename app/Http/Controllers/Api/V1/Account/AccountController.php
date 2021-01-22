@@ -52,7 +52,11 @@ class AccountController extends Controller
     public function update(UpdateAccountRequest $request, $id)
     {
         $this->authorize('update', $this->accountService->getAccountOnlyUserId($id));
-        return response()->json($this->accountService->updateAccount($request->getFormData(), $id));
+        $result = $this->accountService->updateAccount($request->getFormData(), $id);
+        if ($this->isBadRequestResponse($result)) {
+            return response()->json($result, 400);
+        }
+        return response()->json($result);
     }
 
     public function refresh($id)
