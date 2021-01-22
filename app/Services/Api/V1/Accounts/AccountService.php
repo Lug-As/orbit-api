@@ -13,6 +13,7 @@ use App\Services\Api\V1\Accounts\Resources\AccountWithGalleryResource;
 use App\Services\Api\V1\Files\FileService;
 use App\Services\Api\V1\TikTokApi\TikTokApiManager;
 use App\Traits\CanWrapInData;
+use File;
 use Illuminate\Database\Eloquent\Builder;
 
 class AccountService
@@ -98,7 +99,11 @@ class AccountService
 
     public function forceDestroyAccount($id): void
     {
-        Account::withTrashed()->findOrFail($id)->forceDelete();
+        $account = Account::withTrashed()->findOrFail($id);
+        if ($account->image) {
+            File::delete(public_path(FileService::UPLOAD_DIR . '/' . $account->image));
+        }
+        $account->forceDelete();
     }
 
     public function restoreAccount($id): void

@@ -16,6 +16,7 @@ use App\Services\Api\V1\Requests\Resources\RequestWithGalleryResource;
 use App\Services\Api\V1\TikTokApi\TikTokApiManager;
 use App\Traits\BadRequestErrorsGetable;
 use App\Traits\CanWrapInData;
+use File;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\MessageBag;
 use Illuminate\Support\Str;
@@ -220,7 +221,12 @@ class RequestService
 
     public function destroyRequest(int $id)
     {
-        return Request::whereId($id)->delete();
+        $request = Request::find($id);
+        if ($request && $request->image) {
+            File::delete(public_path(FileService::UPLOAD_DIR . '/' . $request->image));
+            return $request->delete();
+        }
+        return true;
     }
 
     /**
