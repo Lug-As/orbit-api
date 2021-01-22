@@ -56,6 +56,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read Region|null $region
  * @property-read Collection|Age[] $ages
  * @property-read int|null $ages_count
+ * @property-read Collection|\App\Models\ImageAccount[] $images
+ * @property-read int|null $images_count
  */
 class Request extends Model
 {
@@ -102,6 +104,11 @@ class Request extends Model
     public function account()
     {
         return $this->belongsTo(Account::class);
+    }
+
+    public function images()
+    {
+        return $this->hasMany(ImageAccount::class);
     }
 
     public function getNameAttribute($data)

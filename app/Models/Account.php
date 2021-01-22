@@ -60,6 +60,8 @@ use Illuminate\Database\Eloquent\Builder;
  * @property-read int|null $ages_count
  * @property-read mixed $name
  * @method static Builder|Account whereTitle($value)
+ * @property-read Collection|\App\Models\ImageAccount[] $images
+ * @property-read int|null $images_count
  */
 class Account extends Model
 {
@@ -108,6 +110,11 @@ class Account extends Model
     public function request()
     {
         return $this->hasOne(Request::class);
+    }
+
+    public function images()
+    {
+        return $this->hasMany(ImageAccount::class);
     }
 
     public function getTitleAttribute($data)

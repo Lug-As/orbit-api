@@ -10,8 +10,11 @@ trait GetsAccountAttrs
 {
     public function getImageAttribute($data)
     {
-        return $data ?
-            request()->getSchemeAndHttpHost() . '/' . FileService::UPLOAD_DIR . "/$data"
-            : null;
+        return $data ? $this->formatImage($data) : null;
+    }
+
+    protected function formatImage($src)
+    {
+        return request()->getSchemeAndHttpHost() . '/' . FileService::UPLOAD_DIR . "/$src";
     }
 }
