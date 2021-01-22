@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\Account\AccountController;
+use App\Http\Controllers\Api\V1\ImageAccount\ImageAccountController;
 use App\Http\Controllers\Api\V1\ImageRequest\ImageRequestController;
 use App\Http\Controllers\Api\V1\Offer\OfferController;
 use App\Http\Controllers\Api\V1\Project\ProjectController;
@@ -31,6 +32,7 @@ Route::group([
 ], function () {
     Route::middleware('auth:sanctum')->group(function () {
         Route::delete('gallery-request/{id}', [ImageRequestController::class, 'destroy']);
+        Route::delete('gallery-account/{id}', [ImageAccountController::class, 'destroy']);
         Route::post('accounts/{id}/refresh', [AccountController::class, 'refresh']);
         Route::get('requests/canceled', [RequestController::class, 'canceled']);
         Route::post('requests/{id}/cancel', [RequestController::class, 'cancel']);

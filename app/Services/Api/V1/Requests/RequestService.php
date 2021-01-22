@@ -9,7 +9,7 @@ use App\Models\ImageAccount;
 use App\Models\ImageRequest;
 use App\Models\Request;
 use App\Resources\BadRequestResource;
-use App\Services\Api\V1\Accounts\Resources\AccountResource;
+use App\Services\Api\V1\Accounts\Resources\AccountWithGalleryResource;
 use App\Services\Api\V1\Files\FileService;
 use App\Services\Api\V1\Requests\Resources\RequestsResource;
 use App\Services\Api\V1\Requests\Resources\RequestWithGalleryResource;
@@ -89,7 +89,7 @@ class RequestService
             $image_accounts = [];
             foreach ($request->images as $image_request) {
                 $image_accounts[] = ImageAccount::create([
-                    'src' => $image_request->src,
+                    'src' => $image_request->getRawSrc(),
                     'account_id' => $account->id,
                 ]);
             }
@@ -105,7 +105,7 @@ class RequestService
         } else {
             $account = $request->account;
         }
-        return $this->wrapInData(AccountResource::make($account));
+        return $this->wrapInData(AccountWithGalleryResource::make($account));
     }
 
     /**

@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api\V1\ImageRequest;
 use App\Http\Controllers\Controller;
 use App\Services\Api\V1\ImageRequests\ImageRequestService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class ImageRequestController extends Controller
 {

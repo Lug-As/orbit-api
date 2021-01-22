@@ -3,11 +3,15 @@
 namespace App\Providers;
 
 use App\Models\Account;
+use App\Models\ImageAccount;
+use App\Models\ImageRequest;
 use App\Models\Offer;
 use App\Models\Project;
 use App\Models\Request;
 use App\Models\Response;
 use App\Policies\AccountPolicy;
+use App\Policies\ImageAccountPolicy;
+use App\Policies\ImageRequestPolicy;
 use App\Policies\OfferPolicy;
 use App\Policies\ProjectPolicy;
 use App\Policies\RequestPolicy;
@@ -27,6 +31,8 @@ class AuthServiceProvider extends ServiceProvider
         Project::class => ProjectPolicy::class,
         Request::class => RequestPolicy::class,
         Response::class => ResponsePolicy::class,
+        ImageRequest::class => ImageRequestPolicy::class,
+        ImageAccount::class => ImageAccountPolicy::class,
     ];
 
     /**
