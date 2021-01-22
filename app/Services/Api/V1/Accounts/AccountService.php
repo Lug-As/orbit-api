@@ -8,6 +8,7 @@ use App\Models\Account;
 use App\Services\Api\V1\Accounts\Handlers\QueryFilterHandler;
 use App\Services\Api\V1\Accounts\Resources\AccountResource;
 use App\Services\Api\V1\Accounts\Resources\AccountsResource;
+use App\Services\Api\V1\Accounts\Resources\AccountWithGalleryResource;
 use App\Services\Api\V1\TikTokApi\TikTokApiManager;
 use App\Traits\CanWrapInData;
 use Illuminate\Database\Eloquent\Builder;
@@ -36,7 +37,8 @@ class AccountService
 
     public function findAccount(int $id)
     {
-        return $this->wrapInData(AccountResource::make($this->queryBuilder()->findOrFail($id)));
+        $account = $this->queryBuilder()->with('images')->findOrFail($id);
+        return $this->wrapInData(AccountWithGalleryResource::make($account));
     }
 
     public function updateAccount(array $data, int $id)
@@ -46,15 +48,16 @@ class AccountService
         return $this->wrapInData(AccountResource::make($account));
     }
 
-    public function destroyAccount(int $id): void
+    public function destroyAccount(int $id)
     {
         $account = Account::find($id);
         if ($account) {
-            $account->delete();
+            return $account->delete();
         }
+        return true;
     }
 
-    public function refreshAccountInfo($id)
+    public function refreshAccount($id)
     {
         $account = Account::findOrFail($id);
         $info = $this->tikTokApiManager->loadAccountInfo($account->title);
@@ -68,7 +71,7 @@ class AccountService
 
     public function forceDestroyAccount($id): void
     {
-        Account::withTrashed()->findOrFail($id)->forceDelete($id);
+        Account::withTrashed()->findOrFail($id)->forceDelete();
     }
 
     public function restoreAccount($id): void

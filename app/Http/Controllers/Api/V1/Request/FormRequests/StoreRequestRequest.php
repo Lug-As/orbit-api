@@ -26,6 +26,8 @@ class StoreRequestRequest extends AppFormRequest
             'ad_types.*' => ['required', 'array'],
             'ad_types.*.id' => ['required', 'integer', 'exists:ad_types,id'],
             'ad_types.*.price' => ['nullable', 'integer', 'max:99999999'],
+            'gallery' => ['nullable', 'array'],
+            'gallery.*' => ['required', 'file', 'mimetypes:image/jpeg,image/jpg,image/png', 'max:5000'],
         ];
     }
 }

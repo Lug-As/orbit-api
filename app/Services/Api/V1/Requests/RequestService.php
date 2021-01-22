@@ -5,12 +5,14 @@ namespace App\Services\Api\V1\Requests;
 
 
 use App\Models\Account;
+use App\Models\ImageAccount;
+use App\Models\ImageRequest;
 use App\Models\Request;
 use App\Resources\BadRequestResource;
 use App\Services\Api\V1\Accounts\Resources\AccountResource;
 use App\Services\Api\V1\Files\FileService;
-use App\Services\Api\V1\Requests\Resources\RequestResource;
 use App\Services\Api\V1\Requests\Resources\RequestsResource;
+use App\Services\Api\V1\Requests\Resources\RequestWithGalleryResource;
 use App\Services\Api\V1\TikTokApi\TikTokApiManager;
 use App\Traits\BadRequestErrorsGetable;
 use App\Traits\CanWrapInData;
@@ -48,7 +50,8 @@ class RequestService
 
     public function findRequest(int $id)
     {
-        return $this->wrapInData(RequestResource::make($this->queryBuilder()->findOrFail($id)));
+        $request = $this->queryBuilder()->findOrFail($id);
+        return $this->wrapInData(RequestWithGalleryResource::make($request));
     }
 
     public function cancelRequest($id, ?string $fail_msg)
@@ -83,6 +86,13 @@ class RequestService
             $account->ad_types()->sync($this->transformAdTypesFromModels($request->ad_types));
             $account->topics()->sync($request->topics()->allRelatedIds());
             $account->ages()->sync($request->ages()->allRelatedIds());
+            $image_accounts = [];
+            foreach ($request->images as $image_request) {
+                $image_accounts[] = ImageAccount::create([
+                    'src' => $image_request->src,
+                    'account_id' => $account->id,
+                ]);
+            }
             $request->checked = true;
             $request->account_id = $account->id;
             $request->save();
@@ -137,11 +147,18 @@ class RequestService
         if (isset($data['ages'])) {
             $request->ages()->sync($data['ages']);
         }
-        if (isset($data['image'])) {
-            $request->image = $this->fileService->handle($data['image']);
-            $request->save();
+        $request->image = $this->fileService->handle($data['image']);
+        $request->save();
+        if (isset($data['gallery'])) {
+            foreach ($data['gallery'] as $gallery_image) {
+                $src = $this->fileService->handle($gallery_image);
+                ImageRequest::create([
+                    'src' => $src,
+                    'request_id' => $request->id,
+                ]);
+            }
         }
-        return $this->wrapInData(RequestResource::make($request));
+        return $this->wrapInData(RequestWithGalleryResource::make($request));
     }
 
     /**
@@ -172,7 +189,7 @@ class RequestService
             $request->image = $this->fileService->handle($data['image']);
             $request->save();
         }
-        return $this->wrapInData(RequestResource::make($request));
+        return $this->wrapInData(RequestWithGalleryResource::make($request));
     }
 
     public function searchOwnCanceledRequest()

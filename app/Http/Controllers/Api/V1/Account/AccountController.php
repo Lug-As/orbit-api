@@ -58,7 +58,7 @@ class AccountController extends Controller
     public function refresh($id)
     {
         $this->authorize('refresh', Account::class);
-        return response()->json($this->accountService->refreshAccountInfo($id));
+        return response()->json($this->accountService->refreshAccount($id));
     }
 
     /**
