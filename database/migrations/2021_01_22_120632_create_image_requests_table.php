@@ -15,7 +15,7 @@ class CreateImageRequestsTable extends Migration
     {
         Schema::create('image_requests', function (Blueprint $table) {
             $table->id();
-            $table->string('src', 100);
+            $table->string('src', 100)->unique();
             $table->foreignId('request_id')->constrained()
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();

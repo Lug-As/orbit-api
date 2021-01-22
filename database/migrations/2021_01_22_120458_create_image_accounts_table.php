@@ -15,7 +15,7 @@ class CreateImageAccountsTable extends Migration
     {
         Schema::create('image_accounts', function (Blueprint $table) {
             $table->id();
-            $table->string('src', 100);
+            $table->string('src', 100)->unique();
             $table->foreignId('account_id')->constrained()
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
