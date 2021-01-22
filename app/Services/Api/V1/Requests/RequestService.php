@@ -86,9 +86,8 @@ class RequestService
             $account->ad_types()->sync($this->transformAdTypesFromModels($request->ad_types));
             $account->topics()->sync($request->topics()->allRelatedIds());
             $account->ages()->sync($request->ages()->allRelatedIds());
-            $image_accounts = [];
             foreach ($request->images as $image_request) {
-                $image_accounts[] = ImageAccount::create([
+                ImageAccount::create([
                     'src' => $image_request->getRawSrc(),
                     'account_id' => $account->id,
                 ]);
@@ -188,6 +187,15 @@ class RequestService
         if (isset($data['image'])) {
             $request->image = $this->fileService->handle($data['image']);
             $request->save();
+        }
+        if (isset($data['gallery'])) {
+            foreach ($data['gallery'] as $gallery_image) {
+                $src = $this->fileService->handle($gallery_image);
+                ImageRequest::create([
+                    'src' => $src,
+                    'request_id' => $request->id,
+                ]);
+            }
         }
         return $this->wrapInData(RequestWithGalleryResource::make($request));
     }
