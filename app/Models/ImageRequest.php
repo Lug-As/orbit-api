@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Traits\CanFormatImage;
-use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -20,7 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static Builder|ImageRequest whereId($value)
  * @method static Builder|ImageRequest whereRequestId($value)
  * @method static Builder|ImageRequest whereSrc($value)
- * @mixin Eloquent
+ * @mixin \Eloquent
  */
 class ImageRequest extends Model
 {
