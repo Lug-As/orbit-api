@@ -29,7 +29,7 @@ use Illuminate\Support\Facades\Route;
 Route::group([
     'prefix' => 'v1',
 ], function () {
-    Route::middleware('auth:sanctum')->group(function () {
+    Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::delete('gallery-account/{id}', [ImageAccountController::class, 'destroy']);
         Route::post('accounts/{id}/refresh', [AccountController::class, 'refresh']);
         Route::get('requests/canceled', [RequestController::class, 'canceled']);
@@ -40,11 +40,8 @@ Route::group([
         Route::get('offers/my', [OfferController::class, 'ownIndex']);
         Route::get('user', [UserController::class, 'show']);
         Route::apiResource('requests', RequestController::class);
-        Route::apiResource('projects', ProjectController::class);
         Route::apiResource('offers', OfferController::class);
         Route::apiResource('responses', ResponseController::class);
-        Route::apiResource('accounts', AccountController::class)
-            ->except('store');
 //        Route::delete('accounts/{id}/force', [AccountController::class, 'forceDestroy']);
 //        Route::post('accounts/{id}/restore', [AccountController::class, 'restore']);
 //        Route::get('accounts/trashed', [AccountController::class, 'ownTrashed']);
@@ -55,6 +52,10 @@ Route::group([
             ->middleware('throttle:6,1')
             ->name('verification.resend');
     });
+
+    Route::apiResource('projects', ProjectController::class);
+    Route::apiResource('accounts', AccountController::class)
+        ->except('store');
 
     // Auth::routes() // without Blade views
     Route::middleware('guest')->group(function () {

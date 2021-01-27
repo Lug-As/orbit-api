@@ -16,6 +16,8 @@ class AccountController extends Controller
     public function __construct(AccountService $accountService)
     {
         $this->accountService = $accountService;
+        $this->middleware(['auth:sanctum', 'verified'])
+            ->except(['index', 'show']);
     }
 
     /**
@@ -26,7 +28,6 @@ class AccountController extends Controller
      */
     public function index(Request $request)
     {
-        $this->authorize('viewAny', Account::class);
         return response()->json($this->accountService->searchAccounts($request->input()));
     }
 
