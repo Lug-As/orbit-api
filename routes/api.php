@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\Api\V1\Account\AccountController;
 use App\Http\Controllers\Api\V1\ImageAccount\ImageAccountController;
-use App\Http\Controllers\Api\V1\ImageRequest\ImageRequestController;
 use App\Http\Controllers\Api\V1\Offer\OfferController;
 use App\Http\Controllers\Api\V1\Project\ProjectController;
 use App\Http\Controllers\Api\V1\Request\RequestController;
@@ -31,7 +30,6 @@ Route::group([
     'prefix' => 'v1',
 ], function () {
     Route::middleware('auth:sanctum')->group(function () {
-        Route::delete('gallery-request/{id}', [ImageRequestController::class, 'destroy']);
         Route::delete('gallery-account/{id}', [ImageAccountController::class, 'destroy']);
         Route::post('accounts/{id}/refresh', [AccountController::class, 'refresh']);
         Route::get('requests/canceled', [RequestController::class, 'canceled']);
@@ -50,6 +48,12 @@ Route::group([
 //        Route::delete('accounts/{id}/force', [AccountController::class, 'forceDestroy']);
 //        Route::post('accounts/{id}/restore', [AccountController::class, 'restore']);
 //        Route::get('accounts/trashed', [AccountController::class, 'ownTrashed']);
+        Route::get('email/verify/{id}/{hash}', [VerificationController::class, 'verify'])
+            ->middleware(['signed', 'throttle:6,1'])
+            ->name('verification.verify');
+        Route::post('email/resend', [VerificationController::class, 'resend'])
+            ->middleware('throttle:6,1')
+            ->name('verification.resend');
     });
 
     // Auth::routes() // without Blade views
@@ -59,8 +63,6 @@ Route::group([
     });
 //    Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
 //    Route::post('password/reset', [ResetPasswordController::class, 'reset']);
-//    Route::post('email/resend', 'Auth\VerificationController@resend')->name('verification.resend');
-//    Route::get('email/verify/{id}/{hash}', [VerificationController::class, 'verify'])->name('verification.verify');
 });
 
 //Route::get('/{uri}', function () {
@@ -79,6 +81,7 @@ Route::group([
 //
 //Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm']);
 //
-//Route::get('email/verify', [\App\Http\Controllers\Auth\VerificationController::class, 'show'])->name('verification.notice');
+//Route::get('email/verify', [\App\Http\Controllers\Auth\VerificationController::class, 'show'])
+//      ->name('verification.notice');
 
 // -------------------------------------------------------------------------------------------------
