@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
@@ -70,6 +71,15 @@ class Handler extends ExceptionHandler
                     'message' => $msg,
                 ],
             ], $code)->withHeaders($e->getHeaders());
+        });
+        $this->renderable(function (AuthenticationException $e) {
+            $code = 401;
+            return response()->json([
+                'error' => [
+                    'code' => $code,
+                    'message' => 'Unauthenticated.',
+                ],
+            ], $code);
         });
     }
 }
