@@ -10,6 +10,7 @@ use App\Services\Api\V1\Accounts\Handlers\QueryFilterHandler;
 use App\Services\Api\V1\Accounts\Resources\AccountResource;
 use App\Services\Api\V1\Accounts\Resources\AccountsResource;
 use App\Services\Api\V1\Accounts\Resources\AccountWithGalleryResource;
+use App\Services\Api\V1\AdTypes\Transformer\AdTypesTransformer;
 use App\Services\Api\V1\Files\FileService;
 use App\Services\Api\V1\ImageAccounts\ImageAccountService;
 use App\Services\Api\V1\TikTokApi\TikTokApiManager;
@@ -66,7 +67,7 @@ class AccountService
             $account->ages()->sync($data['ages']);
         }
         if (isset($data['ad_types'])) {
-            $account->ad_types()->sync($this->transformAdTypes($data['ad_types']));
+            $account->ad_types()->sync(AdTypesTransformer::transform($data['ad_types']));
         }
         if (isset($data['image'])) {
             $account->image = $this->fileService->handle($data['image']);
@@ -155,21 +156,6 @@ class AccountService
     public function searchTrashedAccounts()
     {
         return AccountsResource::make($this->queryBuilder()->onlyTrashed()->paginate(10));
-    }
-
-    protected function transformAdTypes(array $ad_types): array
-    {
-        $out = [];
-        foreach ($ad_types as $ad_type) {
-            if (isset($ad_type['price'])) {
-                $out[$ad_type['id']] = [
-                    'price' => $ad_type['price'],
-                ];
-            } else {
-                $out[] = $ad_type['id'];
-            }
-        }
-        return $out;
     }
 
     protected function checkGalleryImagesCount($account_id, $with_count = 0)

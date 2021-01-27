@@ -8,12 +8,14 @@ use App\Models\Account;
 use App\Models\Request;
 use App\Resources\BadRequestResource;
 use App\Services\Api\V1\Accounts\Resources\AccountWithGalleryResource;
+use App\Services\Api\V1\AdTypes\Transformer\AdTypesTransformer;
 use App\Services\Api\V1\Files\FileService;
 use App\Services\Api\V1\Requests\Resources\RequestsResource;
 use App\Services\Api\V1\Requests\Resources\RequestResource;
 use App\Services\Api\V1\TikTokApi\TikTokApiManager;
 use App\Traits\BadRequestErrorsGetable;
 use App\Traits\CanWrapInData;
+use DB;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\MessageBag;
 use Illuminate\Support\Str;
@@ -72,22 +74,25 @@ class RequestService
     {
         $request = Request::findOrFail($id);
         if ($request->isNotApproved()) {
-            $account = Account::create([
-                'title' => $request->getRawName(),
-                'image' => $request->getRawImage(),
-                'about' => $request->about,
-                'user_id' => $request->user_id,
-                'region_id' => $request->region_id,
-                'telegram' => $request->telegram,
-                'email' => $request->email,
-                'phone' => $request->phone,
-            ]);
-            $account->ad_types()->sync($this->transformAdTypesFromModels($request->ad_types));
-            $account->topics()->sync($request->topics()->allRelatedIds());
-            $account->ages()->sync($request->ages()->allRelatedIds());
-            $request->checked = true;
-            $request->account_id = $account->id;
-            $request->save();
+            $account = DB::transaction(function () use ($request) {
+                $account = Account::create([
+                    'title' => $request->getRawName(),
+                    'image' => $request->getRawImage(),
+                    'about' => $request->about,
+                    'user_id' => $request->user_id,
+                    'region_id' => $request->region_id,
+                    'telegram' => $request->telegram,
+                    'email' => $request->email,
+                    'phone' => $request->phone,
+                ]);
+                $account->ad_types()->sync($this->transformAdTypesFromModels($request->ad_types));
+                $account->topics()->sync($request->topics()->allRelatedIds());
+                $account->ages()->sync($request->ages()->allRelatedIds());
+                $request->checked = true;
+                $request->account_id = $account->id;
+                $request->save();
+                return $account;
+            }, 2);
             $info = $this->tikTokApiManager->loadAccountInfo($account->title);
             if ($info) {
                 $account->followers = $info->followers;
@@ -133,14 +138,17 @@ class RequestService
             return $this->getErrorMessages();
         }
         $data['user_id'] = Auth::id();
-        $request = Request::create($data);
-        $request->topics()->sync($data['topics']);
-        $request->ad_types()->sync($this->transformAdTypes($data['ad_types']));
-        if (isset($data['ages'])) {
-            $request->ages()->sync($data['ages']);
-        }
-        $request->image = $this->fileService->handle($data['image']);
-        $request->save();
+        $request = DB::transaction(function () use ($data) {
+            $request = Request::create($data);
+            $request->topics()->sync($data['topics']);
+            $request->ad_types()->sync($data['ad_types']);
+            if (isset($data['ages'])) {
+                $request->ages()->sync($data['ages']);
+            }
+            $request->image = $this->fileService->handle($data['image']);
+            $request->save();
+            return $request;
+        }, 2);
         return $this->wrapInData(RequestResource::make($request));
     }
 
@@ -166,7 +174,7 @@ class RequestService
             $request->ages()->sync($data['ages']);
         }
         if (isset($data['ad_types'])) {
-            $request->ad_types()->sync($this->transformAdTypes($data['ad_types']));
+            $request->ad_types()->sync($data['ad_types']);
         }
         if (isset($data['image'])) {
             $request->image = $this->fileService->handle($data['image']);
@@ -222,32 +230,17 @@ class RequestService
         return Request::with(['user', 'ad_types', 'topics', 'account', 'region', 'ages']);
     }
 
-    protected function transformAdTypes(array $ad_types): array
-    {
-        $out = [];
-        foreach ($ad_types as $ad_type) {
-            if (isset($ad_type['price'])) {
-                $out[$ad_type['id']] = [
-                    'price' => $ad_type['price'],
-                ];
-            } else {
-                $out[] = $ad_type['id'];
-            }
-        }
-        return $out;
-    }
-
     /**
      * @param \Illuminate\Database\Eloquent\Collection $ad_types
      * @return array
      */
     protected function transformAdTypesFromModels($ad_types): array
     {
-        /** @var \Illuminate\Database\Eloquent\Collection $ad_types */
-        return $this->transformAdTypes($ad_types->map(function ($item) {
+        $ad_types = $ad_types->map(function ($item) {
             $item->price = $item->pivot->price;
             return $item;
-        })->toArray());
+        })->toArray();
+        return AdTypesTransformer::transform($ad_types);
     }
 
     /**

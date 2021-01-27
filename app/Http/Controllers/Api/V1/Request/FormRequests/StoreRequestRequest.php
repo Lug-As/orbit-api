@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1\Request\FormRequests;
 
 
 use App\Http\Requests\AppFormRequest;
+use App\Services\Api\V1\AdTypes\Transformer\AdTypesTransformer;
 
 class StoreRequestRequest extends AppFormRequest
 {
@@ -27,5 +28,28 @@ class StoreRequestRequest extends AppFormRequest
             'ad_types.*.id' => ['required', 'integer', 'exists:ad_types,id'],
             'ad_types.*.price' => ['nullable', 'integer', 'max:99999999'],
         ];
+    }
+
+    /**
+     * Configure the validator instance.
+     *
+     * @param \Illuminate\Validation\Validator $validator
+     * @return void
+     */
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $this->transformAdTypes($validator);
+        });
+    }
+
+    protected function transformAdTypes($validator)
+    {
+        /** @var \Illuminate\Validation\Validator $validator */
+        $data = $validator->getData();
+        if (isset($data['ad_types'])) {
+            $data['ad_types'] = AdTypesTransformer::transform($data['ad_types']);
+            $validator->setData($data);
+        }
     }
 }
