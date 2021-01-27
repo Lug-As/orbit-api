@@ -15,7 +15,7 @@ class TikTokApiManager
      */
     public function loadAccountInfo(string $name)
     {
-        $name = addslashes($name);
+        $name = urlencode($name);
         $response = Http::get("https://www.tiktok.com/node/share/user/{$name}?user_agent=");
         if ($response->ok()) {
             $json = $response->json();
