@@ -145,7 +145,7 @@ class RequestService
             if (isset($data['ages'])) {
                 $request->ages()->sync($data['ages']);
             }
-            $request->image = $this->fileService->handle($data['image']);
+            $request->image = $this->fileService->upload($data['image']);
             $request->save();
             return $request;
         }, 2);
@@ -177,7 +177,7 @@ class RequestService
             $request->ad_types()->sync($data['ad_types']);
         }
         if (isset($data['image'])) {
-            $request->image = $this->fileService->handle($data['image']);
+            $request->image = $this->fileService->upload($data['image']);
             $request->save();
         }
         return $this->wrapInData(RequestResource::make($request));
@@ -204,8 +204,8 @@ class RequestService
     public function destroyRequest(int $id)
     {
         $request = Request::find($id);
-        if ($request && $request->image) {
-            File::delete(public_path(FileService::UPLOAD_DIR . '/' . $request->image));
+        if ($request && $request->image && $request->isNotApproved()) {
+            $this->fileService->delete($request->getRawImage());
             return $request->delete();
         }
         return true;

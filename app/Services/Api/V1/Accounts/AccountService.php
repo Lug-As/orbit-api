@@ -70,13 +70,13 @@ class AccountService
             $account->ad_types()->sync(AdTypesTransformer::transform($data['ad_types']));
         }
         if (isset($data['image'])) {
-            $account->image = $this->fileService->handle($data['image']);
+            $account->image = $this->fileService->upload($data['image']);
             $account->save();
         }
         if (isset($data['gallery'])) {
             if ($this->checkGalleryImagesCount($account->id, count($data['gallery']))) {
                 foreach ($data['gallery'] as $gallery_image) {
-                    $src = $this->fileService->handle($gallery_image);
+                    $src = $this->fileService->upload($gallery_image);
                     ImageAccount::create([
                         'src' => $src,
                         'account_id' => $account->id,

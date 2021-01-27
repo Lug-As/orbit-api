@@ -4,20 +4,29 @@
 namespace App\Services\Api\V1\Files;
 
 
+use File;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
-use LogicException;
 
 class FileService
 {
     public const UPLOAD_DIR = 'uploads';
     protected const FILENAME_CHARACTERS = 12;
 
-    public function handle(UploadedFile $image)
+    public function upload(UploadedFile $image)
     {
         $filename = $this->getFilename($image);
         $this->saveImage($image, $filename);
         return $filename;
+    }
+
+    public function delete(string $filename)
+    {
+        $file = public_path(FileService::UPLOAD_DIR . '/' . $filename);
+        if (File::exists($file)) {
+            return File::delete($file);
+        }
+        return true;
     }
 
     /**
