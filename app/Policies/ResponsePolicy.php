@@ -41,7 +41,7 @@ class ResponsePolicy
      * @param User $user
      * @return bool
      */
-    public function create(User $user)
+    public function create()
     {
         return true;
     }

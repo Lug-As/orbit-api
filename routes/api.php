@@ -40,14 +40,14 @@ Route::prefix('v1')->group(function () {
             Route::apiResource('offers', OfferController::class);
             Route::apiResource('responses', ResponseController::class);
         });
+        Route::post('email/verify/{id}/{hash}', [VerificationController::class, 'verify'])
+            ->middleware(['signed', 'throttle:6,1'])
+            ->name('verification.verify');
         Route::post('email/resend', [VerificationController::class, 'resend'])
             ->middleware('throttle:6,1')
             ->name('verification.resend');
         Route::get('user', [UserController::class, 'show']);
     });
-    Route::get('email/verify/{id}/{hash}', [VerificationController::class, 'verify'])
-        ->middleware(['signed', 'throttle:6,1'])
-        ->name('verification.verify');
     Route::apiResource('projects', ProjectController::class);
     Route::post('accounts/{id}/refresh', [AccountController::class, 'refresh']);
     Route::apiResource('accounts', AccountController::class)
@@ -55,8 +55,10 @@ Route::prefix('v1')->group(function () {
 
     Route::post('login', [LoginController::class, 'login']);
     Route::post('register', [RegisterController::class, 'register']);
-//    Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
-//    Route::post('password/reset', [ResetPasswordController::class, 'reset']);
+    Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])
+        ->name('password.email');
+    Route::post('password/reset', [ResetPasswordController::class, 'reset'])
+        ->name('password.reset');
 });
 
 //Route::get('/{uri}', function () {
@@ -71,10 +73,10 @@ Route::prefix('v1')->group(function () {
 //
 //Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
 //
+//Route::get('email/verify', [VerificationController::class, 'show'])->name('verification.notice');
+//
 //Route::get('password/reset', [ForgotPasswordController::class, 'showLinkRequestForm']);
 //
 //Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm']);
-//
-//Route::get('email/verify', [VerificationController::class, 'show'])->name('verification.notice');
 
 // -------------------------------------------------------------------------------------------------

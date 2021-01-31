@@ -24,11 +24,10 @@ class VerificationController extends Controller
      */
     public function verify(Request $request)
     {
-        $id = $request->route('id');
-        $user = $request->user() ?? User::find($id);
+        $user = $request->user();
         if (
             !$user
-            || !hash_equals((string) $id, (string) $user->getKey())
+            || !hash_equals((string) $request->route('id'), (string) $user->getKey())
             || !hash_equals((string) $request->route('hash'), sha1($user->getEmailForVerification()))
         ) {
             throw new AuthorizationException;
@@ -38,11 +37,36 @@ class VerificationController extends Controller
                 event(new Verified($user));
             }
         }
-        return $request->wantsJson()
-            ? response()->json([
-                'user_id' => $user->id,
-                'verifyed' => true,
-            ])
-            : redirect('/');
+        return $this->verified($request, $user);
+    }
+
+    /**
+     * Resend the email verification notification.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
+     */
+    public function resend(Request $request)
+    {
+        if ($request->user()->hasVerifiedEmail()) {
+            return $this->verified($request);
+        }
+
+        $request->user()->sendEmailVerificationNotification();
+
+        return response()->json([], 202);
+    }
+
+    /**
+     * @param Request $request
+     * @param null|User $user
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function verified(Request $request, $user = null)
+    {
+        return response()->json([
+            'user_id' => $user ? $user->id : $request->user()->id,
+            'verifyed' => true,
+        ]);
     }
 }
