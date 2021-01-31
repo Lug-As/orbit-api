@@ -67,7 +67,7 @@ class AccountService
             $account->ages()->sync($data['ages']);
         }
         if (isset($data['ad_types'])) {
-            $account->ad_types()->sync(AdTypesTransformer::transform($data['ad_types']));
+            $account->ad_types()->sync($data['ad_types']);
         }
         if (isset($data['image'])) {
             $account->image = $this->fileService->upload($data['image']);
