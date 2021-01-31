@@ -19,7 +19,7 @@ class CreateProjectsTable extends Migration
             $table->id();
             $table->string('name');
             $table->text('text');
-            $table->integer('budget');
+            $table->integer('budget')->nullable();
             $table->foreignId('user_id')->constrained();
             $table->timestamps();
         });

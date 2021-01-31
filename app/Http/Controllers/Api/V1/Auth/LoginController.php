@@ -24,15 +24,6 @@ class LoginController extends Controller
 
     use AuthenticatesUsers;
 
-    protected function sendLoginResponse(Request $request)
-    {
-        $this->clearLoginAttempts($request);
-        if ($response = $this->authenticated($request, $this->guard()->user())) {
-            return $response;
-        }
-        return response()->json([], 204);
-    }
-
     /**
      * Where to redirect users after login.
      *
@@ -49,8 +40,13 @@ class LoginController extends Controller
      */
     public function __construct(AccessTokenService $accessTokenService)
     {
-        $this->middleware('guest')->except('logout');
         $this->accessTokenService = $accessTokenService;
+    }
+
+    protected function sendLoginResponse(Request $request)
+    {
+        $this->clearLoginAttempts($request);
+        return $this->authenticated($request, $this->guard()->user());
     }
 
     protected function authenticated(Request $request, $user)

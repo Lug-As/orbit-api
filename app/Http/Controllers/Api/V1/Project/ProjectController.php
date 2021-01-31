@@ -17,7 +17,7 @@ class ProjectController extends Controller
     public function __construct(ProjectService $projectService)
     {
         $this->projectService = $projectService;
-        $this->middleware(['auth:sanctum', 'verified'])
+        $this->middleware(['auth', 'verified'])
             ->except(['index', 'show']);
     }
 
@@ -28,7 +28,6 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $this->authorize('viewAny', Project::class);
         return response()->json($this->projectService->searchProjects());
     }
 
@@ -53,7 +52,6 @@ class ProjectController extends Controller
      */
     public function show($id)
     {
-        $this->authorize('view', Project::class);
         return response()->json($this->projectService->findProject($id));
     }
 

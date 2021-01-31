@@ -1,12 +1,12 @@
 <?php
 
 
-namespace App\Services\Api\V1\Topics\Resources;
+namespace App\Services\Api\V1\Accounts\Resources;
 
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class TopicResource extends JsonResource
+class AccountShortResource extends JsonResource
 {
     /**
      * @param \Illuminate\Http\Request $request
@@ -14,9 +14,11 @@ class TopicResource extends JsonResource
      */
     public function toArray($request)
     {
+        /** @var self|\App\Models\Account $this */
         return [
             'id' => $this->id,
-            'name' => $this->name,
+            'title' => $this->title,
+            'image' => $this->image,
         ];
     }
 }

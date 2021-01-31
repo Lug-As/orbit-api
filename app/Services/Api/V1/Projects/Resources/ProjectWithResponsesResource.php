@@ -14,8 +14,10 @@ class ProjectWithResponsesResource extends ProjectResource
      */
     public function toArray($request)
     {
+        /** @var self|\App\Models\Project $this */
         return array_merge(parent::toArray($request), [
-            'responses' => ResponseNoProjectResource::collection($this->responses)
+            'responses' => ResponseNoProjectResource::collection($this->responses),
+            'responses_count' => $this->responses->count(),
         ]);
     }
 }

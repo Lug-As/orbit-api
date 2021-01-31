@@ -16,9 +16,9 @@ use App\Services\Api\V1\ImageAccounts\ImageAccountService;
 use App\Services\Api\V1\TikTokApi\TikTokApiManager;
 use App\Traits\BadRequestErrorsGetable;
 use App\Traits\CanWrapInData;
-use File;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\MessageBag;
+use File;
 
 class AccountService
 {
@@ -50,13 +50,13 @@ class AccountService
         return AccountsResource::make($queryBuilder->paginate(10));
     }
 
-    public function findAccount(int $id)
+    public function findAccount($id)
     {
         $account = $this->queryBuilder()->with('images')->findOrFail($id);
         return $this->wrapInData(AccountWithGalleryResource::make($account));
     }
 
-    public function updateAccount(array $data, int $id)
+    public function updateAccount(array $data, $id)
     {
         $account = Account::findOrFail($id);
         $account->update($data);
@@ -89,10 +89,18 @@ class AccountService
         return $this->wrapInData(AccountWithGalleryResource::make($account));
     }
 
-    public function destroyAccount(int $id)
+    public function destroyAccount($id)
     {
         $account = Account::find($id);
         if ($account) {
+            if ($account->image) {
+                $this->fileService->delete($account->getRawImage());
+            }
+            if ($account->images) {
+                foreach ($account->images as $image) {
+                    $this->imageAccountService->destroyImageAccount($image);
+                }
+            }
             return $account->delete();
         }
         return true;
@@ -110,37 +118,6 @@ class AccountService
         return $this->wrapInData(AccountResource::make($account));
     }
 
-    public function forceDestroyAccount($id)
-    {
-        $account = Account::withTrashed()->findOrFail($id);
-        if ($account->image) {
-            File::delete(public_path(FileService::UPLOAD_DIR . '/' . $account->image));
-        }
-        if ($account->images) {
-            foreach ($account->images as $image) {
-                $this->imageAccountService->destroyImageAccount($image);
-            }
-        }
-        return $account->forceDelete();
-    }
-
-    public function restoreAccount($id)
-    {
-        $account = Account::withTrashed()->findOrFail($id);
-        $account->restore();
-        return $this->wrapInData(AccountWithGalleryResource::make($account));
-    }
-
-    /**
-     * Return builder with model's relations
-     *
-     * @return Builder
-     */
-    protected function queryBuilder(): Builder
-    {
-        return Account::with(['user', 'ad_types', 'topics', 'region', 'ages']);
-    }
-
     /**
      * @param int $id
      * @return Account|null
@@ -153,9 +130,14 @@ class AccountService
         return Account::findOrFail($id, ['user_id']);
     }
 
-    public function searchTrashedAccounts()
+    /**
+     * Return builder with model's relations
+     *
+     * @return Builder
+     */
+    protected function queryBuilder(): Builder
     {
-        return AccountsResource::make($this->queryBuilder()->onlyTrashed()->paginate(10));
+        return Account::with(['user', 'ad_types', 'topics', 'region', 'ages']);
     }
 
     protected function checkGalleryImagesCount($account_id, $with_count = 0)

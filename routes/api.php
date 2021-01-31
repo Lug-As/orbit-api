@@ -38,13 +38,9 @@ Route::group([
         Route::post('requests/{id}/resend', [RequestController::class, 'resend']);
         Route::get('offers/by-account/{account_id}', [OfferController::class, 'getByAccount']);
         Route::get('offers/my', [OfferController::class, 'ownIndex']);
-        Route::get('user', [UserController::class, 'show']);
         Route::apiResource('requests', RequestController::class);
         Route::apiResource('offers', OfferController::class);
         Route::apiResource('responses', ResponseController::class);
-//        Route::delete('accounts/{id}/force', [AccountController::class, 'forceDestroy']);
-//        Route::post('accounts/{id}/restore', [AccountController::class, 'restore']);
-//        Route::get('accounts/trashed', [AccountController::class, 'ownTrashed']);
         Route::get('email/verify/{id}/{hash}', [VerificationController::class, 'verify'])
             ->middleware(['signed', 'throttle:6,1'])
             ->name('verification.verify');
@@ -53,15 +49,13 @@ Route::group([
             ->name('verification.resend');
     });
 
+    Route::get('user', [UserController::class, 'show']);
     Route::apiResource('projects', ProjectController::class);
     Route::apiResource('accounts', AccountController::class)
         ->except('store');
 
-    // Auth::routes() // without Blade views
-    Route::middleware('guest')->group(function () {
-        Route::post('login', [LoginController::class, 'login']);
-        Route::post('register', [RegisterController::class, 'register']);
-    });
+    Route::post('login', [LoginController::class, 'login']);
+    Route::post('register', [RegisterController::class, 'register']);
 //    Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
 //    Route::post('password/reset', [ResetPasswordController::class, 'reset']);
 });

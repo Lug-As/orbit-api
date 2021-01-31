@@ -16,7 +16,7 @@ class AccountController extends Controller
     public function __construct(AccountService $accountService)
     {
         $this->accountService = $accountService;
-        $this->middleware(['auth:sanctum', 'verified'])
+        $this->middleware(['auth', 'verified'])
             ->except(['index', 'show']);
     }
 
@@ -39,7 +39,6 @@ class AccountController extends Controller
      */
     public function show($id)
     {
-        $this->authorize('view', $this->accountService->getAccountOnlyUserId($id));
         return response()->json($this->accountService->findAccount($id));
     }
 
@@ -62,7 +61,6 @@ class AccountController extends Controller
 
     public function refresh($id)
     {
-        $this->authorize('refresh', Account::class);
         return response()->json($this->accountService->refreshAccount($id));
     }
 
@@ -74,25 +72,8 @@ class AccountController extends Controller
      */
     public function destroy($id)
     {
-//        $this->authorize('delete', $this->accountService->getAccountOnlyUserId($id));
-//        $this->accountService->destroyAccount($id);
-        $this->authorize('forceDelete', $this->accountService->getAccountOnlyUserId($id, true));
-        $this->accountService->forceDestroyAccount($id);
+        $this->authorize('delete', $this->accountService->getAccountOnlyUserId($id));
+        $this->accountService->destroyAccount($id);
         return response()->json([], 204);
     }
-
-//    public function forceDestroy($id) {
-//        $this->authorize('forceDelete', $this->accountService->getAccountOnlyUserId($id, true));
-//        $this->accountService->forceDestroyAccount($id);
-//        return response()->json([], 204);
-//    }
-//    public function restore($id) {
-//        $this->authorize('restore', $this->accountService->getAccountOnlyUserId($id, true));
-//        $this->accountService->restoreAccount($id);
-//        return response()->json([], 204);
-//    }
-//    public function ownTrashed() {
-//        $this->authorize('ownTrashed', Account::class);
-//        return response()->json($this->accountService->searchTrashedAccounts());
-//    }
 }

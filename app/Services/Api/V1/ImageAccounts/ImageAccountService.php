@@ -10,6 +10,13 @@ use File;
 
 class ImageAccountService
 {
+    protected $fileService;
+
+    public function __construct(FileService $fileService)
+    {
+        $this->fileService = $fileService;
+    }
+
     /**
      * @param ImageAccount|int $imageAccountOrId
      * @return bool|null
@@ -19,7 +26,7 @@ class ImageAccountService
     {
         $imageAccount = $imageAccountOrId instanceof ImageAccount ? $imageAccountOrId
             : ImageAccount::findOrFail($imageAccountOrId);
-        File::delete(public_path(FileService::UPLOAD_DIR . '/' . $imageAccount->getRawSrc()));
+        $this->fileService->delete($imageAccount->getRawSrc());
         return $imageAccount->delete();
     }
 

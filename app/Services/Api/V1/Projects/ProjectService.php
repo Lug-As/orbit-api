@@ -34,14 +34,14 @@ class ProjectService
         return $this->wrapInData(ProjectResource::make($project));
     }
 
-    public function updateProject(array $data, int $id)
+    public function updateProject(array $data, $id)
     {
         $project = Project::findOrFail($id);
         $project->update($data);
         return $this->wrapInData(ProjectResource::make($project));
     }
 
-    public function destroyProject(int $id)
+    public function destroyProject($id)
     {
         return Project::whereId($id)->delete();
     }

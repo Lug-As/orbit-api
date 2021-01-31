@@ -4,9 +4,7 @@
 namespace App\Services\Api\V1\Accounts\Resources;
 
 
-use Illuminate\Http\Resources\Json\JsonResource;
-
-class AccountNoRelationsResource extends JsonResource
+class AccountNoRelationsResource extends AccountShortResource
 {
     /**
      * @param \Illuminate\Http\Request $request
@@ -15,7 +13,7 @@ class AccountNoRelationsResource extends JsonResource
     public function toArray($request)
     {
         /** @var self|\App\Models\Account $this */
-        return [
+        return array_merge(parent::toArray($request), [
             'id' => $this->id,
             'title' => $this->title,
             'about' => $this->about,
@@ -23,6 +21,6 @@ class AccountNoRelationsResource extends JsonResource
             'likes' => $this->likes,
             'followers' => $this->followers,
             'created_at' => $this->created_at->toDateTimeString(),
-        ];
+        ]);
     }
 }

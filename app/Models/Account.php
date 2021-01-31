@@ -117,6 +117,16 @@ class Account extends Model
         return $this->hasMany(ImageAccount::class);
     }
 
+    public function getRawImage()
+    {
+        return $this->getRaw('image');
+    }
+
+    public function getRaw($attr)
+    {
+        return $this->getAttributes()[$attr];
+    }
+
     public function getImageAttribute($data)
     {
         return $data ? $this->formatImage($data) : null;

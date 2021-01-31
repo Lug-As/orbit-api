@@ -4,7 +4,7 @@
 namespace App\Services\Api\V1\Responses\Resources;
 
 
-use App\Services\Api\V1\Accounts\Resources\AccountNoRelationsResource;
+use App\Services\Api\V1\Accounts\Resources\AccountShortResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ResponseNoProjectResource extends JsonResource
@@ -18,7 +18,7 @@ class ResponseNoProjectResource extends JsonResource
         return [
             'id' => $this->id,
             'text' => $this->text,
-            'account' => AccountNoRelationsResource::make($this->account),
+            'account' => AccountShortResource::make($this->account),
             'created_at' => $this->created_at->toDateTimeString(),
         ];
     }
