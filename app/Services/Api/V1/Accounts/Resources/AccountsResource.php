@@ -15,7 +15,7 @@ class AccountsResource extends ResourceCollection
     public function toArray($request)
     {
         return array_merge($this->resource->toArray(), [
-            'data' => AccountResource::collection($this->collection),
+            'data' => AccountInListResource::collection($this->collection),
         ]);
     }
 }

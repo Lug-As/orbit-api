@@ -220,6 +220,9 @@ class QueryFilterHandler
 
     protected function prepareQueryBuilder(Builder $queryBuilder)
     {
-        return $queryBuilder->addSelect('accounts.*')->distinct('accounts.id');
+        return $queryBuilder->addSelect(
+            ['accounts.id', 'accounts.title', 'accounts.image', 'accounts.user_id']
+        )
+            ->distinct('accounts.id');
     }
 }

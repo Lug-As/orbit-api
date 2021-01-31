@@ -14,10 +14,7 @@ class AccountNoRelationsResource extends AccountShortResource
     {
         /** @var self|\App\Models\Account $this */
         return array_merge(parent::toArray($request), [
-            'id' => $this->id,
-            'title' => $this->title,
             'about' => $this->about,
-            'image' => $this->image,
             'likes' => $this->likes,
             'followers' => $this->followers,
             'created_at' => $this->created_at->toDateTimeString(),
