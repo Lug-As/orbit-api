@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
 use App\Services\Api\V1\Tokens\AccessTokenService;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -42,8 +43,21 @@ class RegisterController extends Controller
      */
     public function __construct(AccessTokenService $accessTokenService)
     {
-        $this->middleware('guest');
         $this->accessTokenService = $accessTokenService;
+    }
+
+    /**
+     * Handle a registration request for the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     */
+    public function register(Request $request)
+    {
+        $this->validator($request->all())->validate();
+        $user = $this->create($request->all());
+        event(new Registered($user));
+        return response()->json($this->accessTokenService->generate($request, $user));
     }
 
     /**
@@ -56,7 +70,7 @@ class RegisterController extends Controller
     {
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
-            'phone' => ['required', 'string', 'min:10', 'max:10'],
+            'phone' => ['required', 'string', 'size:10'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8'],
         ]);
@@ -76,10 +90,5 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
-    }
-
-    protected function registered(Request $request, $user)
-    {
-        return response()->json($this->accessTokenService->generate($request, $user));
     }
 }

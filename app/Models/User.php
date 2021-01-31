@@ -115,6 +115,6 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function getEmailForVerification()
     {
-        return md5($this->email . '__secret');
+        return md5($this->email);
     }
 }

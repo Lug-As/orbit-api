@@ -26,31 +26,30 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::group([
-    'prefix' => 'v1',
-], function () {
-    Route::middleware(['auth:sanctum', 'verified'])->group(function () {
-        Route::delete('gallery-account/{id}', [ImageAccountController::class, 'destroy']);
-        Route::post('accounts/{id}/refresh', [AccountController::class, 'refresh']);
-        Route::get('requests/canceled', [RequestController::class, 'canceled']);
-        Route::post('requests/{id}/cancel', [RequestController::class, 'cancel']);
-        Route::post('requests/{id}/approve', [RequestController::class, 'approve']);
-        Route::post('requests/{id}/resend', [RequestController::class, 'resend']);
-        Route::get('offers/by-account/{account_id}', [OfferController::class, 'getByAccount']);
-        Route::get('offers/my', [OfferController::class, 'ownIndex']);
-        Route::apiResource('requests', RequestController::class);
-        Route::apiResource('offers', OfferController::class);
-        Route::apiResource('responses', ResponseController::class);
-        Route::get('email/verify/{id}/{hash}', [VerificationController::class, 'verify'])
-            ->middleware(['signed', 'throttle:6,1'])
-            ->name('verification.verify');
+Route::prefix('v1')->group(function () {
+    Route::middleware('auth')->group(function () {
+        Route::middleware('verified')->group(function () {
+            Route::delete('gallery-account/{id}', [ImageAccountController::class, 'destroy']);
+            Route::get('requests/canceled', [RequestController::class, 'canceled']);
+            Route::post('requests/{id}/cancel', [RequestController::class, 'cancel']);
+            Route::post('requests/{id}/approve', [RequestController::class, 'approve']);
+            Route::post('requests/{id}/resend', [RequestController::class, 'resend']);
+            Route::get('offers/by-account/{account_id}', [OfferController::class, 'getByAccount']);
+            Route::get('offers/my', [OfferController::class, 'ownIndex']);
+            Route::apiResource('requests', RequestController::class);
+            Route::apiResource('offers', OfferController::class);
+            Route::apiResource('responses', ResponseController::class);
+        });
         Route::post('email/resend', [VerificationController::class, 'resend'])
             ->middleware('throttle:6,1')
             ->name('verification.resend');
+        Route::get('user', [UserController::class, 'show']);
     });
-
-    Route::get('user', [UserController::class, 'show']);
+    Route::get('email/verify/{id}/{hash}', [VerificationController::class, 'verify'])
+        ->middleware(['signed', 'throttle:6,1'])
+        ->name('verification.verify');
     Route::apiResource('projects', ProjectController::class);
+    Route::post('accounts/{id}/refresh', [AccountController::class, 'refresh']);
     Route::apiResource('accounts', AccountController::class)
         ->except('store');
 
@@ -76,7 +75,6 @@ Route::group([
 //
 //Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm']);
 //
-//Route::get('email/verify', [\App\Http\Controllers\Auth\VerificationController::class, 'show'])
-//      ->name('verification.notice');
+//Route::get('email/verify', [VerificationController::class, 'show'])->name('verification.notice');
 
 // -------------------------------------------------------------------------------------------------

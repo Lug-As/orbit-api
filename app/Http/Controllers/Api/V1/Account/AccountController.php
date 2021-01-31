@@ -17,7 +17,7 @@ class AccountController extends Controller
     {
         $this->accountService = $accountService;
         $this->middleware(['auth', 'verified'])
-            ->except(['index', 'show']);
+            ->except(['index', 'show', 'refresh']);
     }
 
     /**
