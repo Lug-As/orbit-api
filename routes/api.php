@@ -41,11 +41,12 @@ Route::prefix('v1')->group(function () {
             Route::apiResource('responses', ResponseController::class);
         });
         Route::post('email/verify/{id}/{hash}', [VerificationController::class, 'verify'])
-            ->middleware(['signed', 'throttle:6,1'])
+//            ->middleware(['signed', 'throttle:6,1'])
             ->name('verification.verify');
         Route::post('email/resend', [VerificationController::class, 'resend'])
             ->middleware('throttle:6,1')
             ->name('verification.resend');
+        Route::post('user', [UserController::class, 'update']);
         Route::get('user', [UserController::class, 'show']);
     });
     Route::apiResource('projects', ProjectController::class);

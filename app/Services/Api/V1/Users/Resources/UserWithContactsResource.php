@@ -17,6 +17,7 @@ class UserWithContactsResource extends UserResource
         return array_merge(parent::toArray($request), [
             'phone' => $this->phone,
             'email' => $this->email,
+            'verifyed' => $this->hasVerifiedEmail()
         ]);
     }
 }
