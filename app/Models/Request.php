@@ -96,7 +96,8 @@ class Request extends Model
 
     public function region()
     {
-        return $this->belongsTo(Region::class);
+        return $this->belongsTo(Region::class)
+            ->with('country');
     }
 
     public function account()

@@ -10,7 +10,6 @@ use App\Services\Api\V1\Accounts\Handlers\QueryFilterHandler;
 use App\Services\Api\V1\Accounts\Resources\AccountResource;
 use App\Services\Api\V1\Accounts\Resources\AccountsResource;
 use App\Services\Api\V1\Accounts\Resources\AccountWithGalleryResource;
-use App\Services\Api\V1\AdTypes\Transformer\AdTypesTransformer;
 use App\Services\Api\V1\Files\FileService;
 use App\Services\Api\V1\ImageAccounts\ImageAccountService;
 use App\Services\Api\V1\TikTokApi\TikTokApiManager;
@@ -18,7 +17,6 @@ use App\Traits\BadRequestErrorsGetable;
 use App\Traits\CanWrapInData;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\MessageBag;
-use File;
 
 class AccountService
 {
@@ -137,7 +135,7 @@ class AccountService
      */
     protected function queryBuilder(): Builder
     {
-        return Account::with(['user', 'ad_types', 'topics', 'region', 'ages']);
+        return Account::with(['user', 'ad_types', 'topics', 'region.country', 'ages']);
     }
 
     protected function checkGalleryImagesCount($account_id, $with_count = 0)

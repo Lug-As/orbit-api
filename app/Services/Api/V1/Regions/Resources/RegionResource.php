@@ -4,6 +4,7 @@
 namespace App\Services\Api\V1\Regions\Resources;
 
 
+use App\Services\Api\V1\Countries\Resources\CountryResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class RegionResource extends JsonResource
@@ -14,7 +15,7 @@ class RegionResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'country_name' => $this->country_name,
+            'country' => CountryResource::make($this->country),
         ];
     }
 }
