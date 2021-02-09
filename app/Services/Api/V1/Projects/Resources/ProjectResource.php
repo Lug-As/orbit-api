@@ -22,6 +22,8 @@ class ProjectResource extends JsonResource
             'text' => $this->text,
             'name' => $this->name,
             'budget' => $this->budget,
+            'followers_from' => $this->followers_from,
+            'followers_to' => $this->followers_to,
             'created_at' => $this->created_at->toDateTimeString(),
             'user' => UserResource::make($this->user),
             'ad_types' => AdTypeResource::collection($this->ad_types),
