@@ -2,33 +2,41 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 /**
  * App\Models\Region
  *
- * @method static \Illuminate\Database\Eloquent\Builder|Region newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Region newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Region query()
- * @mixin \Eloquent
  * @property int $id
  * @property string $name
- * @property string $country_name
- * @method static \Illuminate\Database\Eloquent\Builder|Region whereCountryName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Region whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Region whereName($value)
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Account[] $accounts
+ * @property int $country_id
+ * @property-read Collection|Account[] $accounts
  * @property-read int|null $accounts_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Request[] $requests
+ * @property-read Country $country
+ * @property-read Collection|Request[] $requests
  * @property-read int|null $requests_count
+ * @method static Builder|Region newModelQuery()
+ * @method static Builder|Region newQuery()
+ * @method static Builder|Region query()
+ * @method static Builder|Region whereCountryId($value)
+ * @method static Builder|Region whereId($value)
+ * @method static Builder|Region whereName($value)
+ * @mixin \Eloquent
  */
 class Region extends Model
 {
     protected $fillable = [
-        'name', 'country_name',
+        'name', 'country_id',
     ];
 
     public $timestamps = false;
+
+    public function country()
+    {
+        return $this->belongsTo(Country::class);
+    }
 
     public function accounts()
     {

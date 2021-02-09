@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Account;
 use App\Models\AdType;
 use App\Models\Age;
+use App\Models\Country;
 use App\Models\Offer;
 use App\Models\Project;
 use App\Models\Region;
@@ -31,20 +32,26 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('123123123'),
             'phone' => '8005553535',
             'is_admin' => true,
-        ]);
+        ])->markEmailAsVerified();
         User::create([
             'name' => 'User',
             'email' => 'skal.03@mail.ru',
             'password' => Hash::make('123123123'),
             'phone' => '8005553536',
-        ]);
+        ])->markEmailAsVerified();
         User::factory()->count(48)->create();
+        $countries_data = include './storage/app/data/countries/countries.php';
+        foreach ($countries_data as $country) {
+            Country::create([
+                'name' => $country,
+            ]);
+        }
         $regions_data = include './storage/app/data/regions/regions.php';
-        foreach ($regions_data as $country_name => $regions_list) {
+        foreach ($regions_data as $country_id => $regions_list) {
             foreach ($regions_list as $region) {
                 $regionRecord = Region::create([
                     'name' => $region,
-                    'country_name' => $country_name,
+                    'country_id' => $country_id,
                 ]);
                 Account::factory()->count(random_int(0, 2))->create([
                     'region_id' => $regionRecord->id,
