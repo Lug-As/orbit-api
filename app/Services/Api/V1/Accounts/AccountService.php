@@ -6,7 +6,7 @@ namespace App\Services\Api\V1\Accounts;
 
 use App\Models\Account;
 use App\Models\ImageAccount;
-use App\Services\Api\V1\Accounts\Handlers\QueryFilterHandler;
+use App\Services\Api\V1\Accounts\Handlers\AccountQueryHandler;
 use App\Services\Api\V1\Accounts\Resources\AccountResource;
 use App\Services\Api\V1\Accounts\Resources\AccountsResource;
 use App\Services\Api\V1\Accounts\Resources\AccountWithGalleryResource;
@@ -22,20 +22,20 @@ class AccountService
 {
     use CanWrapInData, BadRequestErrorsGetable;
 
-    protected $filterHandler;
+    protected $accountFilterHandler;
     protected $tikTokApiManager;
     protected $fileService;
     protected $imageAccountService;
 
     public function __construct(
-        QueryFilterHandler $filterHandler,
+        AccountQueryHandler $accountFilterHandler,
         TikTokApiManager $tikTokApiManager,
         FileService $fileService,
         MessageBag $messageBag,
         ImageAccountService $imageAccountService
     )
     {
-        $this->filterHandler = $filterHandler;
+        $this->accountFilterHandler = $accountFilterHandler;
         $this->tikTokApiManager = $tikTokApiManager;
         $this->fileService = $fileService;
         $this->messageBag = $messageBag;
@@ -44,7 +44,7 @@ class AccountService
 
     public function searchAccounts(?array $params = null)
     {
-        $queryBuilder = $this->filterHandler->filter($this->queryBuilder(), $params);
+        $queryBuilder = $this->accountFilterHandler->handle($this->queryBuilder(), $params);
         return AccountsResource::make($queryBuilder->paginate(10));
     }
 

@@ -4,11 +4,12 @@
 namespace App\Services\Api\V1\Accounts\Handlers;
 
 
+use App\Handlers\QueryHandler;
 use Illuminate\Database\Eloquent\Builder;
 
-class QueryFilterHandler
+class AccountQueryHandler extends QueryHandler
 {
-    const ALLOWED_FILTERS = [
+    protected $allowedFilters = [
         'price_from' => 'int',
         'price_to' => 'int',
         'topic' => 'array',
@@ -21,7 +22,7 @@ class QueryFilterHandler
         'likes_to' => 'int',
     ];
 
-    const ALLOWED_SORTS = [
+    protected $allowedSorts = [
         'price',
         'followers',
         'likes',
@@ -34,15 +35,15 @@ class QueryFilterHandler
      * @param array|null $params
      * @return Builder
      */
-    public function filter(Builder $queryBuilder, ?array $params): Builder
+    public function handle(Builder $queryBuilder, ?array $params): Builder
     {
+        $queryBuilder = $this->prepareQueryBuilder($queryBuilder);
         if ($params) {
-            $queryBuilder = $this->prepareQueryBuilder($queryBuilder);
             $queryBuilder = $this->filterQuery($queryBuilder, $params);
             $queryBuilder = $this->sortQuery($queryBuilder, $params);
             $queryBuilder = $this->searchQuery($queryBuilder, $params);
         }
-        return $queryBuilder;
+        return $this->postpareQueryBuilder($queryBuilder);
     }
 
     protected function filterQuery(Builder $queryBuilder, array $params): Builder
@@ -58,63 +59,6 @@ class QueryFilterHandler
     protected function searchQuery(Builder $queryBuilder, array $params): Builder
     {
         return $this->buildSearchQuery($queryBuilder, $this->extractSearchQuery($params));
-    }
-
-    protected function extractFilters(array $params): array
-    {
-        $extracted = [];
-        foreach (self::ALLOWED_FILTERS as $allowedFilter => $type) {
-            if (key_exists($allowedFilter, $params)) {
-                $original = $params[$allowedFilter];
-                if ($type === 'int') {
-                    $value = intval($original);
-                }
-                if ($type === 'array') {
-                    $value = $this->extractArrayType($original);
-                }
-            } else {
-                $value = false;
-            }
-            $extracted[$allowedFilter] = $value;
-        }
-        return $extracted;
-    }
-
-    protected function extractArrayType($var)
-    {
-        if (is_string($var)) {
-            $var = trim($var, ',');
-            if (strpos($var, ',') !== false) {
-                $var = explode(',', $var);
-                $var = array_map('intval', $var);
-            } else {
-                $var = intval($var);
-            }
-            return $var;
-        }
-        return false;
-    }
-
-    protected function extractSortParams(array $params): array
-    {
-        $sort = false;
-        $direction = 'asc';
-        if (isset($params['sort']) and in_array($params['sort'], self::ALLOWED_SORTS)) {
-            $sort = $params['sort'];
-        }
-        if (isset($params['dir']) and strcasecmp($params['dir'], 'desc') === 0) {
-            $direction = 'desc';
-        }
-        $extracted['sort'] = $sort;
-        $extracted['direction'] = $direction;
-        return $extracted;
-    }
-
-    protected function extractSearchQuery(array $params): string
-    {
-        return isset($params['q']) && is_string($params['q']) && mb_strlen($params['q']) <= 25
-            ? $params['q']
-            : '';
     }
 
     /**
@@ -220,9 +164,14 @@ class QueryFilterHandler
 
     protected function prepareQueryBuilder(Builder $queryBuilder)
     {
-        return $queryBuilder->addSelect(
-            ['accounts.id', 'accounts.title', 'accounts.image', 'accounts.user_id']
-        )
+        return $queryBuilder->addSelect([
+            'accounts.id', 'accounts.title', 'accounts.image', 'accounts.user_id', 'accounts.created_at',
+        ])
             ->distinct('accounts.id');
+    }
+
+    protected function postpareQueryBuilder(Builder $queryBuilder)
+    {
+        return $queryBuilder->latest()->orderByDesc('accounts.id');
     }
 }

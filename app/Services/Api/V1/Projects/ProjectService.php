@@ -5,6 +5,7 @@ namespace App\Services\Api\V1\Projects;
 
 
 use App\Models\Project;
+use App\Services\Api\V1\Projects\Handlers\ProjectQueryHandler;
 use App\Services\Api\V1\Projects\Resources\ProjectResource;
 use App\Services\Api\V1\Projects\Resources\ProjectWithResponsesResource;
 use App\Services\Api\V1\Projects\Resources\ProjectsResource;
@@ -16,11 +17,20 @@ class ProjectService
 {
     use CanWrapInData;
 
-    public function searchProjects()
+    /**
+     * @var ProjectQueryHandler
+     */
+    private $projectQueryHandler;
+
+    public function __construct(ProjectQueryHandler $projectQueryHandler)
     {
-        $projects = $this->queryBuilder()
-            ->latest()
-            ->orderByDesc('id')
+        $this->projectQueryHandler = $projectQueryHandler;
+    }
+
+    public function searchProjects(?array $params = null)
+    {
+        dd($this->projectQueryHandler->handle($this->queryBuilder(), $params)->toSql());
+        $projects = $this->projectQueryHandler->handle($this->queryBuilder(), $params)
             ->paginate(10);
         return ProjectsResource::make($projects);
     }
