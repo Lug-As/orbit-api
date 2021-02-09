@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -15,29 +17,33 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $user_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\AdType[] $ad_types
+ * @property-read Collection|AdType[] $ad_types
  * @property-read int|null $ad_types_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Response[] $responses
+ * @property-read Collection|Response[] $responses
  * @property-read int|null $responses_count
- * @property-read \App\Models\User $user
- * @method static \Illuminate\Database\Eloquent\Builder|Project newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Project newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Project query()
- * @method static \Illuminate\Database\Eloquent\Builder|Project whereBudget($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Project whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Project whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Project whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Project whereText($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Project whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Project whereUserId($value)
+ * @property-read User $user
+ * @method static Builder|Project newModelQuery()
+ * @method static Builder|Project newQuery()
+ * @method static Builder|Project query()
+ * @method static Builder|Project whereBudget($value)
+ * @method static Builder|Project whereCreatedAt($value)
+ * @method static Builder|Project whereId($value)
+ * @method static Builder|Project whereName($value)
+ * @method static Builder|Project whereText($value)
+ * @method static Builder|Project whereUpdatedAt($value)
+ * @method static Builder|Project whereUserId($value)
  * @mixin \Eloquent
+ * @property int|null $followers_from
+ * @property int|null $followers_to
+ * @method static Builder|Project whereFollowersFrom($value)
+ * @method static Builder|Project whereFollowersTo($value)
  */
 class Project extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'name', 'text', 'budget', 'user_id',
+        'name', 'text', 'budget', 'user_id', 'followers_from', 'followers_to',
     ];
 
     public function ad_types()

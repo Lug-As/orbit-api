@@ -14,14 +14,16 @@ class CreateProjectsTable extends Migration
     public function up()
     {
         Schema::create('projects', function (Blueprint $table) {
-            $table->charset = 'utf8mb4';
-            $table->collation = 'utf8mb4_general_ci';
             $table->id();
             $table->string('name');
             $table->text('text');
-            $table->integer('budget')->nullable();
+            $table->integer('budget');
+            $table->bigInteger('followers_from')->nullable();
+            $table->bigInteger('followers_to')->nullable();
             $table->foreignId('user_id')->constrained();
             $table->timestamps();
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_general_ci';
         });
     }
 

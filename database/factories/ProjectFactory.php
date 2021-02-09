@@ -26,6 +26,8 @@ class ProjectFactory extends Factory
             'name' => $this->faker->sentence,
             'text' => $this->faker->text(300),
             'budget' => random_int(500, 100000),
+            'followers_from' => random_int(0, 2) ? null : random_int(10000, 50000),
+            'followers_to' => random_int(0, 2) ? null : random_int(100000, 500000),
             'user_id' => User::all()->random()->id
         ];
     }

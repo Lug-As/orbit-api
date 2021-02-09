@@ -37,7 +37,7 @@ class ProjectController extends Controller
      * @param StoreProjectRequest $request
      * @return JsonResponse
      */
-    public function store(Request $request)
+    public function store(StoreProjectRequest $request)
     {
         $this->authorize('create', Project::class);
         $result = $this->projectService->storeProject($request->getFormData());
@@ -62,7 +62,7 @@ class ProjectController extends Controller
      * @param int $id
      * @return JsonResponse
      */
-    public function update(Request $request, $id)
+    public function update(UpdateProjectRequest $request, $id)
     {
         $this->authorize('update', $this->projectService->getProjectOnlyUserId($id));
         $result = $this->projectService->updateProject($request->getFormData(), $id);
