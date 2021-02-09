@@ -20,7 +20,10 @@ class CreateProjectsTable extends Migration
             $table->integer('budget');
             $table->bigInteger('followers_from')->nullable();
             $table->bigInteger('followers_to')->nullable();
-            $table->foreignId('user_id')->constrained();
+            $table->foreignId('user_id')->constrained()
+                ->cascadeOnUpdate()
+                ->cascadeOnDelete();
+            $table->foreignId('region_id')->constrained();
             $table->timestamps();
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_general_ci';

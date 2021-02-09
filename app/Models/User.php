@@ -102,7 +102,7 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword
     public function requests()
     {
         return $this->hasMany(Request::class)
-            ->orderByDesc('created_at');
+            ->latest();
     }
 
     public function projects()

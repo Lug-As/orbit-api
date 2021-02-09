@@ -43,7 +43,7 @@ class Project extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'text', 'budget', 'user_id', 'followers_from', 'followers_to',
+        'name', 'text', 'budget', 'user_id', 'followers_from', 'followers_to', 'region_id',
     ];
 
     public function ad_types()
@@ -59,5 +59,11 @@ class Project extends Model
     public function responses()
     {
         return $this->hasMany(Response::class);
+    }
+
+    public function region()
+    {
+        return $this->belongsTo(Region::class)
+            ->with('country');
     }
 }

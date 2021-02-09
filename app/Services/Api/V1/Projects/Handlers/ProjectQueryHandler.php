@@ -65,13 +65,13 @@ class ProjectQueryHandler extends QueryHandler
 
     protected function buildFilterQuery(Builder $queryBuilder, array $filters)
     {
-//        if ($filters['region']) {
-//            if (is_array($filters['region'])) {
-//                $queryBuilder->whereIn('projects.region_id', $filters['region']);
-//            } else {
-//                $queryBuilder->where('projects.region_id', $filters['region']);
-//            }
-//        }
+        if ($filters['region']) {
+            if (is_array($filters['region'])) {
+                $queryBuilder->whereIn('projects.region_id', $filters['region']);
+            } else {
+                $queryBuilder->where('projects.region_id', $filters['region']);
+            }
+        }
         if ($filters['type']) {
             if (is_array($filters['type'])) {
                 $queryBuilder->whereIn('project_ad_type.ad_type_id', $filters['type']);
@@ -79,25 +79,25 @@ class ProjectQueryHandler extends QueryHandler
                 $this->onlyOneAdType = true;
                 $queryBuilder->where('project_ad_type.ad_type_id', $filters['type']);
             }
-            $joinAccountAdType = true;
+            $joinProjectAdType = true;
         }
         if ($filters['budget_from']) {
             $queryBuilder->where('project_ad_type.budget', '>=', $filters['budget_from']);
-            $joinAccountAdType = true;
+            $joinProjectAdType = true;
         }
         if ($filters['budget_to']) {
             $queryBuilder->where('project_ad_type.budget', '<=', $filters['budget_to']);
-            $joinAccountAdType = true;
+            $joinProjectAdType = true;
         }
         if ($filters['followers_from']) {
             $queryBuilder->where('project_ad_type.followers', '>=', $filters['followers_from']);
-            $joinAccountAdType = true;
+            $joinProjectAdType = true;
         }
         if ($filters['followers_to']) {
             $queryBuilder->where('project_ad_type.followers', '<=', $filters['followers_to']);
-            $joinAccountAdType = true;
+            $joinProjectAdType = true;
         }
-        if ($joinAccountAdType) {
+        if ($joinProjectAdType) {
             $queryBuilder->join('project_ad_type', 'project_ad_type.project_id', '=', 'projects.id');
         }
         return $queryBuilder;

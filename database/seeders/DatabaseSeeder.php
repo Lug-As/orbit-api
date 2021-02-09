@@ -15,7 +15,6 @@ use App\Models\Topic;
 use App\Models\User;
 use Hash;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -59,9 +58,11 @@ class DatabaseSeeder extends Seeder
                 Request::factory()->count(random_int(0, 4))->create([
                     'region_id' => $regionRecord->id,
                 ]);
+                Project::factory()->count(random_int(0, 2))->create([
+                    'region_id' => random_int(0, 2) ? null : $regionRecord->id,
+                ]);
             }
         }
-        Project::factory()->count(100)->create();
         Response::factory()->count(100)->create();
         Offer::factory()->count(100)->create();
         $topics = ['Бизнес', 'Развлечение', 'Наука', 'Лайфхаки', 'Танцы'];
