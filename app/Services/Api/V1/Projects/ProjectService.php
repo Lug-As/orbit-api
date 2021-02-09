@@ -18,7 +18,8 @@ class ProjectService
 
     public function searchProjects()
     {
-        return ProjectsResource::make($this->queryBuilder()->paginate(10));
+        $projects = $this->queryBuilder()->latest()->orderByDesc('id')->paginate(10);
+        return ProjectsResource::make($projects);
     }
 
     public function findProject($id)
