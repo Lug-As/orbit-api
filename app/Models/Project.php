@@ -37,6 +37,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $followers_to
  * @method static Builder|Project whereFollowersFrom($value)
  * @method static Builder|Project whereFollowersTo($value)
+ * @property int|null $region_id
+ * @property-read \App\Models\Region|null $region
+ * @method static Builder|Project whereRegionId($value)
  */
 class Project extends Model
 {

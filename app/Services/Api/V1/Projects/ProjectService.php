@@ -29,7 +29,6 @@ class ProjectService
 
     public function searchProjects(?array $params = null)
     {
-//        dd($this->projectQueryHandler->handle($this->queryBuilder(), $params)->toSql());
         $projects = $this->projectQueryHandler->handle($this->queryBuilder(), $params)
             ->paginate(10);
         return ProjectsResource::make($projects);

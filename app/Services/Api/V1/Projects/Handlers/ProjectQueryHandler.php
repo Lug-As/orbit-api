@@ -28,10 +28,9 @@ class ProjectQueryHandler extends QueryHandler
         $queryBuilder = $this->prepareQueryBuilder($queryBuilder);
         if ($params) {
             $queryBuilder = $this->filterQuery($queryBuilder, $params);
-            $queryBuilder = $this->sortQuery($queryBuilder);
             $queryBuilder = $this->searchQuery($queryBuilder, $params);
         }
-        return $queryBuilder;
+        return $this->postpareQueryBuilder($queryBuilder);
     }
 
     protected function prepareQueryBuilder(Builder $queryBuilder)
@@ -50,11 +49,6 @@ class ProjectQueryHandler extends QueryHandler
         return $this->buildSearchQuery($queryBuilder, $this->extractSearchQuery($params));
     }
 
-    protected function sortQuery(Builder $queryBuilder)
-    {
-        return $queryBuilder->latest()->orderByDesc('id');
-    }
-
     protected function buildSearchQuery(Builder $queryBuilder, string $searchQuery)
     {
         if ($searchQuery) {
@@ -65,6 +59,7 @@ class ProjectQueryHandler extends QueryHandler
 
     protected function buildFilterQuery(Builder $queryBuilder, array $filters)
     {
+        $joinProjectAdType = false;
         if ($filters['region']) {
             if (is_array($filters['region'])) {
                 $queryBuilder->whereIn('projects.region_id', $filters['region']);
@@ -101,5 +96,10 @@ class ProjectQueryHandler extends QueryHandler
             $queryBuilder->join('project_ad_type', 'project_ad_type.project_id', '=', 'projects.id');
         }
         return $queryBuilder;
+    }
+
+    protected function postpareQueryBuilder(Builder $queryBuilder)
+    {
+        return $queryBuilder->latest()->orderByDesc('id');
     }
 }

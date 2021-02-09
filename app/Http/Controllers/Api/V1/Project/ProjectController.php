@@ -24,11 +24,12 @@ class ProjectController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return JsonResponse
      */
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json($this->projectService->searchProjects());
+        return response()->json($this->projectService->searchProjects($request->input()));
     }
 
     /**
