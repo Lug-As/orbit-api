@@ -23,7 +23,7 @@ class CreateProjectsTable extends Migration
             $table->foreignId('user_id')->constrained()
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
-            $table->foreignId('region_id')->constrained();
+            $table->foreignId('region_id')->nullable()->constrained();
             $table->timestamps();
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_general_ci';
