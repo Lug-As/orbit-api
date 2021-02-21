@@ -1,9 +1,12 @@
 <?php
 
 use App\Http\Controllers\Api\V1\Account\AccountController;
+use App\Http\Controllers\Api\V1\AdType\AdTypeController;
+use App\Http\Controllers\Api\V1\Age\AgeController;
 use App\Http\Controllers\Api\V1\ImageAccount\ImageAccountController;
 use App\Http\Controllers\Api\V1\Offer\OfferController;
 use App\Http\Controllers\Api\V1\Project\ProjectController;
+use App\Http\Controllers\Api\V1\Region\RegionController;
 use App\Http\Controllers\Api\V1\Request\RequestController;
 use App\Http\Controllers\Api\V1\Response\ResponseController;
 use App\Http\Controllers\Api\V1\Auth\ForgotPasswordController;
@@ -11,6 +14,7 @@ use App\Http\Controllers\Api\V1\Auth\LoginController;
 use App\Http\Controllers\Api\V1\Auth\RegisterController;
 use App\Http\Controllers\Api\V1\Auth\ResetPasswordController;
 use App\Http\Controllers\Api\V1\Auth\VerificationController;
+use App\Http\Controllers\Api\V1\Topic\TopicController;
 use App\Http\Controllers\Api\V1\User\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -40,8 +44,9 @@ Route::prefix('v1')->group(function () {
             Route::apiResource('offers', OfferController::class);
             Route::apiResource('responses', ResponseController::class);
         });
+
         Route::post('email/verify/{id}/{hash}', [VerificationController::class, 'verify'])
-//            ->middleware(['signed', 'throttle:6,1'])
+            ->middleware(['signed', 'throttle:6,1'])
             ->name('verification.verify');
         Route::post('email/resend', [VerificationController::class, 'resend'])
             ->middleware('throttle:6,1')
@@ -49,10 +54,15 @@ Route::prefix('v1')->group(function () {
         Route::post('user', [UserController::class, 'update']);
         Route::get('user', [UserController::class, 'show']);
     });
+
     Route::apiResource('projects', ProjectController::class);
     Route::post('accounts/{id}/refresh', [AccountController::class, 'refresh']);
     Route::apiResource('accounts', AccountController::class)
         ->except('store');
+    Route::get('topics', [TopicController::class, 'index']);
+    Route::get('ages', [AgeController::class, 'index']);
+    Route::get('types', [AdTypeController::class, 'index']);
+    Route::get('regions', [RegionController::class, 'index']);
 
     Route::post('login', [LoginController::class, 'login']);
     Route::post('register', [RegisterController::class, 'register']);

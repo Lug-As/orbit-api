@@ -110,20 +110,16 @@ class AccountQueryHandler extends QueryHandler
             $joinAccountAdType = true;
         }
         if ($filters['followers_from']) {
-            $queryBuilder->where('account_ad_type.followers', '>=', $filters['followers_from']);
-            $joinAccountAdType = true;
+            $queryBuilder->where('accounts.followers', '>=', $filters['followers_from']);
         }
         if ($filters['followers_to']) {
-            $queryBuilder->where('account_ad_type.followers', '<=', $filters['followers_to']);
-            $joinAccountAdType = true;
+            $queryBuilder->where('accounts.followers', '<=', $filters['followers_to']);
         }
         if ($filters['likes_from']) {
-            $queryBuilder->where('account_ad_type.likes', '>=', $filters['likes_from']);
-            $joinAccountAdType = true;
+            $queryBuilder->where('accounts.likes', '>=', $filters['likes_from']);
         }
         if ($filters['likes_to']) {
-            $queryBuilder->where('account_ad_type.likes', '<=', $filters['likes_to']);
-            $joinAccountAdType = true;
+            $queryBuilder->where('accounts.likes', '<=', $filters['likes_to']);
         }
         if ($joinAccountAdType) {
             $queryBuilder->join('account_ad_type', 'account_ad_type.account_id', '=', 'accounts.id');
@@ -165,7 +161,7 @@ class AccountQueryHandler extends QueryHandler
     protected function prepareQueryBuilder(Builder $queryBuilder)
     {
         return $queryBuilder->addSelect([
-            'accounts.id', 'accounts.title', 'accounts.image', 'accounts.user_id', 'accounts.created_at',
+            'accounts.id', 'accounts.title', 'accounts.image', 'accounts.user_id', 'accounts.created_at', 'accounts.followers', 'accounts.likes',
         ])
             ->distinct('accounts.id');
     }

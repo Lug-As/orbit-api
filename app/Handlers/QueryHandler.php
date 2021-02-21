@@ -47,12 +47,12 @@ class QueryHandler
     protected function extractSortParams(array $params): array
     {
         $sort = false;
-        $direction = 'asc';
+        $direction = 'desc';
         if (isset($params['sort']) and in_array($params['sort'], $this->allowedSorts)) {
             $sort = $params['sort'];
         }
-        if (isset($params['dir']) and strcasecmp($params['dir'], 'desc') === 0) {
-            $direction = 'desc';
+        if (isset($params['dir']) and strcasecmp($params['dir'], 'asc') === 0) {
+            $direction = 'asc';
         }
         $extracted['sort'] = $sort;
         $extracted['direction'] = $direction;

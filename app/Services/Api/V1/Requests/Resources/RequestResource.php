@@ -7,7 +7,7 @@ namespace App\Services\Api\V1\Requests\Resources;
 use App\Services\Api\V1\Accounts\Resources\AccountNoRelationsResource;
 use App\Services\Api\V1\AdTypes\Resources\AdTypeWithPriceResource;
 use App\Services\Api\V1\Ages\Resources\AgeResource;
-use App\Services\Api\V1\Regions\Resources\RegionResource;
+use App\Services\Api\V1\Regions\Resources\RegionResourceResource;
 use App\Services\Api\V1\Topics\Resources\TopicResource;
 use App\Services\Api\V1\Users\Resources\UserWithContactsResource;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -26,9 +26,6 @@ class RequestResource extends JsonResource
             'name' => $this->name,
             'about' => $this->about,
             'image' => $this->image,
-            'email' => $this->email,
-            'phone' => $this->phone,
-            'telegram' => $this->telegram,
             'checked' => $this->checked,
             'created_at' => $this->created_at->toDateTimeString(),
             'is_approved' => $this->isApproved(),
@@ -36,7 +33,7 @@ class RequestResource extends JsonResource
             'fail_msg' => $this->fail_msg,
             'account' => $this->account ? AccountNoRelationsResource::make($this->account) : null,
             'user' => UserWithContactsResource::make($this->user),
-            'region' => RegionResource::make($this->region),
+            'region' => RegionResourceResource::make($this->region),
             'ad_types' => AdTypeWithPriceResource::collection($this->ad_types),
             'topics' => TopicResource::collection($this->topics),
             'ages' => AgeResource::collection($this->ages),
