@@ -5,9 +5,8 @@ namespace App\Services\Api\V1\Regions\Resources;
 
 
 use App\Services\Api\V1\Countries\Resources\CountryResource;
-use Illuminate\Http\Resources\Json\JsonResource;
 
-class RegionResourceResource extends RegionNoCountryResource
+class RegionResource extends RegionNoCountryResource
 {
     public function toArray($request)
     {

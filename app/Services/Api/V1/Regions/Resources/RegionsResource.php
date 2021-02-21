@@ -11,7 +11,7 @@ class RegionsResource extends ResourceCollection
     public function toArray($request)
     {
         return [
-            'data' => RegionResourceResource::collection($this->collection),
+            'data' => RegionResource::collection($this->collection),
         ];
     }
 }
