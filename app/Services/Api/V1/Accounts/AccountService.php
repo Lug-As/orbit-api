@@ -7,6 +7,7 @@ namespace App\Services\Api\V1\Accounts;
 use App\Models\Account;
 use App\Models\ImageAccount;
 use App\Services\Api\V1\Accounts\Handlers\AccountQueryHandler;
+use App\Services\Api\V1\Accounts\Resources\AccountNoRelationsResource;
 use App\Services\Api\V1\Accounts\Resources\AccountResource;
 use App\Services\Api\V1\Accounts\Resources\AccountsResource;
 use App\Services\Api\V1\Accounts\Resources\AccountWithGalleryResource;
@@ -15,6 +16,7 @@ use App\Services\Api\V1\ImageAccounts\ImageAccountService;
 use App\Services\Api\V1\TikTokApi\TikTokApiManager;
 use App\Traits\BadRequestErrorsGetable;
 use App\Traits\CanWrapInData;
+use Auth;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\MessageBag;
 
@@ -52,6 +54,13 @@ class AccountService
     {
         $account = $this->queryBuilder()->with('images')->findOrFail($id);
         return $this->wrapInData(AccountWithGalleryResource::make($account));
+    }
+
+    public function searchUserAccounts()
+    {
+        return $this->wrapInData(AccountNoRelationsResource::collection(
+                $this->queryBuilder()->where('user_id', Auth::id())->get()
+            ));
     }
 
     public function updateAccount(array $data, $id)

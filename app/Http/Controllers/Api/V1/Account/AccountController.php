@@ -64,6 +64,11 @@ class AccountController extends Controller
         return response()->json($this->accountService->refreshAccount($id));
     }
 
+    public function own()
+    {
+        return response()->json($this->accountService->searchUserAccounts());
+    }
+
     /**
      * Remove the specified resource from storage.
      *

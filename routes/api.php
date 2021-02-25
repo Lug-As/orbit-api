@@ -56,6 +56,7 @@ Route::prefix('v1')->group(function () {
     });
 
     Route::apiResource('projects', ProjectController::class);
+    Route::get('accounts/own', [AccountController::class, 'own']);
     Route::post('accounts/{id}/refresh', [AccountController::class, 'refresh']);
     Route::apiResource('accounts', AccountController::class)
         ->except('store');
@@ -71,11 +72,6 @@ Route::prefix('v1')->group(function () {
     Route::post('password/reset', [ResetPasswordController::class, 'reset'])
         ->name('password.reset');
 });
-
-//Route::get('/{uri}', function () {
-//    abort(404);
-//    return "error";
-//})->where('uri', '.*');
 
 // -------------------------------------------------------------------------------------------------
 // Это нужно воплотить во Vue

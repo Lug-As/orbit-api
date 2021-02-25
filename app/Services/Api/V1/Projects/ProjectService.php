@@ -36,8 +36,8 @@ class ProjectService
 
     public function findProject($id)
     {
-        $project = $this->queryBuilderWithResponses()->findOrFail($id);
-        return $this->wrapInData(ProjectWithResponsesResource::make($project));
+        $project = $this->queryBuilder()->findOrFail($id);
+        return $this->wrapInData(ProjectResource::make($project));
     }
 
     public function storeProject(array $data)
