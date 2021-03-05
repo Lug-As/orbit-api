@@ -26,6 +26,9 @@ class RequestService
 {
     use CanWrapInData, BadRequestErrorsGetable;
 
+    protected const ERROR_CODE_DUPLICATE_ACCOUNT_NAME = 1;
+    protected const ERROR_CODE_DUPLICATE_REQUEST_NAME = 2;
+
     protected $fileService;
     protected $tikTokApiManager;
 
@@ -46,7 +49,14 @@ class RequestService
         if ($this->validQuery($query)) {
             $builder = $builder->where('name', 'LIKE', "%{$query}%");
         }
-        return RequestsResource::make($builder->paginate(10));
+        return RequestsResource::make($builder->latest()->paginate(10));
+    }
+
+    public function searchUserRequests()
+    {
+        return RequestsResource::make(
+            $this->queryBuilder()->where('user_id', Auth::id())->latest()->paginate(10)
+        );
     }
 
     public function findRequest(int $id)
@@ -265,6 +275,7 @@ class RequestService
         $check = !boolval($queryBuilder->count());
         if (!$check) {
             $this->messageBag->add('name', 'Request with current name has already been taken by you.');
+            $this->messageBag->add('user_error_code', self::ERROR_CODE_DUPLICATE_REQUEST_NAME);
         }
         return $check;
     }
@@ -275,6 +286,7 @@ class RequestService
             ->count());
         if (!$check) {
             $this->messageBag->add('name', 'Account with this name already exists.');
+            $this->messageBag->add('user_error_code', self::ERROR_CODE_DUPLICATE_ACCOUNT_NAME);
         }
         return $check;
     }

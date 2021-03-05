@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\V1\Account\AccountController;
 use App\Http\Controllers\Api\V1\AdType\AdTypeController;
 use App\Http\Controllers\Api\V1\Age\AgeController;
 use App\Http\Controllers\Api\V1\ImageAccount\ImageAccountController;
+use App\Http\Controllers\Api\V1\Notifications\NotificationsController;
 use App\Http\Controllers\Api\V1\Offer\OfferController;
 use App\Http\Controllers\Api\V1\Project\ProjectController;
 use App\Http\Controllers\Api\V1\Region\RegionController;
@@ -19,29 +20,24 @@ use App\Http\Controllers\Api\V1\User\UserController;
 use Illuminate\Support\Facades\Route;
 
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
-
 Route::prefix('v1')->group(function () {
     Route::middleware('auth')->group(function () {
         Route::middleware('verified')->group(function () {
+            Route::get('notifications/all', [NotificationsController::class, 'index']);
+            Route::get('notifications', [NotificationsController::class, 'ownIndex']);
             Route::delete('gallery-account/{id}', [ImageAccountController::class, 'destroy']);
+            Route::get('projects/own', [ProjectController::class, 'ownIndex']);
             Route::get('requests/canceled', [RequestController::class, 'canceled']);
             Route::post('requests/{id}/cancel', [RequestController::class, 'cancel']);
             Route::post('requests/{id}/approve', [RequestController::class, 'approve']);
             Route::post('requests/{id}/resend', [RequestController::class, 'resend']);
             Route::get('offers/by-account/{account_id}', [OfferController::class, 'getByAccount']);
             Route::get('offers/my', [OfferController::class, 'ownIndex']);
+            Route::get('requests/my', [RequestController::class, 'ownIndex']);
             Route::apiResource('requests', RequestController::class);
             Route::apiResource('offers', OfferController::class);
+            Route::get('responses/project/{project_id}/account/{account_id}',
+                [ResponseController::class, 'ownProjectAccountIndex']);
             Route::apiResource('responses', ResponseController::class);
         });
 

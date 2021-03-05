@@ -31,16 +31,22 @@ class ResponseController extends Controller
         return response()->json($this->responseService->searchResponses());
     }
 
-    public function ownAccountIndex(int $accountId)
+    public function ownAccountIndex($account_id)
     {
-        $this->authorize('ownAccountIndex', Account::findOrFail($accountId, ['user_id']));
-        return response()->json($this->responseService->searchByAccount($accountId));
+        $this->authorize('ownAccountIndex', Account::findOrFail($account_id, ['user_id']));
+        return response()->json($this->responseService->searchByAccount($account_id));
     }
 
-    public function ownProjectIndex(int $projectId)
+    public function ownProjectIndex($project_id)
     {
-        $this->authorize('ownProjectIndex', Project::findOrFail($projectId, ['user_id']));
-        return response()->json($this->responseService->searchByProject($projectId));
+        $this->authorize('ownProjectIndex', Project::findOrFail($project_id, ['user_id']));
+        return response()->json($this->responseService->searchByProject($project_id));
+    }
+
+    public function ownProjectAccountIndex($project_id, $account_id)
+    {
+        $this->authorize('ownProjectAccountIndex', [Response::class, Account::find($account_id, ['user_id'])]);
+        return response()->json($this->responseService->searchByProjectAndAccount($project_id, $account_id));
     }
 
     /**

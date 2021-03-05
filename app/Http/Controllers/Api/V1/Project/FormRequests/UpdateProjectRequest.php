@@ -10,9 +10,8 @@ class UpdateProjectRequest extends StoreProjectRequest
     {
         return array_merge(parent::rules(), [
             'name' => ['nullable', 'max:250'],
-            'text' => ['nullable', 'max:5000'],
-            'budget' => ['nullable', 'min:100', 'min:999999'],
-            'user_id' => ['nullable', 'integer', 'exists:users,id'],
+            'text' => ['nullable', 'max:3000'],
+            'budget' => ['nullable', 'max:999999'],
         ]);
     }
 }

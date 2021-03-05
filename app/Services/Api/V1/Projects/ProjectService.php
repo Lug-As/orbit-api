@@ -12,6 +12,7 @@ use App\Services\Api\V1\Projects\Resources\ProjectsResource;
 use App\Traits\CanWrapInData;
 use Illuminate\Database\Eloquent\Builder;
 use Auth;
+use DB;
 
 class ProjectService
 {
@@ -30,6 +31,16 @@ class ProjectService
     public function searchProjects(?array $params = null)
     {
         $projects = $this->projectQueryHandler->handle($this->queryBuilder(), $params)
+            ->latest()
+            ->paginate(10);
+        return ProjectsResource::make($projects);
+    }
+
+    public function searchUserProjects()
+    {
+        $projects = $this->queryBuilder()
+            ->where('user_id', Auth::id())
+            ->latest()
             ->paginate(10);
         return ProjectsResource::make($projects);
     }
@@ -43,7 +54,13 @@ class ProjectService
     public function storeProject(array $data)
     {
         $data['user_id'] = Auth::id();
-        $project = Project::create($data);
+        $project = DB::transaction(function () use ($data) {
+            $project = Project::create($data);
+            if (isset($data['ad_types'])) {
+                $project->ad_types()->sync($data['ad_types']);
+            }
+            return $project;
+        }, 2);
         return $this->wrapInData(ProjectResource::make($project));
     }
 
@@ -51,6 +68,9 @@ class ProjectService
     {
         $project = Project::findOrFail($id);
         $project->update($data);
+        if (isset($data['ad_types'])) {
+            $project->ad_types()->sync($data['ad_types']);
+        }
         return $this->wrapInData(ProjectResource::make($project));
     }
 

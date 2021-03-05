@@ -61,6 +61,11 @@ class RequestController extends Controller
         return response()->json($this->requestService->findRequest($id));
     }
 
+    public function ownIndex()
+    {
+        return response()->json($this->requestService->searchUserRequests());
+    }
+
     /**
      * @param int $id
      * @return JsonResponse

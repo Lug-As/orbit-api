@@ -12,21 +12,17 @@ class StoreRequestRequest extends AppFormRequest
     public function rules()
     {
         return [
-            'name' => ['required', 'string', 'max:24'],
+            'name' => ['bail', 'required', 'string', 'max:24'],
             'image' => ['required', 'file', 'mimetypes:image/jpeg,image/jpg,image/png', 'max:5000'],
-            'about' => ['nullable', 'string', 'max:2000'],
-            'phone' => ['nullable', 'string', 'size:10'],
-            'email' => ['nullable', 'string', 'email', 'max:255'],
-            'telegram' => ['nullable', 'string', 'max:32'],
+            'about' => ['nullable', 'string', 'max:1000'],
             'region_id' => ['nullable', 'integer', 'exists:regions,id'],
             'topics' => ['required', 'array'],
-            'topics.*' => ['integer', 'exists:topics,id'],
+            'topics.*' => ['integer', 'distinct', 'exists:topics,id'],
             'ages' => ['nullable', 'array'],
             'ages.*' => ['integer', 'exists:ages,id'],
             'ad_types' => ['required', 'array'],
-            'ad_types.*' => ['required', 'array'],
-            'ad_types.*.id' => ['required', 'integer', 'exists:ad_types,id'],
-            'ad_types.*.price' => ['nullable', 'integer', 'max:99999999'],
+            'ad_types.*.id' => ['required', 'integer', 'distinct', 'exists:ad_types,id'],
+            'ad_types.*.price' => ['nullable', 'integer', 'max:9999999'],
         ];
     }
 
@@ -39,7 +35,9 @@ class StoreRequestRequest extends AppFormRequest
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
-            $this->transformAdTypes($validator);
+            if ($validator->valid()) {
+                $this->transformAdTypes($validator);
+            }
         });
     }
 

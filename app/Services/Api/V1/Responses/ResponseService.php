@@ -49,23 +49,35 @@ class ResponseService
         return $this->wrapInData(ResponseResource::make($response));
     }
 
-    public function destroyResponse(int $id)
+    public function destroyResponse($id)
     {
         return Response::whereId($id)->delete();
     }
 
-    public function searchByAccount(int $accountId)
+    public function searchByAccount($accountId)
     {
         return ResponsesResource::make($this->queryBuilder()
             ->where('account_id', $accountId)
             ->paginate(10));
     }
 
-    public function searchByProject(int $projectId)
+    public function searchByProject($projectId)
     {
         return ResponsesResource::make($this->queryBuilder()
             ->where('project_id', $projectId)
             ->paginate(10));
+    }
+
+    public function searchByProjectAndAccount($projectId, $accountId)
+    {
+        $result = $this->queryBuilder()
+            ->where('project_id', $projectId)
+            ->where('account_id', $accountId)
+            ->first();
+        if ($result) {
+            return $this->wrapInData(ResponseResource::make($result));
+        }
+        return $this->wrapInData(json_encode(new \StdClass()));
     }
 
     /**
@@ -93,7 +105,7 @@ class ResponseService
      */
     protected function queryBuilder(): Builder
     {
-        return Response::with('project', 'account');
+        return Response::with(['project', 'account']);
     }
 
     protected function checkResponseAccount(int $accountId)

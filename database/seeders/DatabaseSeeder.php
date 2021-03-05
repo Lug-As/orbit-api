@@ -63,8 +63,8 @@ class DatabaseSeeder extends Seeder
                 ]);
             }
         }
-        Response::factory()->count(100)->create();
-        Offer::factory()->count(100)->create();
+        Response::factory()->count(150)->create();
+        Offer::factory()->count(150)->create();
         $topics = ['Бизнес', 'Развлечение', 'Наука', 'Лайфхаки', 'Танцы'];
         $accounts = Account::all();
         $requests = Request::all();

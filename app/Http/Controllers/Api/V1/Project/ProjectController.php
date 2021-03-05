@@ -32,6 +32,11 @@ class ProjectController extends Controller
         return response()->json($this->projectService->searchProjects($request->input()));
     }
 
+    public function ownIndex()
+    {
+        return response()->json($this->projectService->searchUserProjects());
+    }
+
     /**
      * Store a newly created resource in storage.
      *

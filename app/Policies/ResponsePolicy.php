@@ -6,11 +6,12 @@ use App\Models\Account;
 use App\Models\Project;
 use App\Models\Response;
 use App\Models\User;
+use App\Traits\DefaultPolicyFunctions;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class ResponsePolicy
 {
-    use HandlesAuthorization;
+    use HandlesAuthorization, DefaultPolicyFunctions;
 
     /**
      * Determine whether the user can view any models.
@@ -45,6 +46,12 @@ class ResponsePolicy
     {
         return true;
     }
+
+    public function ownProjectAccountIndex(User $user, ?Account $account)
+    {
+        return $account && $this->isOwnEntity($user, $account);
+    }
+
 
     /**
      * Determine whether the user can update the model.

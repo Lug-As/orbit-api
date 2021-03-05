@@ -7,7 +7,7 @@ namespace App\Services\Api\V1\Accounts;
 use App\Models\Account;
 use App\Models\ImageAccount;
 use App\Services\Api\V1\Accounts\Handlers\AccountQueryHandler;
-use App\Services\Api\V1\Accounts\Resources\AccountNoRelationsResource;
+use App\Services\Api\V1\Accounts\Resources\AccountInListResource;
 use App\Services\Api\V1\Accounts\Resources\AccountResource;
 use App\Services\Api\V1\Accounts\Resources\AccountsResource;
 use App\Services\Api\V1\Accounts\Resources\AccountWithGalleryResource;
@@ -58,7 +58,7 @@ class AccountService
 
     public function searchUserAccounts()
     {
-        return $this->wrapInData(AccountNoRelationsResource::collection(
+        return $this->wrapInData(AccountInListResource::collection(
                 $this->queryBuilder()->where('user_id', Auth::id())->get()
             ));
     }
@@ -108,7 +108,7 @@ class AccountService
                     $this->imageAccountService->destroyImageAccount($image);
                 }
             }
-            return $account->delete();
+            return $account->forceDelete();
         }
         return true;
     }

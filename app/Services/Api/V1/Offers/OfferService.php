@@ -75,7 +75,7 @@ class OfferService
      */
     protected function queryBuilder(): Builder
     {
-        return Offer::with('user', 'account');
+        return Offer::with(['user', 'account']);
     }
 
     /**
