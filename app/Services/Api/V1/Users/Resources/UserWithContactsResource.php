@@ -4,7 +4,6 @@
 namespace App\Services\Api\V1\Users\Resources;
 
 
-
 class UserWithContactsResource extends UserResource
 {
     /**
@@ -17,7 +16,8 @@ class UserWithContactsResource extends UserResource
         return array_merge(parent::toArray($request), [
             'phone' => $this->phone,
             'email' => $this->email,
-            'verifyed' => $this->hasVerifiedEmail()
+            'telegram' => $this->telegram,
+            'verifyed' => $this->hasVerifiedEmail(),
         ]);
     }
 }

@@ -20,9 +20,6 @@ class CreateAccountsTable extends Migration
             $table->string('title', 25)->unique();
             $table->string('image', 100)->nullable();
             $table->text('about')->nullable();
-            $table->string('telegram', 50)->nullable();
-            $table->string('email')->nullable();
-            $table->string('phone', 10)->nullable();
             $table->unsignedInteger('followers')->default(0);
             $table->unsignedBigInteger('likes')->default(0);
             $table->foreignId('user_id')->constrained()

@@ -4,15 +4,16 @@
 namespace App\Services\Api\V1\Accounts\Resources;
 
 
-class AccountWithContactsResource extends AccountResource
+class AccountWithContactsResource extends AccountShortResource
 {
     public function toArray($request)
     {
         /** @var self|\App\Models\Account $this */
         return array_merge(parent::toArray($request), [
-            'email' => $this->email,
-            'phone' => $this->phone,
-            'telegram' => $this->telegram,
+            'name' => $this->user->name,
+            'email' => $this->user->email,
+            'phone' => $this->user->phone,
+            'telegram' => $this->user->telegram,
         ]);
     }
 }

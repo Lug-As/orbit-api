@@ -91,9 +91,6 @@ class RequestService
                     'about' => $request->about,
                     'user_id' => $request->user_id,
                     'region_id' => $request->region_id,
-                    'telegram' => $request->telegram,
-                    'email' => $request->email,
-                    'phone' => $request->phone,
                 ]);
                 $account->ad_types()->sync($this->transformAdTypesFromModels($request->ad_types));
                 $account->topics()->sync($request->topics()->allRelatedIds());

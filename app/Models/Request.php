@@ -43,9 +43,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read Account|null $account
  * @method static Builder|Request whereFollowers($value)
  * @method static Builder|Request whereLikes($value)
- * @property string|null $telegram
- * @property string|null $email
- * @property string|null $phone
  * @method static Builder|Request whereEmail($value)
  * @method static Builder|Request wherePhone($value)
  * @method static Builder|Request whereTelegram($value)
@@ -62,7 +59,7 @@ class Request extends Model
     use HasFactory, CanFormatImage;
 
     protected $fillable = [
-        'name', 'image', 'about', 'user_id', 'region_id', 'telegram', 'email', 'phone',
+        'name', 'image', 'about', 'user_id', 'region_id',
     ];
 
     protected $casts = [

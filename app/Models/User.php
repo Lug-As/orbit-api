@@ -21,6 +21,7 @@ use App\Notifications\VerifyEmail;
  * @property string $name
  * @property string $phone
  * @property string $email
+ * @property string $telegram
  * @property \Illuminate\Support\Carbon|null $email_verified_at
  * @property string $password
  * @property string|null $remember_token
@@ -73,16 +74,17 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword
         'phone',
         'email',
         'password',
+        'telegram',
     ];
 
     /**
-     * The attributes that should be hidden for arrays.
+     * The attributes that should be visible in serialization.
      *
      * @var array
      */
-    protected $hidden = [
-        'password',
-        'is_admin',
+    protected $visible = [
+        'id',
+        'name',
     ];
 
     /**

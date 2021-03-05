@@ -45,9 +45,6 @@ use Illuminate\Database\Eloquent\Builder;
  * @property-read Request|null $request
  * @method static Builder|Account whereFollowers($value)
  * @method static Builder|Account whereLikes($value)
- * @property string|null $telegram
- * @property string|null $email
- * @property string|null $phone
  * @method static Builder|Account whereEmail($value)
  * @method static Builder|Account wherePhone($value)
  * @method static Builder|Account whereTelegram($value)
@@ -68,7 +65,7 @@ class Account extends Model
     use HasFactory, SoftDeletes, CanFormatImage;
 
     protected $fillable = [
-        'title', 'image', 'about', 'user_id', 'region_id', 'telegram', 'email', 'phone',
+        'title', 'image', 'about', 'user_id', 'region_id',
     ];
 
     protected $attributes = [

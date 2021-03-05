@@ -4,12 +4,7 @@
 namespace App\Services\Api\V1\Projects\Resources;
 
 
-use App\Services\Api\V1\AdTypes\Resources\AdTypeResource;
-use App\Services\Api\V1\Regions\Resources\RegionResource;
-use App\Services\Api\V1\Users\Resources\UserResource;
-use Illuminate\Http\Resources\Json\JsonResource;
-
-class ProjectNoRelationsResource extends JsonResource
+class ProjectNoRelationsResource extends ProjectShortResource
 {
     /**
      * @param \Illuminate\Http\Request $request
@@ -18,14 +13,12 @@ class ProjectNoRelationsResource extends JsonResource
     public function toArray($request)
     {
         /** @var self|\App\Models\Project $this */
-        return [
-            'id' => $this->id,
-            'text' => $this->text,
-            'name' => $this->name,
+        return array_merge(parent::toArray($request), [
             'budget' => $this->budget,
+            'text' => $this->text,
             'followers_from' => $this->followers_from,
             'followers_to' => $this->followers_to,
             'created_at' => $this->created_at->toDateTimeString(),
-        ];
+        ]);
     }
 }
