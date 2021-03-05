@@ -29,6 +29,6 @@ class NotificationsController extends Controller
 
     public function ownIndex()
     {
-        //
+        return response()->json($this->notificationsService->searchUserNotifications());
     }
 }

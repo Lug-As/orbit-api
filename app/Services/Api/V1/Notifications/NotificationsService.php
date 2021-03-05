@@ -12,8 +12,9 @@ use App\Services\Api\V1\Offers\OfferService;
 use App\Services\Api\V1\Projects\ProjectService;
 use App\Services\Api\V1\Requests\RequestService;
 use App\Services\Api\V1\Responses\ResponseService;
+use Auth;
 use DB;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Request as HttpRequest;
 
 class NotificationsService
 {
@@ -33,18 +34,24 @@ class NotificationsService
      * @var ProjectService
      */
     private $projectService;
+    /**
+     * @var HttpRequest
+     */
+    private $httpRequest;
 
     public function __construct(
         RequestService $requestService,
         ResponseService $responseService,
         OfferService $offerService,
-        ProjectService $projectService
+        ProjectService $projectService,
+        HttpRequest $httpRequest
     )
     {
         $this->requestService = $requestService;
         $this->responseService = $responseService;
         $this->offerService = $offerService;
         $this->projectService = $projectService;
+        $this->httpRequest = $httpRequest;
     }
 
     public function searchNotifications()
@@ -92,7 +99,52 @@ class NotificationsService
                     $item = $this->responseService->findResponse($notification->id)['data'];
                     break;
             }
-            $item = array_merge($item->toArray(request()), [
+            $item = array_merge($item->toArray($this->httpRequest), [
+                'type' => $notification->table,
+            ]);
+            $out['data'][] = $item;
+        }
+        return $out;
+    }
+
+    public function searchUserNotifications()
+    {
+        $user = Auth::user();
+        $offers = Offer::select([
+            'id',
+            'created_at',
+            DB::raw("'offers' AS 'table'"),
+        ])
+            ->from(Offer::whereIn('account_id',
+                $user->accounts->map(function ($item) {
+                    return $item->id;
+                })
+            ));
+        $notifications = Response::select([
+            'id',
+            'created_at',
+            DB::raw("'responses' AS 'table'"),
+        ])
+            ->from(Response::whereIn('project_id',
+                $user->projects->map(function ($item) {
+                    return $item->id;
+                })
+            ))
+            ->union($offers)
+            ->latest()
+        ->paginate();
+        $out = $notifications->toArray();
+        $out['data'] = [];
+        foreach ($notifications as $notification) {
+            switch ($notification->table) {
+                case 'offers':
+                    $item = $this->offerService->findOffer($notification->id)['data'];
+                    break;
+                case 'responses':
+                    $item = $this->responseService->findResponse($notification->id)['data'];
+                    break;
+            }
+            $item = array_merge($item->toArray($this->httpRequest), [
                 'type' => $notification->table,
             ]);
             $out['data'][] = $item;
@@ -100,24 +152,3 @@ class NotificationsService
         return $out;
     }
 }
-
-//    SELECT
-//        requests.id, requests.created_at, 'requests' AS 'table'
-//    FROM
-//        requests
-//    UNION
-//    SELECT
-//        offers.id, offers.created_at, 'offers' AS 'table'
-//    FROM
-//        offers
-//    UNION
-//    SELECT
-//        responses.id, responses.created_at, 'responses' AS 'table'
-//    FROM
-//        responses
-//    UNION
-//    SELECT
-//        projects.id, projects.created_at, 'projects' AS 'table'
-//    FROM
-//        projects
-//        ORDER BY created_at DESC LIMIT 10 OFFSET 0

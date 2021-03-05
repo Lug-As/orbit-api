@@ -23,8 +23,8 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('v1')->group(function () {
     Route::middleware('auth')->group(function () {
         Route::middleware('verified')->group(function () {
-            Route::get('notifications/all', [NotificationsController::class, 'index']);
             Route::get('notifications', [NotificationsController::class, 'ownIndex']);
+            Route::get('notifications/all', [NotificationsController::class, 'index']);
             Route::delete('gallery-account/{id}', [ImageAccountController::class, 'destroy']);
             Route::get('projects/own', [ProjectController::class, 'ownIndex']);
             Route::get('requests/canceled', [RequestController::class, 'canceled']);
