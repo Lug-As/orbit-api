@@ -173,7 +173,6 @@ class RequestService
                 return $this->getErrorMessages();
             }
         }
-        $request->update($data);
         if (isset($data['topics'])) {
             $request->topics()->sync($data['topics']);
         }
@@ -184,9 +183,12 @@ class RequestService
             $request->ad_types()->sync($data['ad_types']);
         }
         if (isset($data['image'])) {
-            $request->image = $this->fileService->upload($data['image']);
-            $request->save();
+            if ($request->image) {
+                $this->fileService->delete($request->getRawImage());
+            }
+            $data['image'] = $this->fileService->upload($data['image']);
         }
+        $request->update($data);
         return $this->wrapInData(RequestResource::make($request));
     }
 

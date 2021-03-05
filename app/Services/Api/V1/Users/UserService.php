@@ -5,11 +5,22 @@ namespace App\Services\Api\V1\Users;
 
 
 use App\Models\User;
+use App\Services\Api\V1\Files\FileService;
 use DB;
 use Illuminate\Database\Eloquent\Model;
 
 class UserService
 {
+    /**
+     * @var FileService
+     */
+    private $fileService;
+
+    public function __construct(FileService $fileService)
+    {
+        $this->fileService = $fileService;
+    }
+
     /**
      * @param User|int $userOrId
      * @param array $data
@@ -25,6 +36,12 @@ class UserService
                 $token = $user->currentAccessToken();
                 $user->tokens()->whereKeyNot($token->getKey())->delete();
                 $user->sendEmailVerificationNotification();
+            }
+            if (isset($data['image'])) {
+                if ($user->image) {
+                    $this->fileService->delete($user->getRawImage());
+                }
+                $data['image'] = $this->fileService->upload($data['image']);
             }
             $user->update($data);
         });

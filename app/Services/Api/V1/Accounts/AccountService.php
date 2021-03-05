@@ -66,7 +66,6 @@ class AccountService
     public function updateAccount(array $data, $id)
     {
         $account = Account::findOrFail($id);
-        $account->update($data);
         if (isset($data['topics'])) {
             $account->topics()->sync($data['topics']);
         }
@@ -77,8 +76,10 @@ class AccountService
             $account->ad_types()->sync($data['ad_types']);
         }
         if (isset($data['image'])) {
-            $account->image = $this->fileService->upload($data['image']);
-            $account->save();
+            if ($account->image) {
+                $this->fileService->delete($account->getRawImage());
+            }
+            $data['image'] = $this->fileService->upload($data['image']);
         }
         if (isset($data['gallery'])) {
             if ($this->checkGalleryImagesCount($account->id, count($data['gallery']))) {
@@ -93,6 +94,7 @@ class AccountService
                 return $this->getErrorMessages();
             }
         }
+        $account->update($data);
         return $this->wrapInData(AccountWithGalleryResource::make($account));
     }
 

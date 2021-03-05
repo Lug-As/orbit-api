@@ -9,7 +9,7 @@ use App\Services\Api\V1\AdTypes\Resources\AdTypeWithPriceResource;
 use App\Services\Api\V1\Ages\Resources\AgeResource;
 use App\Services\Api\V1\Regions\Resources\RegionResource;
 use App\Services\Api\V1\Topics\Resources\TopicResource;
-use App\Services\Api\V1\Users\Resources\UserWithContactsResource;
+use App\Services\Api\V1\Users\Resources\UserExtendedResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class RequestResource extends JsonResource
@@ -32,7 +32,7 @@ class RequestResource extends JsonResource
             'is_canceled' => $this->isCanceled(),
             'fail_msg' => $this->fail_msg,
             'account' => $this->account ? AccountNoRelationsResource::make($this->account) : null,
-            'user' => UserWithContactsResource::make($this->user),
+            'user' => UserExtendedResource::make($this->user),
             'region' => RegionResource::make($this->region),
             'ad_types' => AdTypeWithPriceResource::collection($this->ad_types),
             'topics' => TopicResource::collection($this->topics),

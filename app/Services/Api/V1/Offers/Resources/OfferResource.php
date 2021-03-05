@@ -5,7 +5,7 @@ namespace App\Services\Api\V1\Offers\Resources;
 
 
 use App\Services\Api\V1\Accounts\Resources\AccountShortResource;
-use App\Services\Api\V1\Users\Resources\UserWithContactsResource;
+use App\Services\Api\V1\Users\Resources\UserExtendedResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class OfferResource extends JsonResource
@@ -20,7 +20,7 @@ class OfferResource extends JsonResource
         return [
             'id' => $this->id,
             'text' => $this->text,
-            'user' => UserWithContactsResource::make($this->user),
+            'user' => UserExtendedResource::make($this->user),
             'account' => AccountShortResource::make($this->account),
             'created_at' => $this->created_at->toDateTimeString(),
         ];

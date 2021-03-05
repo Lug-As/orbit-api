@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\CanFormatImage;
 use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
@@ -22,6 +23,7 @@ use App\Notifications\VerifyEmail;
  * @property string $phone
  * @property string $email
  * @property string $telegram
+ * @property string|null $image
  * @property \Illuminate\Support\Carbon|null $email_verified_at
  * @property string $password
  * @property string|null $remember_token
@@ -62,7 +64,7 @@ use App\Notifications\VerifyEmail;
  */
 class User extends Authenticatable implements MustVerifyEmail, CanResetPassword
 {
-    use HasFactory, Notifiable, SoftDeletes, HasApiTokens;
+    use HasFactory, Notifiable, SoftDeletes, HasApiTokens, CanFormatImage;
 
     /**
      * The attributes that are mass assignable.
@@ -75,6 +77,7 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword
         'email',
         'password',
         'telegram',
+        'image',
     ];
 
     /**
@@ -115,6 +118,21 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword
     public function offers()
     {
         return $this->hasMany(Offer::class);
+    }
+
+    public function getImageAttribute($data)
+    {
+        return $data ? $this->formatImage($data) : null;
+    }
+
+    public function getRawImage()
+    {
+        return $this->getRaw('image');
+    }
+
+    public function getRaw($attr)
+    {
+        return $this->getAttributes()[$attr];
     }
 
     public function getEmailForVerification()

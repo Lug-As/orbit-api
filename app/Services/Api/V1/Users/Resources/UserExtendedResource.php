@@ -4,7 +4,7 @@
 namespace App\Services\Api\V1\Users\Resources;
 
 
-class UserWithContactsResource extends UserResource
+class UserExtendedResource extends UserResource
 {
     /**
      * @param \Illuminate\Http\Request $request
