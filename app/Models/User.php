@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\CanFormatImage;
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
@@ -148,5 +149,16 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword
     public function sendEmailVerificationNotification()
     {
         $this->notify((new VerifyEmail)->locale('ru'));
+    }
+
+    /**
+     * Send the password reset notification.
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify((new ResetPassword($token))->locale('ru'));
     }
 }
