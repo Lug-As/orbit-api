@@ -147,6 +147,6 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword
      */
     public function sendEmailVerificationNotification()
     {
-        $this->notify(new VerifyEmail);
+        $this->notify((new VerifyEmail)->locale('ru'));
     }
 }

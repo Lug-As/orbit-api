@@ -213,8 +213,10 @@ class RequestService
     public function destroyRequest(int $id)
     {
         $request = Request::find($id);
-        if ($request && $request->image && $request->isNotApproved()) {
-            $this->fileService->delete($request->getRawImage());
+        if ($request) {
+            if ($request->image && $request->isNotApproved()) {
+                $this->fileService->delete($request->getRawImage());
+            }
             return $request->delete();
         }
         return true;
