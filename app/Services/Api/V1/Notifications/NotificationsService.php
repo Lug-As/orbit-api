@@ -81,7 +81,7 @@ class NotificationsService
             ->union($responses)
             ->union($projects)
             ->latest()
-            ->paginate();
+            ->paginate(15);
         $out = $notifications->toArray();
         $out['data'] = [];
         foreach ($notifications as $notification) {
@@ -132,7 +132,7 @@ class NotificationsService
             ))
             ->union($offers)
             ->latest()
-        ->paginate();
+            ->paginate(10);
         $out = $notifications->toArray();
         $out['data'] = [];
         foreach ($notifications as $notification) {
