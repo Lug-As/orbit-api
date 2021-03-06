@@ -59,7 +59,7 @@ class AccountService
     public function searchUserAccounts()
     {
         return $this->wrapInData(AccountInListResource::collection(
-                $this->queryBuilder()->where('user_id', Auth::id())->get()
+                $this->queryBuilder()->where('user_id', Auth::id())->latest()->get()
             ));
     }
 
