@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Traits\CanFormatImage;
-use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
@@ -15,6 +14,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Notifications\VerifyEmail;
+use App\Notifications\ResetPassword;
 
 /**
  * App\Models\User

@@ -66,6 +66,7 @@ Route::prefix('v1')->group(function () {
     Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])
         ->name('password.email');
     Route::post('password/reset', [ResetPasswordController::class, 'reset'])
+        ->middleware(['signed', 'throttle:6,1'])
         ->name('password.reset');
 });
 

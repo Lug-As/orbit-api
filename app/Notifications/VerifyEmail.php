@@ -51,7 +51,7 @@ class VerifyEmail extends VerifyEmailBase
     {
         $prefix = config('frontend.url') . config('frontend.email_verify_url');
         if (!$prefix) {
-            throw new \Exception("Frontend URL hasn't been setted");
+            throw new \Exception("Frontend Email verification URL hasn't been set");
         }
         $params = parse_url($temporarySignedURL);
         $path = trim($params['path'], '/');
