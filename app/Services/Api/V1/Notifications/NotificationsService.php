@@ -96,7 +96,7 @@ class NotificationsService
                     $item = $this->projectService->findProject($notification->id)['data'];
                     break;
                 case 'responses':
-                    $item = $this->responseService->findResponse($notification->id)['data'];
+                    $item = $this->responseService->findResponseWithAdvertiser($notification->id)['data'];
                     break;
             }
             $item = array_merge($item->toArray($this->httpRequest), [

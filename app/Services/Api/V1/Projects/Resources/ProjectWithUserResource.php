@@ -4,11 +4,9 @@
 namespace App\Services\Api\V1\Projects\Resources;
 
 
-use App\Services\Api\V1\AdTypes\Resources\AdTypeResource;
-use App\Services\Api\V1\Regions\Resources\RegionResource;
 use App\Services\Api\V1\Users\Resources\UserResource;
 
-class ProjectResource extends ProjectNoRelationsResource
+class ProjectWithUserResource extends ProjectNoRelationsResource
 {
     /**
      * @param \Illuminate\Http\Request $request
@@ -19,9 +17,6 @@ class ProjectResource extends ProjectNoRelationsResource
         /** @var self|\App\Models\Project $this */
         return array_merge(parent::toArray($request), [
             'user' => UserResource::make($this->user),
-            'region' => $this->region ? RegionResource::make($this->region) : null,
-            'ad_types' => AdTypeResource::collection($this->ad_types),
-            'responses_count' => $this->responses_count,
         ]);
     }
 }

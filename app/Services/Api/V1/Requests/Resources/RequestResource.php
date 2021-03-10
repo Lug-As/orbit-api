@@ -33,7 +33,7 @@ class RequestResource extends JsonResource
             'fail_msg' => $this->fail_msg,
             'account' => $this->account ? AccountNoRelationsResource::make($this->account) : null,
             'user' => UserExtendedResource::make($this->user),
-            'region' => RegionResource::make($this->region),
+            'region' => $this->region ? RegionResource::make($this->region) : null,
             'ad_types' => AdTypeWithPriceResource::collection($this->ad_types),
             'topics' => TopicResource::collection($this->topics),
             'ages' => AgeResource::collection($this->ages),

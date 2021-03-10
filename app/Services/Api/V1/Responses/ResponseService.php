@@ -9,6 +9,7 @@ use App\Models\Project;
 use App\Models\Response;
 use App\Services\Api\V1\Responses\Resources\ResponsesResource;
 use App\Services\Api\V1\Responses\Resources\ResponseResource;
+use App\Services\Api\V1\Responses\Resources\ResponseWithAdvertiserResource;
 use App\Traits\BadRequestErrorsGetable;
 use App\Traits\CanWrapInData;
 use Auth;
@@ -26,6 +27,11 @@ class ResponseService
     public function findResponse(int $id)
     {
         return $this->wrapInData(ResponseResource::make($this->queryBuilder()->findOrFail($id)));
+    }
+
+    public function findResponseWithAdvertiser($id)
+    {
+        return $this->wrapInData(ResponseWithAdvertiserResource::make($this->queryBuilder()->with('project.user')->findOrFail($id)));
     }
 
     public function storeResponse(array $data)

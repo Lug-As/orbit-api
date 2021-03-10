@@ -18,6 +18,7 @@ class UserExtendedResource extends UserResource
             'email' => $this->email,
             'telegram' => $this->telegram,
             'verifyed' => $this->hasVerifiedEmail(),
+            'is_admin' => $this->is_admin,
         ]);
     }
 }
