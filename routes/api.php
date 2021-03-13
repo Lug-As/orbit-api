@@ -20,7 +20,11 @@ use App\Http\Controllers\Api\V1\User\UserController;
 use Illuminate\Support\Facades\Route;
 
 
-Route::prefix('v1')->group(function () {
+Route::group([
+		'prefix' => 'v1',
+		'domain' => 'api.orbitaa.ru',
+	],
+function () {
     Route::middleware('auth')->group(function () {
         Route::middleware('verified')->group(function () {
             Route::get('notifications', [NotificationsController::class, 'ownIndex']);
