@@ -37,7 +37,7 @@ class TikTokApiManager
         return Http::withHeaders([
             'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.83 YaBrowser/20.9.0.928 Yowser/2.5 Safari/537.36',
         ])
-            ->get("https://www.tiktok.com/{$name}?user_agent=");
+            ->get("https://www.tiktok.com/{$name}?");
     }
 
     protected function parseUserInfo(HttpResponse $response)
