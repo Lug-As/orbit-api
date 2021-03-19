@@ -31,7 +31,6 @@ class ProjectService
     public function searchProjects(?array $params = null)
     {
         $projects = $this->projectQueryHandler->handle($this->queryBuilder(), $params)
-            ->latest()
             ->paginate(10);
         return ProjectsResource::make($projects);
     }

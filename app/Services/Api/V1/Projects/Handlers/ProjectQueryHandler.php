@@ -59,7 +59,6 @@ class ProjectQueryHandler extends QueryHandler
 
     protected function buildFilterQuery(Builder $queryBuilder, array $filters)
     {
-        $joinProjectAdType = false;
         if ($filters['region']) {
             if (is_array($filters['region'])) {
                 $queryBuilder->whereIn('projects.region_id', $filters['region']);
@@ -68,32 +67,25 @@ class ProjectQueryHandler extends QueryHandler
             }
         }
         if ($filters['type']) {
+            $queryBuilder->join('ad_type_project', 'ad_type_project.project_id', '=', 'projects.id');
             if (is_array($filters['type'])) {
                 $queryBuilder->whereIn('ad_type_project.ad_type_id', $filters['type']);
             } else {
                 $this->onlyOneAdType = true;
                 $queryBuilder->where('ad_type_project.ad_type_id', $filters['type']);
             }
-            $joinProjectAdType = true;
         }
         if ($filters['budget_from']) {
             $queryBuilder->where('projects.budget', '>=', $filters['budget_from']);
-            $joinProjectAdType = true;
         }
         if ($filters['budget_to']) {
             $queryBuilder->where('projects.budget', '<=', $filters['budget_to']);
-            $joinProjectAdType = true;
         }
         if ($filters['followers_from']) {
             $queryBuilder->where('projects.followers_from', '>=', $filters['followers_from']);
-            $joinProjectAdType = true;
         }
         if ($filters['followers_to']) {
             $queryBuilder->where('projects.followers_to', '<=', $filters['followers_to']);
-            $joinProjectAdType = true;
-        }
-        if ($joinProjectAdType) {
-            $queryBuilder->join('ad_type_project', 'ad_type_project.project_id', '=', 'projects.id');
         }
         return $queryBuilder;
     }
