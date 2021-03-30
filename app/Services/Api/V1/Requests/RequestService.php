@@ -13,6 +13,7 @@ use App\Services\Api\V1\AdTypes\Transformer\AdTypesTransformer;
 use App\Services\Api\V1\Files\FileService;
 use App\Services\Api\V1\Requests\Resources\RequestsResource;
 use App\Services\Api\V1\Requests\Resources\RequestResource;
+use App\Services\Api\V1\Telegram\TelegramBot;
 use App\Services\Api\V1\TikTokApi\TikTokApiManager;
 use App\Traits\BadRequestErrorsGetable;
 use App\Traits\CanWrapInData;
@@ -159,6 +160,7 @@ class RequestService
             $request->save();
             return $request;
         }, 2);
+        TelegramBot::notifyAdmin($request);
         return $this->wrapInData(RequestResource::make($request));
     }
 

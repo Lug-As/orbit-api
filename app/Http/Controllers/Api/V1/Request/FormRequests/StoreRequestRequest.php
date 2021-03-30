@@ -21,6 +21,7 @@ class StoreRequestRequest extends AppFormRequest
             'ages' => ['nullable', 'array'],
             'ages.*' => ['integer', 'exists:ages,id'],
             'ad_types' => ['required', 'array'],
+            'ad_types.*' => ['array'],
             'ad_types.*.id' => ['required', 'integer', 'distinct', 'exists:ad_types,id'],
             'ad_types.*.price' => ['nullable', 'integer', 'max:9999999'],
         ];
@@ -35,7 +36,7 @@ class StoreRequestRequest extends AppFormRequest
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
-            if ($validator->valid()) {
+            if ($validator->validated()) {
                 $this->transformAdTypes($validator);
             }
         });
