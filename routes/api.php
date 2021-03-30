@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::group([
 		'prefix' => 'v1',
-		'domain' => 'orbit-api.me',
+		'domain' => 'api.orbitaa.ru',
 	],
 function () {
     Route::middleware('auth')->group(function () {
