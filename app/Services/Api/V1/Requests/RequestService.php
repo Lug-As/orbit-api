@@ -6,6 +6,7 @@ namespace App\Services\Api\V1\Requests;
 
 use App\Models\Account;
 use App\Models\Request;
+use App\Notifications\AccountCreated;
 use App\Resources\BadRequestResource;
 use App\Services\Api\V1\Accounts\Resources\AccountWithGalleryResource;
 use App\Services\Api\V1\AdTypes\Transformer\AdTypesTransformer;
@@ -84,6 +85,7 @@ class RequestService
     {
         $request = Request::findOrFail($id);
         if ($request->isNotApproved()) {
+            /** @var Account $account */
             $account = DB::transaction(function () use ($request) {
                 $account = Account::create([
                     'title' => $request->getRawName(),
@@ -100,6 +102,7 @@ class RequestService
                 $request->save();
                 return $account;
             }, 2);
+            $account->notify((new AccountCreated)->locale('ru'));
             $info = $this->tikTokApiManager->loadAccountInfo($account->title);
             if ($info) {
                 $account->followers = $info->followers;

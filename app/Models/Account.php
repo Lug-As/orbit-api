@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Notifications\Notifiable;
 
 /**
  * App\Models\Account
@@ -62,7 +63,7 @@ use Illuminate\Database\Eloquent\Builder;
  */
 class Account extends Model
 {
-    use HasFactory, SoftDeletes, CanFormatImage;
+    use HasFactory, SoftDeletes, CanFormatImage, Notifiable;
 
     protected $fillable = [
         'title', 'image', 'about', 'user_id', 'region_id',
@@ -133,5 +134,10 @@ class Account extends Model
     public function getTitleAttribute($data)
     {
         return '@' . $data;
+    }
+
+    public function routeNotificationForMail($notification)
+    {
+        return $this->user->email;
     }
 }
