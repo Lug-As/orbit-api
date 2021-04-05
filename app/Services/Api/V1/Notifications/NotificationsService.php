@@ -15,6 +15,7 @@ use App\Services\Api\V1\Responses\ResponseService;
 use Auth;
 use DB;
 use Illuminate\Http\Request as HttpRequest;
+use InvalidArgumentException;
 
 class NotificationsService
 {
@@ -110,6 +111,12 @@ class NotificationsService
     public function searchUserNotifications()
     {
         $user = Auth::user();
+        $requests = Request::select([
+            'id',
+            'created_at',
+            DB::raw("'requests' AS 'table'"),
+        ])
+            ->from(Request::whereChecked(1));
         $offers = Offer::select([
             'id',
             'created_at',
@@ -131,8 +138,14 @@ class NotificationsService
                 })
             ))
             ->union($offers)
+            ->union($requests)
             ->latest()
             ->paginate(10);
+        return $this->resolveUserNotificationEntities($notifications);
+    }
+
+    protected function resolveUserNotificationEntities($notifications)
+    {
         $out = $notifications->toArray();
         $out['data'] = [];
         foreach ($notifications as $notification) {
@@ -143,6 +156,11 @@ class NotificationsService
                 case 'responses':
                     $item = $this->responseService->findResponse($notification->id)['data'];
                     break;
+                case 'requests':
+                    $item = $this->requestService->findRequest($notification->id)['data'];
+                    break;
+                default:
+                    throw new InvalidArgumentException('Invalid table name: ' . $notification->table);
             }
             $item = array_merge($item->toArray($this->httpRequest), [
                 'type' => $notification->table,

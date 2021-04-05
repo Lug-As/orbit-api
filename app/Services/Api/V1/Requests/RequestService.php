@@ -160,7 +160,7 @@ class RequestService
             $request->save();
             return $request;
         }, 2);
-        TelegramBot::notifyAdmin($request);
+        TelegramBot::notifyAdminAboutRequest($request);
         return $this->wrapInData(RequestResource::make($request));
     }
 

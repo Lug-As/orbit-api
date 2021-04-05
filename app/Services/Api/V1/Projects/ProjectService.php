@@ -9,6 +9,7 @@ use App\Services\Api\V1\Projects\Handlers\ProjectQueryHandler;
 use App\Services\Api\V1\Projects\Resources\ProjectResource;
 use App\Services\Api\V1\Projects\Resources\ProjectWithResponsesResource;
 use App\Services\Api\V1\Projects\Resources\ProjectsResource;
+use App\Services\Api\V1\Telegram\TelegramBot;
 use App\Traits\CanWrapInData;
 use Illuminate\Database\Eloquent\Builder;
 use Auth;
@@ -60,6 +61,7 @@ class ProjectService
             }
             return $project;
         }, 2);
+        TelegramBot::notifyAdminAboutProject($project);
         return $this->wrapInData(ProjectResource::make($project));
     }
 
