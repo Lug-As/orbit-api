@@ -116,27 +116,34 @@ class NotificationsService
             'created_at',
             DB::raw("'requests' AS 'table'"),
         ])
-            ->from(Request::whereChecked(1));
+            ->from(
+                Request::whereChecked(1)
+                    ->where('user_id', $user->id)
+            );
         $offers = Offer::select([
             'id',
             'created_at',
             DB::raw("'offers' AS 'table'"),
         ])
-            ->from(Offer::whereIn('account_id',
-                $user->accounts->map(function ($item) {
-                    return $item->id;
-                })
-            ));
+            ->from(
+                Offer::whereIn('account_id',
+                    $user->accounts->map(function ($item) {
+                        return $item->id;
+                    })
+                )
+            );
         $notifications = Response::select([
             'id',
             'created_at',
             DB::raw("'responses' AS 'table'"),
         ])
-            ->from(Response::whereIn('project_id',
-                $user->projects->map(function ($item) {
-                    return $item->id;
-                })
-            ))
+            ->from(
+                Response::whereIn('project_id',
+                    $user->projects->map(function ($item) {
+                        return $item->id;
+                    })
+                )
+            )
             ->union($offers)
             ->union($requests)
             ->latest()
